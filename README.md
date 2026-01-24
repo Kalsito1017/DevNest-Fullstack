@@ -31,7 +31,7 @@ DevNest is a full-stack web application built with **ASP.NET**, **React**, and *
 ---
 
 ## 📁 Project Structure
-*text* 
+
 DevNest/
 │
 ├── server/ # ASP.NET Web API
