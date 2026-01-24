@@ -47,7 +47,7 @@ DevNest/
   ├── components
   ├── services
   └── pages
-```text
+```
 
 
 ## Purpose
