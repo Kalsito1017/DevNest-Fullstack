@@ -30,7 +30,7 @@ DevNest is a full-stack web application built with **ASP.NET**, **React**, and *
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```text
 DevNest/
