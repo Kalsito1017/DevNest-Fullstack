@@ -1,0 +1,15 @@
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\bin\Debug\net10.0\DevNest.Data.Models.deps.json
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\bin\Debug\net10.0\DevNest.Data.Models.dll
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\bin\Debug\net10.0\DevNest.Data.Models.pdb
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\bin\Debug\net10.0\DevNest.Data.Common.dll
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\bin\Debug\net10.0\DevNest.Data.Common.pdb
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\DevNest.Data.Models.csproj.AssemblyReference.cache
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\DevNest.Data.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\DevNest.Data.Models.AssemblyInfoInputs.cache
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\DevNest.Data.Models.AssemblyInfo.cs
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\DevNest.Data.Models.csproj.CoreCompileInputs.cache
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\DevNest..ABBC7A9E.Up2Date
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\DevNest.Data.Models.dll
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\refint\DevNest.Data.Models.dll
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\DevNest.Data.Models.pdb
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Models\obj\Debug\net10.0\ref\DevNest.Data.Models.dll

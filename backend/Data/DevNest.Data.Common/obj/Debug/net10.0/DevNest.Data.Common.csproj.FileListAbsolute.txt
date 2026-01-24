@@ -1,0 +1,11 @@
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\bin\Debug\net10.0\DevNest.Data.Common.deps.json
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\bin\Debug\net10.0\DevNest.Data.Common.dll
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\bin\Debug\net10.0\DevNest.Data.Common.pdb
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\obj\Debug\net10.0\DevNest.Data.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\obj\Debug\net10.0\DevNest.Data.Common.AssemblyInfoInputs.cache
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\obj\Debug\net10.0\DevNest.Data.Common.AssemblyInfo.cs
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\obj\Debug\net10.0\DevNest.Data.Common.csproj.CoreCompileInputs.cache
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\obj\Debug\net10.0\DevNest.Data.Common.dll
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\obj\Debug\net10.0\refint\DevNest.Data.Common.dll
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\obj\Debug\net10.0\DevNest.Data.Common.pdb
+C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Data\DevNest.Data.Common\obj\Debug\net10.0\ref\DevNest.Data.Common.dll
