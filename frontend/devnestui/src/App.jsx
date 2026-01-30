@@ -21,6 +21,7 @@ function App() {
             <Route path="/aiworkshops" element={<AIWorkshops />} />
             <Route path="/aboutus" element={<AboutUs />} />
             <Route path="/profile" element={<Profile />} />
+            
           </Routes>
         </main>
         <Footer />

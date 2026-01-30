@@ -1,2 +1,0 @@
-C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Web\DevNest.Web\obj\Debug\net10.0\staticwebassets.build.json
-C:\Users\Kaloyan\DevNest-FullStack\DevNest\backend\Web\DevNest.Web\obj\Debug\net10.0\staticwebassets.build.json

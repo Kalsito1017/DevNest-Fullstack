@@ -1,126 +1,73 @@
-// src/services/authService.js
 import axios from 'axios';
+import { API_CONFIG } from './api';
 
-// Update this to match your .NET backend URL
-const API_BASE_URL = 'https://localhost:44320/api';
-
-// Create axios instance with default config
-const api = axios.create({
-    baseURL: API_BASE_URL,
-    withCredentials: true, // Important for cookies
+// Create axios instance with correct URL
+const apiClient = axios.create({
+    baseURL: `${API_CONFIG.BASE_URL}${API_CONFIG.API_PREFIX}`,
+    withCredentials: true,
+    timeout: 10000,
     headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     }
 });
 
+// Simple auth service for development
 const authService = {
-    // Register user
-    register: async (firstName, lastName, email, password) => {
-        const requestData = {
-            firstName: firstName.trim(),
-            lastName: lastName.trim(),
-            email: email.trim().toLowerCase(),
-            password: password
-        };
-
-        console.log('Sending registration:', requestData);
-
-        try {
-            const response = await api.post('/auth/register', requestData);
-            return response.data;
-        } catch (error) {
-            console.error('Registration error:', error.response || error);
-            throw error;
-        }
-    },
-
-    // Login user
-    login: async (email, password, rememberMe = false) => {
-        const requestData = {
-            email: email.trim().toLowerCase(),
-            password: password,
-            rememberMe: rememberMe
-        };
-
-        console.log('Sending login:', requestData);
-
-        try {
-            const response = await api.post('/auth/login', requestData);
-            return response.data;
-        } catch (error) {
-            console.error('Login error:', error.response || error);
-            throw error;
-        }
-    },
-
-    // Logout user
-    logout: async () => {
-        try {
-            const response = await api.post('/auth/logout');
-            return response.data;
-        } catch (error) {
-            console.error('Logout error:', error);
-            throw error;
-        }
-    },
-
-    // Get current user
-    getCurrentUser: async () => {
-        try {
-            const response = await api.get('/auth/me');
-            return response.data;
-        } catch (error) {
-            console.error('Get current user error:', error);
-            throw error;
-        }
-    },
-
-    // Check auth status
     checkAuth: async () => {
-        try {
-            const response = await api.get('/auth/check');
-            return response.data;
-        } catch (error) {
-            console.error('Check auth error:', error);
-            return { authenticated: false };
-        }
+        console.log('🔐 Development auth check');
+        
+        // Always return authenticated in development
+        return {
+            isAuthenticated: true,
+            username: 'developer',
+            displayName: 'Development User',
+            firstName: 'Dev',
+            email: 'dev@example.com',
+            roles: ['user', 'admin'],
+            timestamp: new Date().toISOString(),
+            environment: 'development',
+            message: 'Running without authentication for development'
+        };
     },
-
-    // Check if user exists
-    checkUserExists: async (email) => {
-        try {
-            const response = await api.get(`/auth/exists/${email}`);
-            return response.data;
-        } catch (error) {
-            console.error('Check user exists error:', error);
-            return { exists: false };
-        }
+    
+    logout: async () => {
+        console.log('🔐 Logout called');
+        return { 
+            success: true, 
+            message: 'Logged out successfully (development mode)' 
+        };
     },
-
-    // Get cached user (for your Header.jsx)
-    getCachedUser: () => {
-        const userStr = localStorage.getItem('currentUser');
-        if (userStr) {
-            try {
-                return JSON.parse(userStr);
-            } catch (e) {
-                return null;
-            }
-        }
-        return null;
+    
+    // Mock login for development
+    login: async (credentials) => {
+        console.log('🔐 Mock login with:', credentials);
+        return {
+            success: true,
+            user: {
+                username: credentials.username || 'developer',
+                displayName: 'Development User',
+                firstName: 'Dev',
+                email: 'dev@example.com'
+            },
+            token: 'mock-jwt-token-for-development'
+        };
     },
-
-    // Cache user (optional helper)
-    cacheUser: (userData) => {
-        localStorage.setItem('currentUser', JSON.stringify(userData));
-    },
-
-    // Clear cached user
-    clearCachedUser: () => {
-        localStorage.removeItem('currentUser');
+    
+    // Mock registration
+    register: async (userData) => {
+        console.log('🔐 Mock registration with:', userData);
+        return {
+            success: true,
+            user: {
+                username: userData.username,
+                displayName: userData.displayName || userData.username,
+                firstName: userData.firstName || userData.username.split(' ')[0],
+                email: userData.email
+            },
+            message: 'User registered successfully (mock)'
+        };
     }
 };
 
-// ⚠️ IMPORTANT: Export as default
 export default authService;

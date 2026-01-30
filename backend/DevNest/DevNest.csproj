@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>9aec5f43-bc34-458a-b9a7-dbde3b38725d</UserSecretsId>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="10.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+	
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="DTOs\Companies\" />
+	  <Folder Include="DTOs\Categories\" />
+	</ItemGroup>
+
+</Project>
