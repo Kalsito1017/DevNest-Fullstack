@@ -212,13 +212,28 @@ const Blogs = () => {
   const canGoPrev = page > 1;
   const canGoNext = page < MAX_PAGES && activeArticles.length === PER_PAGE;
 
-  const visiblePages = useMemo(() => {
-    const last = Math.min(MAX_PAGES, Math.max(1, page + 4));
-    const first = Math.max(1, last - 4);
-    const pages = [];
-    for (let p = first; p <= last; p++) pages.push(p);
-    return pages;
-  }, [page, MAX_PAGES]);
+ const visiblePages = useMemo(() => {
+  const WINDOW = 7; // show 7 pages
+  const half = Math.floor(WINDOW / 2);
+
+  let start = page - half;
+  let end = page + half;
+
+  // Clamp to bounds
+  if (start < 1) {
+    start = 1;
+    end = Math.min(MAX_PAGES, start + WINDOW - 1);
+  }
+  if (end > MAX_PAGES) {
+    end = MAX_PAGES;
+    start = Math.max(1, end - WINDOW + 1);
+  }
+
+  const pages = [];
+  for (let p = start; p <= end; p++) pages.push(p);
+  return pages;
+}, [page, MAX_PAGES]);
+
 
   const renderArticleCard = (a) => {
     const cover = a?.cover_image || a?.social_image || null;

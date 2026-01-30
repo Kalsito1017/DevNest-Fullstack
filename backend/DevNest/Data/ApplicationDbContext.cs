@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using DevNest.Models;
+﻿using DevNest.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace DevNest.Data
 {
@@ -16,5 +17,8 @@ namespace DevNest.Data
         public DbSet<JobTech> JobTechs { get; set; } = null!;
 
         public DbSet<Tech> Techs { get; set; }
+
+        public DbSet<Event> Events { get; set; }
+
     }
 }
