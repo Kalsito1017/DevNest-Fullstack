@@ -11,14 +11,14 @@ namespace DevNest
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Controllers + JSON
+        
             builder.Services.AddControllers()
                 .AddJsonOptions(o => o.JsonSerializerOptions.PropertyNameCaseInsensitive = true);
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Jobs services (remove duplicate)
+          
             builder.Services.AddScoped<IJobSearchService, JobSearchService>();
             builder.Services.AddScoped<IJobReadService, JobReadService>();
             builder.Services.AddScoped<IJobHomeSectionsService, JobHomeSectionsService>();
@@ -26,10 +26,10 @@ namespace DevNest
          
             builder.Services.AddScoped<IEventsService, EventsService>();
 
-            // Techs
+          
             builder.Services.AddScoped<ITechReadService, TechReadService>();
 
-            // CORS (dev)
+           
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -40,7 +40,7 @@ namespace DevNest
                 });
             });
 
-            // DB
+           
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
