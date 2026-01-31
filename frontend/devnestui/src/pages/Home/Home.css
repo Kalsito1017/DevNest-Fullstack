@@ -409,3 +409,32 @@
   object-fit: contain;
   flex-shrink: 0;
 }
+.dept-title-wrap {
+  min-width: 0;
+}
+
+.dept-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dept-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+}
+
+.dept-desc {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.25;
+  max-width: 34ch;
+}
+
+

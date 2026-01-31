@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import './Home.css';
 
 const API_BASE_URL = 'http://localhost:5099/api';
 
 const safeLower = (v) => (typeof v === 'string' ? v.toLowerCase() : '');
+
 const slugify = (s) =>
   String(s || '')
     .trim()
@@ -16,8 +16,6 @@ const slugify = (s) =>
     .replace(/-+/g, '-')
     .replace(/[^a-z0-9-]/g, '');
 
-const normalizeTechKey = (t) => safeLower(t).trim();
-
 /** Fix false matches like "c" inside "react" */
 const textHasTech = (text, token) => {
   if (!text || !token) return false;
@@ -25,6 +23,7 @@ const textHasTech = (text, token) => {
   const t = token.toLowerCase().trim();
   const escaped = t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+  // short tokens => word boundary match
   if (t.length <= 2) {
     const re = new RegExp(`\\b${escaped}\\b`, 'i');
     return re.test(text);
@@ -33,251 +32,286 @@ const textHasTech = (text, token) => {
   return text.includes(t);
 };
 
-// Categories (your “big groups”)
-const categoryDefinitions = [
+// ✅ Your DB categories (Name / Slug / Description / IconUrl)
+// NOTE: Description stays in data, but we DO NOT render it in the UI.
+const baseCategories = [
   {
-    id: 'backend-development',
+    name: 'Junior / Intern',
+    slug: 'junior-intern',
+    description: 'Entry-level roles and internships',
+    iconUrl:
+      'https://th.bing.com/th/id/OIP.S2UPqdHdN4Vgi93KjW7wdQAAAA?w=141&h=150&c=7&r=0&o=7&dpr=1.1&pid=1.7&rm=3',
+  },
+  {
     name: 'BackEnd Development',
-    techKeywords: ['java', '.net', 'dotnet', 'c#', 'php', 'embedded', 'python', 'ruby', 'go', 'node', 'node.js', 'c++', 'cpp'],
-    displayTechs: [
-      { name: 'Java', match: ['java'] },
-      { name: '.NET', match: ['.net', 'dotnet', 'dotnetcore', 'c#', 'csharp', 'asp.net'] },
-      { name: 'PHP', match: ['php'] },
-      { name: 'C/C++/Embedded', match: ['c++', 'cpp', 'embedded', 'firmware', 'microcontroller'] }, // avoid plain "c" here
-      { name: 'Python', match: ['python'] },
-      { name: 'Ruby', match: ['ruby'] },
-      { name: 'Go', match: ['go'] },
-      { name: 'Node.js', match: ['node', 'node.js'] },
-    ],
+    slug: 'backend-development',
+    description: 'Server-side development roles',
+    iconUrl:
+      'https://static.vecteezy.com/system/resources/previews/012/687/166/original/coding-icon-design-free-vector.jpg',
   },
   {
-    id: 'frontend-development',
     name: 'FrontEnd Development',
-    techKeywords: ['javascript', 'react', 'angular', 'vue', 'vue.js', 'typescript'],
-    displayTechs: [
-      { name: 'JavaScript', match: ['javascript'] },
-      { name: 'React', match: ['react'] },
-      { name: 'Angular', match: ['angular'] },
-      { name: 'Vue.js', match: ['vue', 'vue.js'] },
-      { name: 'TypeScript', match: ['typescript'] },
-    ],
+    slug: 'frontend-development',
+    description: 'UI and client-side development roles',
+    iconUrl:
+      'https://static.vecteezy.com/system/resources/previews/012/854/443/original/frontend-development-icon-style-vector.jpg',
   },
   {
-    id: 'fullstack-development',
     name: 'Fullstack Development',
-    techKeywords: ['javascript', 'typescript', 'react', 'node', 'node.js', '.net', 'dotnet', 'java', 'sql'],
-    displayTechs: [
-      { name: 'JavaScript', match: ['javascript'] },
-      { name: 'TypeScript', match: ['typescript'] },
-      { name: 'React', match: ['react'] },
-      { name: 'Node.js', match: ['node', 'node.js'] },
-      { name: '.NET', match: ['.net', 'dotnet', 'dotnetcore', 'c#', 'csharp', 'asp.net'] },
-      { name: 'Java', match: ['java'] },
-      { name: 'SQL', match: ['sql', 'mysql', 'postgres', 'sqlite', 'postgresql'] },
-    ],
+    slug: 'fullstack-development',
+    description: 'Frontend + Backend combined roles',
+    iconUrl:
+      'https://cdn.iconscout.com/icon/premium/png-256-thumb/fullstack-development-1182876.png',
   },
   {
-    id: 'infrastructure',
     name: 'Infrastructure',
-    techKeywords: ['devops', 'docker', 'kubernetes', 'aws', 'azure', 'gcp', 'database', 'cyber', 'security', 'sysadmin', 'terraform', 'linux'],
-    displayTechs: [
-      { name: 'DevOps', match: ['devops', 'docker', 'kubernetes', 'terraform'] },
-      { name: 'Database Engineer', match: ['database', 'sql', 'postgres', 'postgresql', 'mysql', 'oracle', 'mongodb'] },
-      { name: 'Cybersecurity', match: ['cyber', 'security'] },
-      { name: 'SysAdmin', match: ['sysadmin', 'linux', 'windows', 'ubuntu'] },
-    ],
+    slug: 'infrastructure',
+    description: 'DevOps, Cloud, SysAdmin, Networking',
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/8463/8463692.png',
   },
   {
-    id: 'quality-assurance',
     name: 'Quality Assurance',
-    techKeywords: ['qa', 'automation', 'manual', 'testing', 'test', 'selenium', 'cypress', 'playwright'],
-    displayTechs: [
-      { name: 'Automation QA', match: ['automation', 'selenium', 'cypress', 'playwright'] },
-      { name: 'Manual QA', match: ['manual', 'qa', 'testing', 'test case', 'test cases'] },
-    ],
+    slug: 'quality-assurance',
+    description: 'Manual and automation QA roles',
+    iconUrl:
+      'https://static.vecteezy.com/system/resources/previews/019/820/701/non_2x/security-scanner-icon-vector.jpg',
   },
   {
-    id: 'data-science',
-    name: 'Data Science',
-    techKeywords: ['etl', 'data warehouse', 'big data', 'bi', 'visualization', 'ml', 'ai', 'model', 'pandas', 'python', 'power bi', 'tableau'],
-    displayTechs: [
-      { name: 'ETL/Data warehouse', match: ['etl', 'data warehouse', 'warehouse', 'dwh', 'ssis', 'airflow'] },
-      { name: 'Big Data', match: ['big data', 'spark', 'hadoop'] },
-      { name: 'BI/Data visualization', match: ['bi', 'visualization', 'power bi', 'tableau', 'grafana'] },
-      { name: 'ML/AI/Data modelling', match: ['ml', 'machine learning', 'ai', 'model', 'pytorch', 'scikitlearn'] },
-    ],
-  },
-  {
-    id: 'pm-ba-and-more',
     name: 'PM/BA and more',
-    techKeywords: ['project', 'product', 'owner', 'business analyst', 'ba', 'writer'],
-    displayTechs: [
-      { name: 'IT Project Management', match: ['project management', 'project'] },
-      { name: 'IT Business Analyst', match: ['business analyst', ' ba '] },
-      { name: 'Product Management', match: ['product management'] },
-      { name: 'Product Owner', match: ['product owner'] },
-      { name: 'Tech Writer', match: ['writer', 'technical writer'] },
-    ],
+    slug: 'pm-ba-and-more',
+    description: 'Product, Project, Business Analysis roles',
+    iconUrl:
+      'https://tse1.mm.bing.net/th/id/OIP.CocKBsoElgKHRfLeDtoOEwHaHa?rs=1&pid=ImgDetMain&o=7&rm=3',
   },
   {
-    id: 'erp-crm-development',
-    name: 'ERP / CRM development',
-    techKeywords: ['sap', 'salesforce', 'crm', 'erp'],
-    displayTechs: [
-      { name: 'SAP', match: ['sap'] },
-      { name: 'SalesForce', match: ['salesforce', 'sales force'] },
-    ],
-  },
-  {
-    id: 'mobile-development',
     name: 'Mobile Development',
-    techKeywords: ['ios', 'android', 'swift', 'kotlin', 'react native', 'flutter'],
-    displayTechs: [
-      { name: 'iOS', match: ['ios', 'swift'] },
-      { name: 'Android', match: ['android', 'kotlin'] },
-      { name: 'React Native', match: ['react native'] },
-      { name: 'Flutter', match: ['flutter'] },
-    ],
+    slug: 'mobile-development',
+    description: 'iOS, Android, mobile frameworks',
+    iconUrl:
+      'https://static.vecteezy.com/system/resources/previews/026/330/673/non_2x/mobile-app-development-icon-vector.jpg',
+  },
+  {
+    name: 'Data Science',
+    slug: 'data-science',
+    description: 'Data analysis, BI, ML roles',
+    iconUrl:
+      'https://tse4.mm.bing.net/th/id/OIP.UnNFLCjVRjWgSwkSw1JNBQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3',
+  },
+  {
+    name: 'ERP / CRM Development',
+    slug: 'erp-crm-development',
+    description: 'ERP/CRM development and integrations',
+    iconUrl:
+      'https://static.vecteezy.com/system/resources/previews/007/679/520/large_2x/settings-gears-line-icon-vector.jpg',
+  },
+  {
+    name: 'Hardware and Engineering',
+    slug: 'hardware-and-engineering',
+    description: 'Embedded systems and hardware roles',
+    iconUrl:
+      'https://www.clipartmax.com/png/middle/238-2381085_computer-science-engineering-logos.png',
+  },
+  {
+    name: 'Customer Support',
+    slug: 'customer-support',
+    description: 'Customer success and support roles',
+    iconUrl:
+      'https://tse4.mm.bing.net/th/id/OIP.5oQXixQHLvfgzhJlTP4gvAHaE3?rs=1&pid=ImgDetMain&o=7&rm=3',
+  },
+  {
+    name: 'Technical Support',
+    slug: 'technical-support',
+    description: 'Technical and IT support roles',
+    iconUrl: 'https://cdn-icons-png.freepik.com/512/11748/11748582.png',
+  },
+  {
+    name: 'UI/UX, Arts',
+    slug: 'ui-ux-arts',
+    description: 'Design, UX, visual and creative roles',
+    iconUrl:
+      'https://cdn2.iconfinder.com/data/icons/business-icons-36/48/designer-4-512.png',
+  },
+  {
+    name: 'IT Management',
+    slug: 'it-management',
+    description: 'IT leadership and management roles',
+    iconUrl:
+      'https://png.pngtree.com/png-clipart/20230330/original/pngtree-management-services-line-icon-png-image_9009405.png',
   },
 ];
 
+// ✅ Static sub-tech lists (like DEV.BG).
+// Counts are optional (Backend/Frontend currently without counts as you requested).
+const CATEGORY_TECHS = {
+  'backend-development': [
+    { name: '.NET' },
+    { name: 'Java' },
+    { name: 'Python' },
+    { name: 'Ruby' },
+    { name: 'PHP' },
+    { name: 'C/C++/Embedded' },
+    { name: 'Go' },
+  ],
+  'frontend-development': [
+    { name: 'JS' },
+    { name: 'React' },
+    { name: 'Vue.js' },
+    { name: 'Angular' },
+  ],
+  infrastructure: [
+    { name: 'DevOps', count: 166 },
+    { name: 'Database Engineer', count: 41 },
+    { name: 'Cybersecurity', count: 88 },
+    { name: 'SysAdmin', count: 34 },
+  ],
+  'quality-assurance': [
+    { name: 'Automation QA', count: 99 },
+    { name: 'Manual QA', count: 22 },
+  ],
+  'pm-ba-and-more': [
+    { name: 'IT Project Management', count: 47 },
+    { name: 'IT Business Analyst', count: 34 },
+    { name: 'Product Management', count: 21 },
+    { name: 'Product Owner', count: 26 },
+    { name: 'Tech Writer', count: 2 },
+  ],
+  'mobile-development': [
+    { name: 'iOS', count: 8 },
+    { name: 'Android', count: 15 },
+  ],
+  'data-science': [
+    { name: 'ETL/Data warehouse', count: 43 },
+    { name: 'Big Data', count: 5 },
+    { name: 'BI/Data visualization', count: 56 },
+    { name: 'ML/AI/Data modelling', count: 101 },
+  ],
+  'erp-crm-development': [
+    { name: 'SAP', count: 37 },
+    { name: 'SalesForce', count: 18 },
+  ],
+};
+
 const Home = () => {
   const [jobs, setJobs] = useState([]);
-  const [techs, setTechs] = useState([]);         // ✅ techs now contain LogoUrl
+  const [techs, setTechs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showScrollPrompt, setShowScrollPrompt] = useState(false);
 
-  const navigate = useNavigate();
   const categoriesRef = useRef(null);
 
-  const techLogoByName = useMemo(() => {
-    const map = new Map();
+  // Build lookup: tech name/slug => logoUrl, + tokens for matching
+  const techIndex = useMemo(() => {
+    const byKey = new Map(); // lower => {name, slug, logoUrl}
+    const tokens = []; // [{ token, displayName }]
 
     (techs || []).forEach((t) => {
       const name = (t.name ?? t.Name ?? '').toString().trim();
       const slug = (t.slug ?? t.Slug ?? '').toString().trim();
-      const logoUrl = t.logoUrl ?? t.LogoUrl ?? null;
+      const logoUrl = (t.logoUrl ?? t.LogoUrl ?? '').toString().trim();
 
-      if (logoUrl) {
-        if (name) map.set(name.toLowerCase(), logoUrl);
-        if (slug) map.set(slug.toLowerCase(), logoUrl);
-      }
+      if (name) byKey.set(name.toLowerCase(), { name, slug, logoUrl });
+      if (slug) byKey.set(slug.toLowerCase(), { name: name || slug, slug, logoUrl });
+
+      const token = (slug || name).toString().trim().toLowerCase();
+      if (token) tokens.push({ token, displayName: name || slug });
     });
-    const sql = map.get('sql') || map.get('azuresqldatabase')
 
-    // ✅ .NET mapping (your allowed logos)
+    // Extra aliases users expect
     const dotnetLogo =
-      map.get('dotnetcore') ||
-      map.get('csharp') ||
-      map.get('entityframeworkcore') ||
-      null;
+      byKey.get('dotnetcore')?.logoUrl ||
+      byKey.get('dot-net')?.logoUrl ||
+      byKey.get('csharp')?.logoUrl ||
+      byKey.get('entityframeworkcore')?.logoUrl ||
+      '';
 
     if (dotnetLogo) {
-      // User-facing labels
-      map.set('.net', dotnetLogo);
-      map.set('dotnet', dotnetLogo);
-      map.set('dotnet core', dotnetLogo);
-      map.set('asp.net', dotnetLogo);
-      map.set('asp.net core', dotnetLogo);
+      [
+        '.net',
+        'dotnet',
+        'dotnet core',
+        'asp.net',
+        'asp.net core',
+        'c#',
+        'entity framework',
+        'ef core',
+        'efcore',
+      ].forEach((k) => byKey.set(k, { name: k, slug: slugify(k), logoUrl: dotnetLogo }));
 
-      // Common spellings
-      map.set('c#', dotnetLogo);
-      map.set('csharp', dotnetLogo);
-      map.set('entity framework', dotnetLogo);
-      map.set('entityframework', dotnetLogo);
-      map.set('ef', dotnetLogo);
-      map.set('ef core', dotnetLogo);
-      map.set('efcore', dotnetLogo);
+      [
+        '.net',
+        'dotnet',
+        'dotnetcore',
+        'dot-net',
+        'asp.net',
+        'aspnet',
+        'aspnetcore',
+        'c#',
+        'csharp',
+        'ef',
+        'efcore',
+      ].forEach((tok) => tokens.push({ token: tok, displayName: tok }));
     }
 
-    // ✅ C/C++/Embedded label: prefer c logo if present
-    const cLogo = map.get('c') ?? null;
-    if (cLogo) {
-      map.set('c/c++/embedded', cLogo);
-      map.set('c++', cLogo);
-      map.set('cpp', cLogo);
-      map.set('embedded', cLogo);
-    }
-
-    return map;
+    return { byKey, tokens };
   }, [techs]);
-
 
   const getTechLogoUrl = (techDisplayName) => {
     const key = (techDisplayName || '').toLowerCase().trim();
-    return techLogoByName.get(key) ?? null;
+    return techIndex.byKey.get(key)?.logoUrl || null;
   };
 
-  const buildCategoryCounts = (jobsData, definition) => {
-    const rows = jobsData.map((j) => {
-      const title = safeLower(j.title ?? j.Title);
-      const desc = safeLower(j.description ?? j.Description);
-      const reqs = safeLower(j.requirements ?? j.Requirements); // ✅ requirements included
-      const techStack = safeLower(j.techStack ?? j.TechStack);
+  const getJobCategorySlug = (job) => {
+    const raw =
+      job?.category?.slug ??
+      job?.category?.Slug ??
+      job?.categorySlug ??
+      job?.CategorySlug ??
+      job?.category?.name ??
+      job?.category?.Name ??
+      job?.categoryName ??
+      job?.CategoryName ??
+      '';
 
-      const techArr = Array.isArray(j.techs ?? j.Techs) ? (j.techs ?? j.Techs).map(safeLower) : [];
+    return raw ? slugify(raw) : '';
+  };
+
+  const getJobTextForMatching = (j) => {
+    const title = safeLower(j.title ?? j.Title);
+    const desc = safeLower(j.description ?? j.Description);
+    const reqs = safeLower(j.requirements ?? j.Requirements);
+    const techStack = safeLower(j.techStack ?? j.TechStack);
+    const techArr = Array.isArray(j.techs ?? j.Techs) ? (j.techs ?? j.Techs).map(safeLower) : [];
+    return `${reqs} ${title} ${desc} ${techStack} ${techArr.join(' ')}`.trim();
+  };
+
+  const computeCategories = (jobsData) => {
+    const countByCat = new Map();
+
+    for (const j of jobsData) {
+      const catSlug = getJobCategorySlug(j);
+      if (!catSlug) continue;
+      countByCat.set(catSlug, (countByCat.get(catSlug) || 0) + 1);
+    }
+
+    return baseCategories.map((c) => {
+      const count = countByCat.get(c.slug) || 0;
+
+      const techsForCat = (CATEGORY_TECHS[c.slug] || []).map((t) => ({
+        ...t,
+        slug: slugify(t.name),
+      }));
 
       return {
-        title,
-        desc,
-        reqs,
-        techStack,
-        techs: techArr,
+        id: c.slug,
+        name: c.name,
+        iconUrl: c.iconUrl,
+        count,
+        techs: techsForCat,
       };
     });
-
-    const countByDisplay = definition.displayTechs.reduce((acc, t) => {
-      acc[t.name] = 0;
-      return acc;
-    }, {});
-
-    const jobMatchesCategory = (row) => {
-      // ✅ count logic based primarily on requirements (your rule)
-      const text = `${row.reqs} ${row.title} ${row.desc} ${row.techStack} ${row.techs.join(' ')}`;
-      return definition.techKeywords.some((k) => textHasTech(text, normalizeTechKey(k)));
-    };
-
-    const matchingRows = rows.filter(jobMatchesCategory);
-
-    matchingRows.forEach((row) => {
-      const text = `${row.reqs} ${row.title} ${row.desc} ${row.techStack} ${row.techs.join(' ')}`;
-
-      definition.displayTechs.forEach((t) => {
-        if (t.match.some((m) => textHasTech(text, normalizeTechKey(m)))) {
-          countByDisplay[t.name] += 1;
-        }
-      });
-    });
-
-    const displayTechs = definition.displayTechs
-      .map((t) => ({
-        name: t.name,
-        slug: slugify(t.name),
-        count: countByDisplay[t.name] || 0,
-      }))
-      .filter((t) => t.count > 0)
-      .sort((a, b) => b.count - a.count);
-
-    return { categoryCount: matchingRows.length, displayTechs };
-  };
-
-  // ✅ No images anymore; categories are computed only from jobs
-  const generateCategories = (jobsData) => {
-    return categoryDefinitions
-      .map((category) => {
-        const { categoryCount, displayTechs } = buildCategoryCounts(jobsData, category);
-
-        return {
-          id: category.id,
-          name: category.name,
-          count: categoryCount,
-          techs: displayTechs,
-        };
-      })
-      .filter((c) => c.count > 0);
   };
 
   const fetchAllData = async () => {
@@ -290,6 +324,7 @@ const Home = () => {
       ]);
 
       if (!jobsRes.ok) throw new Error('Failed to fetch jobs');
+
       const jobsRaw = await jobsRes.json();
       const jobsData = Array.isArray(jobsRaw) ? jobsRaw : jobsRaw.items || [];
 
@@ -297,13 +332,12 @@ const Home = () => {
 
       setJobs(jobsData);
       setTechs(Array.isArray(techsData) ? techsData : []);
-
-      setCategories(generateCategories(jobsData));
+      setCategories(computeCategories(jobsData));
     } catch (err) {
       console.error('Error loading data:', err);
       setJobs([]);
       setTechs([]);
-      setCategories([]);
+      setCategories(baseCategories.map((c) => ({ ...c, id: c.slug, count: 0, techs: [] })));
     } finally {
       setIsLoading(false);
     }
@@ -311,12 +345,29 @@ const Home = () => {
 
   useEffect(() => {
     fetchAllData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // show the scroll FAB shortly after load
   useEffect(() => {
-    const timer = setTimeout(() => setShowScrollPrompt(true), 1200);
+    const timer = setTimeout(() => setShowScrollPrompt(true), 900);
     return () => clearTimeout(timer);
   }, []);
+
+  // hide FAB when categories are in view
+  useEffect(() => {
+    if (!showScrollPrompt) return;
+
+    const onScroll = () => {
+      const rect = categoriesRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      if (rect.top <= window.innerHeight * 0.65) setShowScrollPrompt(false);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [showScrollPrompt]);
 
   const scrollToCategories = () => {
     categoriesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -340,7 +391,7 @@ const Home = () => {
       const jobsData = Array.isArray(result) ? result : result.items || [];
 
       setJobs(jobsData);
-      setCategories(generateCategories(jobsData));
+      setCategories(computeCategories(jobsData));
       scrollToCategories();
     } catch (error) {
       console.error('Error searching:', error);
@@ -357,14 +408,6 @@ const Home = () => {
     });
     return set.size;
   }, [jobs]);
-
-  const handleTechClick = (techNameOrSlug) => {
-    navigate(`/jobs?tech=${encodeURIComponent(techNameOrSlug)}`);
-  };
-
-  const handleCategoryClick = (categoryId) => {
-    navigate(`/jobs?category=${encodeURIComponent(categoryId)}`);
-  };
 
   if (isLoading) {
     return (
@@ -439,48 +482,47 @@ const Home = () => {
             <div key={cat.id} className="dept-card">
               <div className="dept-head">
                 <div className="dept-title-wrap">
-                  <h3 className="dept-title">{cat.name}</h3>
+                  <div className="dept-title-row">
+                    {cat.iconUrl && (
+                      <img className="dept-icon" src={cat.iconUrl} alt={cat.name} loading="lazy" />
+                    )}
+                    <h3 className="dept-title">{cat.name}</h3>
+                  </div>
                 </div>
+
                 <span className="dept-count">{cat.count}</span>
               </div>
 
+              {/* ✅ NO description rendered here */}
+
               {cat.techs?.length > 0 && (
                 <div className="dept-techs">
-                  {cat.techs.slice(0, 6).map((t) => {
+                  {cat.techs.map((t) => {
                     const logo = getTechLogoUrl(t.name);
-
                     return (
                       <button
                         key={t.slug}
                         type="button"
                         className="dept-tech-pill"
-                        onClick={() => handleTechClick(t.name)}
                         title={`Виж ${t.name} обяви`}
                       >
                         <span className="dept-tech-left">
                           {logo && (
-                            <img
-                              src={logo}
-                              alt={t.name}
-                              className="dept-tech-icon"
-                              loading="lazy"
-                            />
+                            <img src={logo} alt={t.name} className="dept-tech-icon" loading="lazy" />
                           )}
                           <span className="dept-tech-name">{t.name}</span>
                         </span>
 
-                        <span className="dept-tech-count">{t.count}</span>
+                        {typeof t.count === 'number' && (
+                          <span className="dept-tech-count">{t.count}</span>
+                        )}
                       </button>
                     );
                   })}
                 </div>
               )}
 
-              <button
-                type="button"
-                className="dept-seeall"
-                onClick={() => handleCategoryClick(cat.id)}
-              >
+              <button type="button" className="dept-seeall">
                 Виж всички →
               </button>
             </div>
