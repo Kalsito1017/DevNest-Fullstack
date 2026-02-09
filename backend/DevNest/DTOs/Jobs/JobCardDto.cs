@@ -22,6 +22,7 @@
         public string? CategoryName { get; set; }
         public string? CategorySlug { get; set; }
 
-        public List<string> Techs { get; set; } = new();
+        public List<TechIconDto> Techs { get; set; } = new();
+
     }
 }

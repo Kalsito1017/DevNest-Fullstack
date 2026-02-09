@@ -1,6 +1,6 @@
 // src/components/auth/RegisterForm.jsx
 import { useState, useEffect } from 'react';
-import authService from '../services/authService';
+import authService from '../services/api/authService';
 
 const RegisterForm = ({ onClose, onSwitchToLogin }) => {
     const [formData, setFormData] = useState({
@@ -108,12 +108,13 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
 
         try {
             // Call the auth service
-            const response = await authService.register(
-                formData.firstName,
-                formData.lastName,
-                formData.email,
-                formData.password
-            );
+          const response = await authService.register({
+  firstName: formData.firstName,
+  lastName: formData.lastName,
+  email: formData.email,
+  password: formData.password,
+});
+
 
             console.log('Registration successful:', response);
 

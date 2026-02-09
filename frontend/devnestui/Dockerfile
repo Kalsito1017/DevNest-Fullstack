@@ -1,19 +1,10 @@
-# Use .NET 10 SDK to build
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM node:20-alpine
 WORKDIR /app
 
-# Copy csproj and restore
-COPY *.csproj ./
-RUN dotnet restore
+COPY package*.json ./
+RUN npm ci
 
-# Copy rest of code and build
-COPY . ./
-RUN dotnet publish -c Release -o out
+COPY . .
 
-# Runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:10.0
-WORKDIR /app
-COPY --from=build /app/out .
-EXPOSE 80
-EXPOSE 443
-ENTRYPOINT ["dotnet", "DevNest.dll"]
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]

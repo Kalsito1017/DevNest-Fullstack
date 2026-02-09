@@ -15,5 +15,11 @@ namespace DevNest.Data
         public DbSet<JobTech> JobTechs { get; set; } = null!;
         public DbSet<Tech> Techs { get; set; } = null!;
         public DbSet<Event> Events { get; set; } = null!;
+        public DbSet<UserFile> UserFiles => Set<UserFile>();
+
+        public DbSet<SavedJob> SavedJobs => Set<SavedJob>();
+
+
+
     }
 }

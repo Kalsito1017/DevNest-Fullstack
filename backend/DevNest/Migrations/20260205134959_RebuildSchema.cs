@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DevNest.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class RebuildSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -292,8 +292,8 @@ namespace DevNest.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     JobId = table.Column<int>(type: "int", nullable: false),
-                    Tech = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TechId = table.Column<int>(type: "int", nullable: true)
+                    TechId = table.Column<int>(type: "int", nullable: false),
+                    Tech = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -308,7 +308,8 @@ namespace DevNest.Migrations
                         name: "FK_JobTechs_Techs_TechId",
                         column: x => x.TechId,
                         principalTable: "Techs",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

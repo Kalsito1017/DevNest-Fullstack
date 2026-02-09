@@ -1,330 +1,368 @@
-import { useState, useEffect } from 'react';
-import authService from '../services/authService';
-import './Profile.css'; // We'll create this CSS file
+import { useEffect, useMemo, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import authService from "../services/api/authService";
+import "./Profile.css";
+import MyFiles from "./MyFiles";
+import SavedJobs from "./SavedJobs";
 
 const Profile = () => {
-    const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
+  const { user, isAuthLoading, logout } = useAuth();
+
+  const [activeSection, setActiveSection] = useState("profile");
+
+  const [personal, setPersonal] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
+
+  const [pwd, setPwd] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const [savingPersonal, setSavingPersonal] = useState(false);
+  const [savingPwd, setSavingPwd] = useState(false);
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    if (!user) return;
+    setPersonal({
+      firstName: user?.firstName ?? "",
+      lastName: user?.lastName ?? "",
+      email: user?.email ?? "",
     });
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+  }, [user]);
 
-    useEffect(() => {
-        fetchUserProfile();
-    }, []);
+  useEffect(() => {
+    setError("");
+    setSuccess("");
+  }, [activeSection]);
 
-    const fetchUserProfile = async () => {
-        try {
-            setIsLoading(true);
-            const userData = await authService.getCurrentUser();
-            setUser(userData);
-            setFormData({
-                firstName: userData.firstName || '',
-                lastName: userData.lastName || '',
-                email: userData.email || '',
-                currentPassword: '',
-                newPassword: '',
-                confirmPassword: ''
-            });
-        } catch (err) {
-            console.error('Failed to fetch user profile:', err);
-            setError('Failed to load profile. Please try again.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const initials = useMemo(() => {
+    const letter = (user?.firstName?.trim()?.[0] || user?.email?.trim()?.[0] || "U").toUpperCase();
+    return letter;
+  }, [user]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+  const fullName = useMemo(() => {
+    const name = `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim();
+    return name || user?.email || "Потребител";
+  }, [user]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setSuccess('');
-
-        try {
-            // Update profile
-            const updatedData = {
-                firstName: formData.firstName.trim(),
-                lastName: formData.lastName.trim(),
-                email: formData.email.trim().toLowerCase()
-            };
-
-            // Only include password if provided
-            if (formData.newPassword) {
-                if (formData.newPassword.length < 6) {
-                    throw new Error('New password must be at least 6 characters');
-                }
-                if (formData.newPassword !== formData.confirmPassword) {
-                    throw new Error('New passwords do not match');
-                }
-                updatedData.currentPassword = formData.currentPassword;
-                updatedData.newPassword = formData.newPassword;
-            }
-
-            await authService.updateProfile(updatedData);
-
-            setSuccess('Profile updated successfully!');
-            setIsEditing(false);
-
-            // Refresh user data
-            await fetchUserProfile();
-
-            // Clear password fields
-            setFormData(prev => ({
-                ...prev,
-                currentPassword: '',
-                newPassword: '',
-                confirmPassword: ''
-            }));
-
-        } catch (err) {
-            setError(err.response?.data?.message || err.message || 'Failed to update profile');
-        }
-    };
-
-    const handleLogout = async () => {
-        try {
-            await authService.logout();
-            window.location.href = '/';
-        } catch (err) {
-            console.error('Logout failed:', err);
-        }
-    };
-
-    if (isLoading) {
-        return (
-            <div className="profile-loading">
-                <div className="spinner"></div>
-                <p>Loading profile...</p>
-            </div>
-        );
-    }
-
-    if (!user) {
-        return (
-            <div className="profile-container">
-                <div className="profile-error">
-                    <h2>Profile Not Found</h2>
-                    <p>Please log in to view your profile.</p>
-                    <button
-                        onClick={() => window.location.href = '/login'}
-                        className="btn-primary"
-                    >
-                        Go to Login
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
+  if (isAuthLoading) {
     return (
-        <div className="profile-container">
-            <div className="profile-header">
-                <h1>My Profile</h1>
-                <div className="profile-actions">
-                    <button
-                        onClick={() => setIsEditing(!isEditing)}
-                        className="btn-secondary"
-                    >
-                        {isEditing ? 'Cancel Editing' : 'Edit Profile'}
-                    </button>
-                    <button
-                        onClick={handleLogout}
-                        className="btn-logout"
-                    >
-                        Logout
-                    </button>
-                </div>
-            </div>
-
-            {error && (
-                <div className="profile-error-message">
-                    <span className="error-icon">⚠️</span>
-                    {error}
-                </div>
-            )}
-
-            {success && (
-                <div className="profile-success-message">
-                    <span className="success-icon">✅</span>
-                    {success}
-                </div>
-            )}
-
-            <div className="profile-content">
-                {isEditing ? (
-                    <form onSubmit={handleSubmit} className="profile-form">
-                        <div className="form-section">
-                            <h3>Personal Information</h3>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label htmlFor="firstName">First Name *</label>
-                                    <input
-                                        type="text"
-                                        id="firstName"
-                                        name="firstName"
-                                        value={formData.firstName}
-                                        onChange={handleInputChange}
-                                        required
-                                        minLength="2"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="lastName">Last Name *</label>
-                                    <input
-                                        type="text"
-                                        id="lastName"
-                                        name="lastName"
-                                        value={formData.lastName}
-                                        onChange={handleInputChange}
-                                        required
-                                        minLength="2"
-                                    />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="email">Email *</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="form-section">
-                            <h3>Change Password</h3>
-                            <p className="form-hint">Leave blank to keep current password</p>
-                            <div className="form-group">
-                                <label htmlFor="currentPassword">Current Password</label>
-                                <input
-                                    type="password"
-                                    id="currentPassword"
-                                    name="currentPassword"
-                                    value={formData.currentPassword}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter current password"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="newPassword">New Password</label>
-                                <input
-                                    type="password"
-                                    id="newPassword"
-                                    name="newPassword"
-                                    value={formData.newPassword}
-                                    onChange={handleInputChange}
-                                    placeholder="At least 6 characters"
-                                    minLength="6"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="confirmPassword">Confirm New Password</label>
-                                <input
-                                    type="password"
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    value={formData.confirmPassword}
-                                    onChange={handleInputChange}
-                                    placeholder="Repeat new password"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="form-actions">
-                            <button type="submit" className="btn-primary">
-                                Save Changes
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setIsEditing(false)}
-                                className="btn-secondary"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                ) : (
-                    <div className="profile-view">
-                        <div className="profile-info-section">
-                            <h3>Personal Information</h3>
-                            <div className="info-grid">
-                                <div className="info-item">
-                                    <span className="info-label">First Name:</span>
-                                    <span className="info-value">{user.firstName}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Last Name:</span>
-                                    <span className="info-value">{user.lastName}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Email:</span>
-                                    <span className="info-value">{user.email}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Account Created:</span>
-                                    <span className="info-value">
-                                        {new Date(user.createdAt).toLocaleDateString()}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="profile-stats">
-                            <h3>Account Statistics</h3>
-                            <div className="stats-grid">
-                                <div className="stat-item">
-                                    <span className="stat-label">Member Since</span>
-                                    <span className="stat-value">
-                                        {new Date(user.createdAt).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'long'
-                                        })}
-                                    </span>
-                                </div>
-                                {/* Add more stats here as needed */}
-                            </div>
-                        </div>
-
-                        <div className="profile-actions-section">
-                            <h3>Account Actions</h3>
-                            <div className="action-buttons">
-                                <button
-                                    onClick={() => setIsEditing(true)}
-                                    className="btn-primary"
-                                >
-                                    Edit Profile
-                                </button>
-                                <button
-                                    onClick={handleLogout}
-                                    className="btn-logout"
-                                >
-                                    Logout
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
+      <div className="profile-page">
+        <div className="profile-shell">
+          <div className="profile-loading">Зареждане…</div>
         </div>
+      </div>
     );
+  }
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
+  const handleSavePersonalData = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    const firstName = personal.firstName.trim();
+    const lastName = personal.lastName.trim();
+    const email = personal.email.trim().toLowerCase();
+
+    if (firstName.length < 2) return setError("Името трябва да е поне 2 символа.");
+    if (lastName.length < 2) return setError("Фамилията трябва да е поне 2 символа.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Невалиден имейл адрес.");
+
+    setSavingPersonal(true);
+    try {
+      setSuccess("Запазено. (чакаме endpoint за профила)");
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+          (Array.isArray(err?.response?.data?.errors) ? err.response.data.errors.join(", ") : null) ||
+          "Грешка при запазване."
+      );
+    } finally {
+      setSavingPersonal(false);
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    const currentPassword = pwd.currentPassword;
+    const newPassword = pwd.newPassword;
+
+    if (!currentPassword) return setError("Въведи текущата си парола.");
+    if (newPassword.length < 6) return setError("Паролата трябва да е поне 6 символа.");
+    if (newPassword !== pwd.confirmPassword) return setError("Паролите не съвпадат.");
+
+    setSavingPwd(true);
+    try {
+      await authService.changePassword({ currentPassword, newPassword });
+      setPwd({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setSuccess("Паролата е сменена.");
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        (Array.isArray(err?.response?.data?.errors) ? err.response.data.errors.join(", ") : null) ||
+        "Грешка при смяна на парола.";
+      setError(msg);
+    } finally {
+      setSavingPwd(false);
+    }
+  };
+
+  const pageTitle =
+    activeSection === "files"
+      ? "Моите файлове"
+      : activeSection === "saved"
+      ? "Запазени обяви"
+      : activeSection === "applications"
+      ? "Моите кандидатури"
+      : activeSection === "subscriptions"
+      ? "Моите абонаменти"
+      : activeSection === "events"
+      ? "Моите събития"
+      : "Моят профил";
+
+  const pageSubtitle =
+    activeSection === "files"
+      ? "Качи CV/портфолио/мотивационно писмо, което да използваш при кандидатстване."
+      : activeSection === "saved"
+      ? "Всички обяви, които си запазил с 📌."
+      : activeSection === "profile"
+      ? "Редактирай информацията за твоя профил"
+      : "Секцията е готова като структура. Трябва да добавим endpoint-и и таблици в DB, за да зарежда реални данни.";
+
+  return (
+    <div className="profile-page">
+      <div className="profile-shell">
+        <aside className="profile-sidebar">
+          <div className="profile-avatar-block">
+            <div className="profile-avatar" aria-hidden="true">
+              {initials}
+            </div>
+            <div className="profile-avatar-meta">
+              <div className="profile-name">{fullName}</div>
+              <div className="profile-email">{user.email}</div>
+            </div>
+          </div>
+
+          <div className="profile-menu">
+            <div className="profile-menu-group-title">DEV.BG EVENTS</div>
+            <button
+              className={`profile-menu-item ${activeSection === "events" ? "is-active" : ""}`}
+              onClick={() => setActiveSection("events")}
+              type="button"
+            >
+              Моите събития
+            </button>
+
+            <div className="profile-menu-group-title">DEV.BG JOBS</div>
+            <button
+              className={`profile-menu-item ${activeSection === "applications" ? "is-active" : ""}`}
+              onClick={() => setActiveSection("applications")}
+              type="button"
+            >
+              Моите кандидатури
+            </button>
+
+            <button
+              className={`profile-menu-item ${activeSection === "saved" ? "is-active" : ""}`}
+              onClick={() => setActiveSection("saved")}
+              type="button"
+            >
+              Запазени обяви
+            </button>
+
+            <button
+              className={`profile-menu-item ${activeSection === "subscriptions" ? "is-active" : ""}`}
+              onClick={() => setActiveSection("subscriptions")}
+              type="button"
+            >
+              Моите абонаменти
+            </button>
+
+            <button
+              className={`profile-menu-item ${activeSection === "files" ? "is-active" : ""}`}
+              onClick={() => setActiveSection("files")}
+              type="button"
+            >
+              Моите файлове
+            </button>
+
+            <div className="profile-menu-divider" />
+
+            <button
+              className={`profile-menu-item ${activeSection === "profile" ? "is-active" : ""}`}
+              onClick={() => setActiveSection("profile")}
+              type="button"
+            >
+              Моят профил
+            </button>
+
+            <button className="profile-menu-item danger" onClick={handleLogout} type="button">
+              Изход
+            </button>
+          </div>
+        </aside>
+
+        <main className="profile-main">
+          <header className="profile-header">
+            <h1>{pageTitle}</h1>
+            <p>{pageSubtitle}</p>
+          </header>
+
+          {(error || success) && (
+            <div className={`profile-flash ${error ? "is-error" : "is-success"}`}>
+              {error || success}
+            </div>
+          )}
+
+          {activeSection === "profile" && (
+            <div className="profile-grid">
+              <section className="profile-card">
+                <div className="profile-card-title">
+                  <h2>Лични данни</h2>
+                  <div className="profile-underline" />
+                </div>
+
+                <p className="profile-card-hint">
+                  Данните, които въведете ще са данните които ще бъдат изпратени към работодателя, когато кандидатствате.
+                </p>
+
+                <form onSubmit={handleSavePersonalData} className="profile-form">
+                  <label className="profile-label">
+                    Име
+                    <input
+                      className="profile-input"
+                      value={personal.firstName}
+                      onChange={(e) => setPersonal((p) => ({ ...p, firstName: e.target.value }))}
+                      disabled={savingPersonal}
+                    />
+                  </label>
+
+                  <label className="profile-label">
+                    Фамилия
+                    <input
+                      className="profile-input"
+                      value={personal.lastName}
+                      onChange={(e) => setPersonal((p) => ({ ...p, lastName: e.target.value }))}
+                      disabled={savingPersonal}
+                    />
+                  </label>
+
+                  <label className="profile-label">
+                    E-mail
+                    <input
+                      className="profile-input"
+                      value={personal.email}
+                      onChange={(e) => setPersonal((p) => ({ ...p, email: e.target.value }))}
+                      disabled={savingPersonal}
+                    />
+                  </label>
+
+                  <button className="profile-btn" type="submit" disabled={savingPersonal}>
+                    {savingPersonal ? "Запазване…" : "Запази промените в личните данни"}
+                  </button>
+                </form>
+              </section>
+
+              <section className="profile-card">
+                <div className="profile-card-title">
+                  <h2>Смени парола</h2>
+                  <div className="profile-underline" />
+                </div>
+
+                <form onSubmit={handleChangePassword} className="profile-form">
+                  <label className="profile-label">
+                    Текуща парола
+                    <input
+                      type="password"
+                      className="profile-input"
+                      value={pwd.currentPassword}
+                      onChange={(e) => setPwd((p) => ({ ...p, currentPassword: e.target.value }))}
+                      disabled={savingPwd}
+                      autoComplete="current-password"
+                    />
+                  </label>
+
+                  <label className="profile-label">
+                    Въведи нова парола
+                    <input
+                      type="password"
+                      className="profile-input"
+                      value={pwd.newPassword}
+                      onChange={(e) => setPwd((p) => ({ ...p, newPassword: e.target.value }))}
+                      disabled={savingPwd}
+                      autoComplete="new-password"
+                    />
+                  </label>
+
+                  <label className="profile-label">
+                    Потвърди новата парола
+                    <input
+                      type="password"
+                      className="profile-input"
+                      value={pwd.confirmPassword}
+                      onChange={(e) => setPwd((p) => ({ ...p, confirmPassword: e.target.value }))}
+                      disabled={savingPwd}
+                      autoComplete="new-password"
+                    />
+                  </label>
+
+                  <button className="profile-btn" type="submit" disabled={savingPwd}>
+                    {savingPwd ? "Запазване…" : "Промени паролата"}
+                  </button>
+                </form>
+              </section>
+            </div>
+          )}
+
+          {activeSection === "files" && (
+            <div style={{ paddingTop: 4 }}>
+              <MyFiles />
+            </div>
+          )}
+
+          {activeSection === "saved" && (
+            <div style={{ paddingTop: 4 }}>
+              <SavedJobs />
+            </div>
+          )}
+
+          {activeSection !== "profile" && activeSection !== "files" && activeSection !== "saved" && (
+            <section className="profile-card">
+              <div className="profile-card-title">
+                <h2>{pageTitle}</h2>
+                <div className="profile-underline" />
+              </div>
+
+              <p className="profile-card-hint">
+                Секцията е готова като структура. Трябва да добавим endpoint-и и таблици в DB, за да зарежда реални данни.
+              </p>
+
+              <div className="profile-empty">Няма данни за показване.</div>
+            </section>
+          )}
+        </main>
+      </div>
+    </div>
+  );
 };
 
 export default Profile;

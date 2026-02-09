@@ -1,134 +1,206 @@
-import { Link } from 'react-router-dom';
-import { useState, useRef } from 'react';
-import './Header.css';
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useMemo, useRef, useState } from "react";
+import "./Header.css";
+import AuthModal from "../../auth/AuthModal";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [showAuthModal, setShowAuthModal] = useState(false);
-    const [authMode, setAuthMode] = useState('login');
+  const navigate = useNavigate();
+  const loc = useLocation();
+  const { user, isAuthLoading } = useAuth();
 
-    const dropdownRef = useRef(null);
-    const timeoutRef = useRef(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState("login");
 
-    const locations = ['София', 'Варна', 'Русе', 'Бургас', 'Пловдив'];
+  const dropdownRef = useRef(null);
+  const timeoutRef = useRef(null);
 
-    const handleMouseEnter = () => {
-        clearTimeout(timeoutRef.current);
-        setDropdownOpen(true);
-    };
+  // keep your exact labels
+  const locations = ["София", "Варна", "Русе", "Бургас", "Пловдив"];
 
-    const handleMouseLeave = () => {
-        timeoutRef.current = setTimeout(() => {
-            setDropdownOpen(false);
-        }, 200);
-    };
+  const handleMouseEnter = () => {
+    clearTimeout(timeoutRef.current);
+    setDropdownOpen(true);
+  };
 
-    const handleLocationClick = (location) => {
-        setDropdownOpen(false);
-        console.log(`Selected location: ${location}`);
-    };
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => setDropdownOpen(false), 200);
+  };
 
-    const openLogin = () => {
-        setAuthMode('login');
-        setShowAuthModal(true);
-    };
+  // ✅ robust slug normalize
+  const normalizeSlug = (raw) => {
+    const s = decodeURIComponent(String(raw || "")).trim().toLowerCase();
+    if (!s) return "";
+    if (s.startsWith("location") && s.length > "location".length) {
+      return s.replace(/^location/i, "").trim().toLowerCase();
+    }
+    return s;
+  };
 
-    const openRegister = () => {
-        setAuthMode('register');
-        setShowAuthModal(true);
-    };
+  // ✅ map BG label -> slug used by LocationHome route
+  const toSlug = (label) => {
+    const v = String(label || "").trim().toLowerCase();
+    if (v === "софия") return "sofia";
+    if (v === "варна") return "varna";
+    if (v === "пловдив") return "plovdiv";
+    if (v === "бургас") return "burgas";
+    if (v === "русе") return "ruse";
+    if (v === "remote") return "remote";
+    return normalizeSlug(v);
+  };
 
-    const closeModal = () => setShowAuthModal(false);
+  // ✅ derive current selected city slug from URL (no state/localStorage fights)
+  const selectedCitySlug = useMemo(() => {
+    const parts = (loc.pathname || "").split("/").filter(Boolean);
 
-    return (
-        <>
-            <header className="header">
-                <div className="header-container">
-                    <Link to="/" className="logo">DevNest</Link>
+    // /jobs/location/:city
+    if (parts[0] === "jobs" && parts[1] === "location" && parts[2]) {
+      return normalizeSlug(parts[2]);
+    }
 
-                    <nav className="nav">
-                        <ul className="nav-list">
-                            <li
-                                className="nav-item dropdown-container"
-                                ref={dropdownRef}
-                                onMouseEnter={handleMouseEnter}
-                                onMouseLeave={handleMouseLeave}
-                            >
-                                <div className="nav-link dropdown-trigger">
-                                   <li className="nav-item">
-                                    <Link to="/" className='nav-link'>Обяви</Link>
-                                    
-                                </li>
-                                </div>
+    // fallback: /jobs?location=sofia OR /jobs?remote=true
+    const sp = new URLSearchParams(loc.search || "");
+    const remote = (sp.get("remote") || "").toLowerCase();
+    if (remote === "true" || remote === "1") return "remote";
 
+    const qLoc = sp.get("location");
+    if (qLoc) {
+      const rawCity = decodeURIComponent(qLoc).split(",")[0].trim().toLowerCase();
+      // accept Sofia / sofia etc.
+      return toSlug(rawCity);
+    }
 
-                                {dropdownOpen && (
-                                    <div className="dropdown-menu">
-                                        {locations.map(location => (
-                                            <button
-                                                key={location}
-                                                className="dropdown-option"
-                                                onClick={() => handleLocationClick(location)}
-                                            >
-                                                IT обяви {location}
-                                            </button>
-                                        ))}
+    return "";
+  }, [loc.pathname, loc.search]);
 
-                                        <button
-                                            className="dropdown-option"
-                                            onClick={() => handleLocationClick('Remote')}
-                                        >
-                                            Fully Remote IT обяви
-                                        </button>
-                                    </div>
-                                )}
-                            </li>
+  const handleLocationClick = (locationLabelOrRemote) => {
+    setDropdownOpen(false);
 
-                             <li className="nav-item">
-                                <Link to="/company" className="nav-link">
-                                    Компании
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/blogs" className="nav-link">
-                                    Блог
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/aiworkshops" className="nav-link">
-                                    AI Workshops
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/aboutus" className="nav-link">
-                                    За DevNest
-                                </Link>
-                            </li>
-                        </ul>
-                    </nav>
+    const slug = toSlug(locationLabelOrRemote);
 
-                    <div className="auth-section">
-                        <button className="btn-login" onClick={openLogin}>
-                            Вход
+    // ✅ always go to the location home route (matches your LocationHome.jsx)
+    navigate(`/jobs/location/${encodeURIComponent(slug)}`);
+  };
+
+  const openLogin = () => {
+    setAuthMode("login");
+    setShowAuthModal(true);
+  };
+
+  const openRegister = () => {
+    setAuthMode("register");
+    setShowAuthModal(true);
+  };
+
+  const closeModal = () => setShowAuthModal(false);
+
+  const displayName = user
+    ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || user.email
+    : "";
+
+  const avatarLetter = (user?.firstName?.trim()?.[0] ||
+    user?.email?.trim()?.[0] ||
+    "U").toUpperCase();
+
+  return (
+    <>
+      <header className="header">
+        <div className="header-container">
+          <Link to="/" className="logo">
+            DevNest
+          </Link>
+
+          <nav className="nav">
+            <ul className="nav-list">
+              <li
+                className="nav-item dropdown-container"
+                ref={dropdownRef}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                <Link to="/" className="nav-link dropdown-trigger">
+                  Обяви
+                </Link>
+
+                {dropdownOpen && (
+                  <ul className="dropdown-menu" role="menu" aria-label="Locations">
+                    {locations.map((location) => (
+                      <li key={location} className="dropdown-item">
+                        <button
+                          type="button"
+                          className="dropdown-option"
+                          onClick={() => handleLocationClick(location)}
+                        >
+                          IT обяви {location}
                         </button>
-                        <button className="btn-register" onClick={openRegister}>
-                            Регистрация
-                        </button>
-                    </div>
-                </div>
-            </header>
+                      </li>
+                    ))}
 
-            {showAuthModal && (
-                <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h2>{authMode === 'login' ? 'Вход' : 'Регистрация'}</h2>
-                        <p>Функционалността ще бъде добавена скоро</p>
-                        <button onClick={closeModal}>Затвори</button>
-                    </div>
-                </div>
+                    <li className="dropdown-item dropdown-item-remote">
+                      <button
+                        type="button"
+                        className="dropdown-option"
+                        onClick={() => handleLocationClick("Remote")}
+                      >
+                        Fully Remote IT обяви
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </li>
+
+              <li className="nav-item">
+                <Link to="/company" className="nav-link">
+                  Компании
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/blogs" className="nav-link">
+                  Блог
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/aiworkshops" className="nav-link">
+                  AI Workshops
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/aboutus" className="nav-link">
+                  За DevNest
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <div className="auth-section">
+            {isAuthLoading ? null : user ? (
+              <button
+                type="button"
+                className="header-avatar"
+                onClick={() => navigate("/profile")}
+                aria-label="My profile"
+                title={displayName}
+              >
+                {avatarLetter}
+              </button>
+            ) : (
+              <>
+                <button className="btn-login" onClick={openLogin}>
+                  Вход
+                </button>
+                <button className="btn-register" onClick={openRegister}>
+                  Регистрация
+                </button>
+              </>
             )}
-        </>
-    );
+          </div>
+        </div>
+      </header>
+
+      <AuthModal isOpen={showAuthModal} onClose={closeModal} initialMode={authMode} />
+    </>
+  );
 };
 
 export default Header;

@@ -11,11 +11,13 @@ public class JobsController : ControllerBase
 {
     private readonly IJobSearchService searchService;
     private readonly IJobReadService readService;
+    private readonly IJobStatsService statsService;
 
-    public JobsController(IJobSearchService searchService, IJobReadService readService)
+    public JobsController(IJobSearchService searchService, IJobReadService readService, IJobStatsService statsService)
     {
         this.searchService = searchService;
         this.readService = readService;
+        this.statsService = statsService;
     }
 
     [HttpGet("search")]
@@ -40,5 +42,22 @@ public class JobsController : ControllerBase
     {
         return Ok(await stats.GetTechStatsAsync(ct));
     }
+    [HttpGet("all")]
+    public async Task<ActionResult<IReadOnlyList<JobCardDto>>> GetAll(CancellationToken ct)
+    => Ok(await readService.GetAllAsync(ct));
+
+    [HttpGet("facets")]
+    public async Task<ActionResult<JobFacetsDto>> Facets([FromQuery] JobSearchQuery query, CancellationToken ct)
+    => Ok(await searchService.GetFacetsAsync(query, ct));
+    [HttpGet("count")]
+    public async Task<IActionResult> GetCount(
+    [FromQuery] string? location = null,
+    [FromQuery] bool remote = false,
+    CancellationToken ct = default)
+    {
+        var dto = await statsService.GetCountAsync(location, remote, ct);
+        return Ok(dto);
+    }
+
 
 }

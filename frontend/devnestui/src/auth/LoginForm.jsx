@@ -1,39 +1,38 @@
-// src/components/auth/LoginForm.jsx
-import { useState } from 'react';
-import authService from '../services/authService';
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext"; // коригирай path според проекта
 
 const LoginForm = ({ onClose, onSwitchToRegister, onSwitchToForgotPassword }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+  const { login } = useAuth();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false); // засега UI-only
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-        setIsLoading(true);
-        setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-        try {
-            await authService.login(email, password, rememberMe);
+    setIsLoading(true);
+    setError("");
 
-            // Success - close modal and reload page to update auth state
-            onClose();
-            setTimeout(() => {
-                window.location.reload();
-            }, 100);
+    try {
+   await login({ email, password });
 
-        } catch (err) {
-            console.error('Login error:', err);
-            setError(err.response?.data?.message || 'Грешка при влизане. Моля, опитайте отново.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
+      onClose();
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        (Array.isArray(err?.response?.data?.errors) ? err.response.data.errors.join(", ") : null) ||
+        "Грешка при влизане. Моля, опитайте отново.";
+      setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
     return (
         <form onSubmit={handleSubmit} className="auth-form" noValidate>
             <div className="form-group">

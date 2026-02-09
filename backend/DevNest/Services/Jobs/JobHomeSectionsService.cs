@@ -29,7 +29,7 @@ public class JobHomeSectionsService : IJobHomeSectionsService
             .AsNoTracking()
             .Where(j => j.Status == "Active")
             .Include(j => j.Company)
-            .Include(j => j.JobTechs);
+            .Include(j => j.JobTechs); // ✅ only need TechId from JobTechs
 
         var categoryMap = await db.Categories
             .AsNoTracking()
@@ -56,10 +56,27 @@ public class JobHomeSectionsService : IJobHomeSectionsService
                     CompanyLogoUrl = j.Company.LogoUrl,
 
                     CategoryId = j.CategoryId,
-                    CategoryName = j.CategoryId != null && categoryMap.ContainsKey(j.CategoryId) ? categoryMap[j.CategoryId].Name : null,
-                    CategorySlug = j.CategoryId != null && categoryMap.ContainsKey(j.CategoryId) ? categoryMap[j.CategoryId].Slug : null,
+                    CategoryName = categoryMap.ContainsKey(j.CategoryId) ? categoryMap[j.CategoryId].Name : null,
+                    CategorySlug = categoryMap.ContainsKey(j.CategoryId) ? categoryMap[j.CategoryId].Slug : null,
 
-                    Techs = j.JobTechs == null ? new List<string>() : j.JobTechs.Select(t => t.Tech).Distinct().ToList(),
+                    // ✅ Tech icons via JOIN (because JobTech.Tech is string)
+                    Techs = j.JobTechs == null
+                        ? new List<TechIconDto>()
+                        : (
+                            from jt in j.JobTechs
+                            where jt.TechId.HasValue
+                            join t in db.Techs.AsNoTracking() on jt.TechId!.Value equals t.Id
+                            select new TechIconDto
+                            {
+                                Id = t.Id,
+                                Name = t.Name,
+                                Slug = t.Slug,
+                                LogoUrl = t.LogoUrl
+                            }
+                          )
+                          .GroupBy(x => x.Id)
+                          .Select(g => g.First())
+                          .ToList(),
                 })
                 .ToListAsync(ct);
         }

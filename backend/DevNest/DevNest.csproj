@@ -23,9 +23,4 @@
 
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="DTOs\Companies\" />
-	  <Folder Include="DTOs\Categories\" />
-	</ItemGroup>
-
 </Project>

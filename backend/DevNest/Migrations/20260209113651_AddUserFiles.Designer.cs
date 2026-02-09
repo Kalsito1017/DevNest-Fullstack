@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DevNest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260131182714_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260209113651_AddUserFiles")]
+    partial class AddUserFiles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -307,6 +307,43 @@ namespace DevNest.Migrations
                     b.ToTable("Techs");
                 });
 
+            modelBuilder.Entity("DevNest.Models.UserFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OriginalName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("StoredName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserFiles");
+                });
+
             modelBuilder.Entity("Event", b =>
                 {
                     b.Property<int>("Id")
@@ -521,6 +558,17 @@ namespace DevNest.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("DevNest.Models.UserFile", b =>
+                {
+                    b.HasOne("ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobTech", b =>
                 {
                     b.HasOne("DevNest.Models.Job", "Job")
@@ -529,11 +577,13 @@ namespace DevNest.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DevNest.Models.Tech", null)
+                    b.HasOne("DevNest.Models.Tech", "TechRef")
                         .WithMany("JobTechs")
                         .HasForeignKey("TechId");
 
                     b.Navigation("Job");
+
+                    b.Navigation("TechRef");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import "./AIWorkshops.css";
+import { API_BASE_URL } from "../../config/api";
 
 const AIWorkshops = () => {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const API_URL = "http://localhost:5099/api/events";
+  const API_URL = `${API_BASE_URL}/events`;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -26,9 +27,7 @@ const AIWorkshops = () => {
         const data = await res.json();
         setEvents(Array.isArray(data) ? data : []);
       } catch (e) {
-        if (e.name !== "AbortError") {
-          setError(e.message || "Failed to load events.");
-        }
+        if (e.name !== "AbortError") setError(e.message || "Failed to load events.");
       } finally {
         setIsLoading(false);
       }
@@ -36,7 +35,7 @@ const AIWorkshops = () => {
 
     loadEvents();
     return () => controller.abort();
-  }, []);
+  }, [API_URL]);
 
   return (
     <div className="ai-workshops">

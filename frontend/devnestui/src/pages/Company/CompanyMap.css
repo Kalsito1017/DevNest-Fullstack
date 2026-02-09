@@ -1,0 +1,110 @@
+.company-map-page {
+  background: #f5f7fb;
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.map-head {
+  max-width: 1200px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.map-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #222;
+}
+
+.map-sub {
+  font-size: 13px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.map-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.map-btn {
+  border: 1px solid #e7ebf6;
+  background: #fff;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.map-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e7ebf6;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  color: #2e2e2e;
+  font-size: 13px;
+}
+
+.map-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: calc(100vh - 120px);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #edf0f7;
+  box-shadow: 0 10px 24px rgba(20, 30, 60, 0.08);
+  background: #fff;
+}
+
+.leaflet-map {
+  width: 100%;
+  height: 100%;
+}
+
+.map-loading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: #666;
+  font-weight: 800;
+}
+
+.map-error {
+  max-width: 1200px;
+  margin: 0 auto 12px;
+  background: #fff;
+  border: 1px solid #ffd0d0;
+  border-radius: 12px;
+  padding: 12px;
+  color: #9a1a1a;
+}
+
+.popup-title {
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.popup-meta {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.popup-btn {
+  border: none;
+  background: #2d4cff;
+  color: #fff;
+  font-weight: 900;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}

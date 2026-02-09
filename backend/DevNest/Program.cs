@@ -1,4 +1,7 @@
 ﻿using DevNest.Data;
+using DevNest.Services.Categories;
+using DevNest.Services.Companies;
+using DevNest.Services.Home;
 using DevNest.Services.Jobs;
 using DevNest.Services.Techs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -6,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using DevNest.Services.Files;
 
 namespace DevNest
 {
@@ -21,20 +25,27 @@ namespace DevNest
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // ✅ DB first
+       
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // ✅ Services
+           
             builder.Services.AddScoped<IJobSearchService, JobSearchService>();
             builder.Services.AddScoped<IJobReadService, JobReadService>();
             builder.Services.AddScoped<IJobHomeSectionsService, JobHomeSectionsService>();
             builder.Services.AddScoped<IJobStatsService, JobStatsService>();
             builder.Services.AddScoped<IEventsService, EventsService>();
             builder.Services.AddScoped<ITechReadService, TechReadService>();
+            builder.Services.AddScoped<ICategoryReadService, CategoryReadService>();
+            builder.Services.AddScoped<ICompanyReadService, CompanyReadService>();
+            builder.Services.AddScoped<ICompanyJobsReadService, CompanyJobsReadService>();
+            builder.Services.AddScoped<IHomeSectionsService, HomeSectionsService>();
+            builder.Services.AddScoped<IFilesService, FilesService>();
+            builder.Services.AddScoped<ISavedJobsService, SavedJobsService>();
+            builder.Services.AddScoped<IJobStatsService, JobStatsService>();
 
-            // ✅ CORS for React + cookies
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("DevCors", policy =>
@@ -47,7 +58,7 @@ namespace DevNest
                 });
             });
 
-            // ✅ Identity (ONLY ONCE) + Roles
+          
             builder.Services
                 .AddIdentityCore<ApplicationUser>(options =>
                 {
@@ -59,7 +70,7 @@ namespace DevNest
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager<SignInManager<ApplicationUser>>();
 
-            // ✅ JWT (reads from HttpOnly cookie "access_token")
+            
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -72,7 +83,9 @@ namespace DevNest
                     OnMessageReceived = context =>
                     {
                         if (context.Request.Cookies.TryGetValue("access_token", out var token))
+                        {
                             context.Token = token;
+                        }
 
                         return Task.CompletedTask;
                     }
@@ -94,6 +107,7 @@ namespace DevNest
 
             builder.Services.AddAuthorization();
 
+           
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -103,24 +117,39 @@ namespace DevNest
                 app.UseSwaggerUI();
             }
 
-            // ✅ One CORS
+       
             app.UseCors("DevCors");
 
             app.UseHttpsRedirection();
 
-            // ✅ REQUIRED for [Authorize]
+         
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
 
-            // ✅ Seed after middleware/services built
-            await AdminSeeder.SeedAsync(app.Services, app.Configuration);
-
             app.MapGet("/", () => "DevNest API - try /swagger");
             app.MapGet("/health", () => new { status = "healthy", time = DateTime.UtcNow });
 
-            app.Run();
+            
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                await db.Database.MigrateAsync();
+            }
+
+            var skipSeed = string.Equals(
+                Environment.GetEnvironmentVariable("SKIP_SEED"),
+                "true",
+                StringComparison.OrdinalIgnoreCase);
+
+            if (!skipSeed)
+            {
+                using var scope = app.Services.CreateScope();
+                await AdminSeeder.SeedAsync(scope.ServiceProvider, app.Configuration);
+            }
+
+            await app.RunAsync();
         }
     }
 }

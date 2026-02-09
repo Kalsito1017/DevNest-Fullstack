@@ -8,6 +8,11 @@ import AIWorkshops from './pages/AIWorkshops/AIWorkshops';
 import AboutUs from './pages/AboutUs/AboutUs';
 import './App.css';
 import Profile from './auth/Profile';
+import Jobs from './pages/Job/Job';
+import CompanyMap from './pages/Company/CompanyMap';
+import CompanySelectLocation from './pages/Company/CompanySelectLocation';
+import JobSearch from './pages/Job/JobSearch';
+import LocationHome from './pages/Job/LocationHome';
 function App() {
   return (
     <Router>
@@ -15,13 +20,18 @@ function App() {
         <Header />
         <main className="main-content">
           <Routes>
+            <Route path="/jobs" element={<Jobs />} />
             <Route path="/" element={<Home />} />
             <Route path="/company" element={<Company />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/aiworkshops" element={<AIWorkshops />} />
             <Route path="/aboutus" element={<AboutUs />} />
             <Route path="/profile" element={<Profile />} />
-            
+            <Route path="*" element={<div>404</div>} />
+            <Route path="/company/map" element={<CompanyMap />} />
+            <Route path="/jobs/search" element={<JobSearch />} />
+            <Route path="/company/select/location/:locationSlug" element={<CompanySelectLocation />} />
+            <Route path="/jobs/location/:city" element={<LocationHome />} />
           </Routes>
         </main>
         <Footer />

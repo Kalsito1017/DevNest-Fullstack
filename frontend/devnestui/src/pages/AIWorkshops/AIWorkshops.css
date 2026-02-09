@@ -101,9 +101,10 @@
 }
 
 .aiw-speaker-avatar-finished {
-  filter: grayscale(100%);
+  filter: grayscale(100%) brightness(0.9) contrast(0.95);
   opacity: 0.85;
 }
+
 
 .aiw-speaker-name {
   font-weight: 800;
@@ -171,22 +172,27 @@
   filter: brightness(0.95);
 }
 
-/* 🟦 FINISHED BADGE — ALWAYS GREY */
 .aiw-badge-finished {
   position: absolute;
   bottom: 1.5rem;
   left: 1.5rem;
 
-  background: linear-gradient(90deg, #9e9e9e 0%, #7f7f7f 100%);
+  /* 🔵 GRADIENT BACKGROUND */
+  background: linear-gradient(90deg, #55b3e6 0%, #3f66d5 100%);
+
+  /* ⬜ WHITE TEXT */
   color: #ffffff;
+
   font-size: 1.1rem;
   font-weight: 900;
   padding: 0.6rem 1.4rem;
   border-radius: 10px;
   white-space: nowrap;
 
+  border: none;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
+
 
 
 /* RESPONSIVE */

@@ -1,7 +1,6 @@
-﻿using DevNest.Data;
-using DevNest.Models;
+﻿using DevNest.DTOs.Home;
+using DevNest.Services.Home;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DevNest.Controllers
 {
@@ -9,67 +8,27 @@ namespace DevNest.Controllers
     [Route("api/[controller]")]
     public class HomeController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        private readonly IHomeSectionsService homeSections;
 
-        public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IHomeSectionsService homeSections)
         {
-            _context = context;
-            _logger = logger;
+            this.logger = logger;
+            this.homeSections = homeSections;
         }
 
-        // GET: api/job
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<object>>> GetJobs()
+        public async Task<IActionResult> Get(
+        [FromQuery] int takeTechs = 6,
+        [FromQuery] string? location = null,
+        [FromQuery] bool remote = false,
+        CancellationToken ct = default)
         {
-            try
-            {
-                var jobs = await _context.Jobs.ToListAsync();
-                return Ok(jobs);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ ERROR: {ex.Message}");
-                return StatusCode(500, new { error = ex.Message });
-            }
+            var items = await homeSections.GetSectionsAsync(takeTechs, location, remote, ct);
+            return Ok(items);
         }
 
-        // GET: api/job/by-location?location=Plovdiv 
-        [HttpGet("by-location")]
-        public async Task<IActionResult> GetJobsByLocation([FromQuery] string location)
-        {
-            try
-            {
-                var jobs = await _context.Jobs
-                    .Where(j => j.Location.Contains(location))
-                    .ToListAsync();
-
-                return Ok(jobs);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
-
-        // GET: api/home/tech/{stack}
-        [HttpGet("tech/{stack}")]
-        public async Task<IActionResult> GetJobsByStack([FromRoute] string stack)
-        {
-            try
-            {
-                var jobs = await _context.JobTechs
-                    .Where(jt => jt.Tech.ToLower() == stack.ToLower())
-                    .Select(jt => jt.Job)  // navigation property from JobTech to Job
-                    .ToListAsync();
-
-                return Ok(jobs);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
-      
     }
 }
