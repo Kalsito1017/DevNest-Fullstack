@@ -11,11 +11,13 @@ namespace DevNest.Controllers
     {
         private readonly ICompanyReadService companies;
         private readonly ICompanyJobsReadService companyJobs;
+        private readonly ICompanyProfileService profileService;
 
-        public CompaniesController(ICompanyReadService companies, ICompanyJobsReadService companyJobs)
+        public CompaniesController(ICompanyReadService companies, ICompanyJobsReadService companyJobs, ICompanyProfileService profileService)
         {
             this.companies = companies;
             this.companyJobs = companyJobs;
+            this.profileService = profileService;
         }
 
         // LIST (no pagination)
@@ -99,6 +101,14 @@ namespace DevNest.Controllers
         {
             var items = await companies.SuggestAsync(q, take, onlyActive, ct);
             return Ok(items);
+        }
+
+        [HttpGet("{id:int}/profile")]
+        public async Task<IActionResult> GetProfile(int id, CancellationToken ct)
+        {
+            var dto = await profileService.GetByIdAsync(id, ct);
+            return dto == null ? NotFound() : Ok(dto);
+
         }
 
     }

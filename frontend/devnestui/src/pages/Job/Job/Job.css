@@ -713,3 +713,18 @@
     white-space: normal;
   }
 }
+
+
+.job-card.job-card-v2 {
+  cursor: pointer;
+}
+
+.job-card.job-card-v2:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.08);
+}
+
+.job-card.job-card-v2:focus {
+  outline: 2px solid rgba(47,108,255,0.35);
+  outline-offset: 2px;
+}

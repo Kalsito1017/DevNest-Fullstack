@@ -15,12 +15,12 @@ namespace DevNest.Services.Companies
         // MAIN: cards for listing page
         // ----------------------------
         public async Task<(int TotalCount, IReadOnlyList<CompanyCardDto> Items)> GetCompanyCardsAsync(
-       string? search,
-       string sort,
-       bool onlyActive,
-       string? sizeBucket,
-       string? location,
-       CancellationToken ct = default)
+     string? search,
+     string sort,
+     bool onlyActive,
+     string? sizeBucket,
+     string? location,
+     CancellationToken ct = default)
         {
             var companiesQ = db.Companies.AsNoTracking();
 
@@ -30,28 +30,17 @@ namespace DevNest.Services.Companies
             if (!string.IsNullOrWhiteSpace(search))
                 companiesQ = companiesQ.Where(c => c.Name.Contains(search));
 
-            // sizeBucket filter (както си го имал)
-
             var loc = NormalizeLocation(location);
             if (!string.IsNullOrWhiteSpace(loc))
             {
-                // Ако Location е единична стойност ("Sofia")
+                // ако Location е единична стойност
                 companiesQ = companiesQ.Where(c => c.Location == loc);
 
-                // Ако Location понякога е списък "Sofia, Varna" — тогава смени горното с:
-                // companiesQ = companiesQ.Where(c =>
-                //     c.Location != null && EF.Functions.Like(c.Location, $"%{loc}%"));
+                // ако е "Sofia, Varna" – ползвай Like:
+                // companiesQ = companiesQ.Where(c => c.Location != null && EF.Functions.Like(c.Location, $"%{loc}%"));
             }
 
-            companiesQ = sort switch
-            {
-                "alpha" => companiesQ.OrderBy(c => c.Name),
-                "newest" => companiesQ.OrderByDescending(c => c.CreatedAt),
-                _ => companiesQ.OrderBy(_ => Guid.NewGuid()) // random
-            };
-
-            // projection към CompanyCardDto (както ти е)
-
+            // 1) първо взимаме items (без sizeBucket, защото Size е string и parse-ът не е SQL-safe)
             var items = await companiesQ
                 .Select(c => new CompanyCardDto
                 {
@@ -60,13 +49,36 @@ namespace DevNest.Services.Companies
                     LogoUrl = c.LogoUrl,
                     Location = c.Location,
                     Size = c.Size,
-                    JobsCount = c.Jobs.Count /* както го смяташ */
 
+                    // ако искаш само активни jobs:
+                    JobsCount = c.Jobs.Count(j => j.Status == "Active")
                 })
                 .ToListAsync(ct);
 
+            // 2) ✅ sizeBucket филтър IN-MEMORY
+            var bucket = (sizeBucket ?? "").Trim().ToLowerInvariant();
+            if (!string.IsNullOrWhiteSpace(bucket))
+            {
+                items = items
+                    .Where(c =>
+                    {
+                        var n = ParseSizeToNumber(c.Size);
+                        return IsInBucket(n, bucket);
+                    })
+                    .ToList();
+            }
+
+            // 3) ✅ sorting (IN-MEMORY)
+            items = sort switch
+            {
+                "alpha" => items.OrderBy(c => c.Name).ToList(),
+                "newest" => items.OrderByDescending(c => c.Id).ToList(), // ако нямаш CreatedAt в DTO; иначе по CreatedAt
+                _ => items.OrderBy(_ => Guid.NewGuid()).ToList()
+            };
+
             return (items.Count, items);
         }
+
         private static string? NormalizeLocation(string? location)
         {
             if (string.IsNullOrWhiteSpace(location)) return null;

@@ -8,11 +8,14 @@ import AIWorkshops from './pages/AIWorkshops/AIWorkshops';
 import AboutUs from './pages/AboutUs/AboutUs';
 import './App.css';
 import Profile from './auth/Profile';
-import Jobs from './pages/Job/Job';
+import Jobs from './pages/Job/Job/Job';
 import CompanyMap from './pages/Company/CompanyMap';
 import CompanySelectLocation from './pages/Company/CompanySelectLocation';
-import JobSearch from './pages/Job/JobSearch';
+import JobSearch from './pages/Job/JobSearch/JobSearch';
 import LocationHome from './pages/Job/LocationHome';
+import JobAdDetails from './pages/Job/JobAdDetails/JobAdDetails'
+import CompanyProfile from "./pages/Company/CompanyProfile/CompanyProfile";
+
 function App() {
   return (
     <Router>
@@ -32,6 +35,8 @@ function App() {
             <Route path="/jobs/search" element={<JobSearch />} />
             <Route path="/company/select/location/:locationSlug" element={<CompanySelectLocation />} />
             <Route path="/jobs/location/:city" element={<LocationHome />} />
+            <Route path="/company/jobads/:jobId" element={<JobAdDetails />} />
+            <Route path="/company/:companyId" element={<CompanyProfile />} />
           </Routes>
         </main>
         <Footer />

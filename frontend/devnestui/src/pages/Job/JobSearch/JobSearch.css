@@ -299,3 +299,18 @@
     font-size: 28px;
   }
 }
+
+
+.jobsearch-card {
+  cursor: pointer;
+}
+
+.jobsearch-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.08);
+}
+
+.jobsearch-card:focus {
+  outline: 2px solid rgba(47,108,255,0.35);
+  outline-offset: 2px;
+}

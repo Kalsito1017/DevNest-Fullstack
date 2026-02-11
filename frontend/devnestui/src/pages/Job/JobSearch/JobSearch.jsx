@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./JobSearch.css";
 
-import hybridIcon from "../../assets/hybrid.png";
-import homeOfficeIcon from "../../assets/homeoffice.png";
+import hybridIcon from "../../../assets/hybrid.png";
+import homeOfficeIcon from "../../../assets/homeoffice.png";
 
 const API = "http://localhost:5099/api";
 
@@ -164,13 +164,20 @@ export default function JobSearch() {
           <>
             <div className="jobsearch-cards">
               {items.map((job) => (
-                <article
-                  key={job.id}
-                  className="jobsearch-card"
-                  onClick={() => navigate(`/jobs/${job.id}`)}
-                  role="button"
-                  tabIndex={0}
-                >
+              <article
+  key={job.id}
+  className="jobsearch-card"
+  onClick={() => navigate(`/company/jobads/${job.id}`)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      navigate(`/company/jobads/${job.id}`);
+    }
+  }}
+  role="link"
+  tabIndex={0}
+>
+
                   <div className="jobsearch-left">
                     {job.companyLogoUrl ? (
                       <img className="jobsearch-logo" src={job.companyLogoUrl} alt={job.companyName} />

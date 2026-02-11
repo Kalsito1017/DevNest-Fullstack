@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./Jobs.css";
+import "./Job.css";
 
-import hybridIcon from "../../assets/hybrid.png";
-import homeOfficeIcon from "../../assets/homeoffice.png";
+import hybridIcon from "../../../assets/hybrid.png";
+import homeOfficeIcon from "../../../assets/homeoffice.png";
 
-import { useAuth } from "../../context/AuthContext";
-import { savedJobsService } from "../../services/api/savedJobsService";
+import { useAuth } from "../../../context/AuthContext";
+import { savedJobsService } from "../../../services/api/savedJobsService";
 
 const API = "http://localhost:5099/api";
 
@@ -540,7 +540,20 @@ export default function Jobs() {
   const isSaved = !!savedMap[job.id];
 
   return (
-    <article key={job.id} className="job-card job-card-v2">
+   <article
+  key={job.id}
+  className="job-card job-card-v2"
+  role="link"
+  tabIndex={0}
+  onClick={() => navigate(`/company/jobads/${job.id}`)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      navigate(`/company/jobads/${job.id}`);
+    }
+  }}
+>
+
       {/* LEFT: logo + company */}
       <div className="jc-left">
         {job.companyLogoUrl ? (

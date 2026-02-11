@@ -12,24 +12,19 @@ public class JobsController : ControllerBase
     private readonly IJobSearchService searchService;
     private readonly IJobReadService readService;
     private readonly IJobStatsService statsService;
+   
 
     public JobsController(IJobSearchService searchService, IJobReadService readService, IJobStatsService statsService)
     {
         this.searchService = searchService;
         this.readService = readService;
         this.statsService = statsService;
+        
     }
 
     [HttpGet("search")]
     public async Task<ActionResult<PagedResult<JobCardDto>>> Search([FromQuery] JobSearchQuery query, CancellationToken ct)
         => Ok(await searchService.SearchAsync(query, ct));
-
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<JobCardDto>> GetById(int id, CancellationToken ct)
-    {
-        var job = await readService.GetByIdAsync(id, ct);
-        return job is null ? NotFound() : Ok(job);
-    }
 
     [HttpGet("latest")]
     public async Task<ActionResult<IReadOnlyList<JobCardDto>>> Latest([FromQuery] int take = 10, CancellationToken ct = default)
@@ -58,6 +53,5 @@ public class JobsController : ControllerBase
         var dto = await statsService.GetCountAsync(location, remote, ct);
         return Ok(dto);
     }
-
 
 }

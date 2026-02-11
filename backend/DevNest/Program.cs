@@ -44,7 +44,8 @@ namespace DevNest
             builder.Services.AddScoped<IFilesService, FilesService>();
             builder.Services.AddScoped<ISavedJobsService, SavedJobsService>();
             builder.Services.AddScoped<IJobStatsService, JobStatsService>();
-
+            builder.Services.AddScoped<IJobAdsService, JobAdsService>();
+            builder.Services.AddScoped<ICompanyProfileService, CompanyProfileService>();
 
             builder.Services.AddCors(options =>
             {
