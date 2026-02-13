@@ -220,3 +220,64 @@
     width: 100%;
   }
 }
+
+/* FIX: in JSX you use .aiw-list, but CSS has .aiw-events-list */
+.aiw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* RIGHT */
+.aiw-card-right {
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column; /* ✅ stack content top->bottom */
+}
+
+/* Description stays on top, bottom area goes to bottom */
+.aiw-desc {
+  margin: 0;
+  color: #444;
+  line-height: 1.6;
+  flex: 1; /* ✅ take available space */
+}
+
+/* ✅ The missing layout: date bottom-left, button bottom-right */
+.aiw-bottom {
+  margin-top: auto;                 /* ✅ push to bottom */
+  display: flex;
+  justify-content: space-between;   /* ✅ left vs right */
+  align-items: flex-end;            /* ✅ align to bottom */
+  gap: 1rem;
+  padding-top: 1.25rem;
+}
+
+/* DATE */
+.aiw-date {
+  display: flex;
+  flex-direction: column;
+}
+
+/* (optional) make date look tighter */
+.aiw-date-label {
+  font-weight: 700;
+  color: #333;
+}
+
+.aiw-date-value {
+  font-weight: 800;
+  color: #111;
+}
+
+/* RESPONSIVE: stack date + button nicely */
+@media (max-width: 768px) {
+  .aiw-bottom {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .aiw-btn {
+    width: 100%;
+  }
+}

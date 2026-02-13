@@ -1,9 +1,9 @@
 ﻿using DevNest.Data;
 using DevNest.Models;
-using DevNest.DTOs.Files;
 using Microsoft.EntityFrameworkCore;
+using DevNest.DTOs.User;
 
-namespace DevNest.Services.Files;
+namespace DevNest.Services.User;
 
 public class FilesService : IFilesService
 {

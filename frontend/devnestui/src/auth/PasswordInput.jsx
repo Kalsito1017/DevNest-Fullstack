@@ -60,7 +60,7 @@ export default function PasswordInput({
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                     disabled={disabled}
                 >
-                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                   
                 </button>
             </div>
 

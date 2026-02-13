@@ -1,4 +1,4 @@
-﻿using DevNest.Services.Jobs;
+﻿using DevNest.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

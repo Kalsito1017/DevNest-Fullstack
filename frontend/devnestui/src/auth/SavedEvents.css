@@ -1,0 +1,132 @@
+.saved-events {
+  padding-top: 4px;
+}
+
+.saved-events-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.saved-events-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.saved-events-refresh {
+  border: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 900;
+}
+
+.saved-events-flash {
+  margin: 10px 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+}
+
+.saved-events-flash.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.saved-events-state {
+  padding: 16px 0;
+  text-align: center;
+  color: #374151;
+  font-weight: 800;
+}
+
+.saved-events-list {
+  display: grid;
+  gap: 12px;
+}
+
+.saved-events-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.saved-events-card.is-finished {
+  filter: grayscale(100%);
+  opacity: 0.9;
+}
+
+.saved-events-main {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.saved-events-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.saved-events-card-title {
+  font-weight: 900;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.saved-events-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.95);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.saved-events-meta {
+  font-size: 13px;
+  font-weight: 800;
+  color: #374151;
+  display: flex;
+  gap: 8px;
+}
+
+.saved-events-desc {
+  color: #374151;
+  opacity: 0.9;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 820px;
+}
+
+.saved-events-remove {
+  border: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #ef4444;
+  color: #fff;
+  font-weight: 900;
+  flex: 0 0 auto;
+}
+
+.saved-events-remove:disabled {
+  opacity: 0.7;
+  cursor: default;
+}

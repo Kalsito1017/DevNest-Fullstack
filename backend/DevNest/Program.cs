@@ -1,15 +1,16 @@
 ﻿using DevNest.Data;
 using DevNest.Services.Categories;
 using DevNest.Services.Companies;
+using DevNest.Services.Events;
 using DevNest.Services.Home;
 using DevNest.Services.Jobs;
 using DevNest.Services.Techs;
+using DevNest.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using DevNest.Services.Files;
 
 namespace DevNest
 {
@@ -46,6 +47,7 @@ namespace DevNest
             builder.Services.AddScoped<IJobStatsService, JobStatsService>();
             builder.Services.AddScoped<IJobAdsService, JobAdsService>();
             builder.Services.AddScoped<ICompanyProfileService, CompanyProfileService>();
+            builder.Services.AddScoped<ISavedEventsService, SavedEventsService>();
 
             builder.Services.AddCors(options =>
             {

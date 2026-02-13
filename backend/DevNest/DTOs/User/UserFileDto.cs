@@ -1,4 +1,4 @@
-﻿namespace DevNest.DTOs.Files;
+﻿namespace DevNest.DTOs.User;
 
 public class UserFileDto
 {

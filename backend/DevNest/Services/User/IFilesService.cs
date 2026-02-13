@@ -1,6 +1,6 @@
-﻿using DevNest.DTOs.Files;
+﻿using DevNest.DTOs.User;
 
-namespace DevNest.Services.Files;
+namespace DevNest.Services.User;
 
 public interface IFilesService
 {

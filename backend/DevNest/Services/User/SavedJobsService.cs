@@ -2,7 +2,7 @@
 using DevNest.DTOs.Jobs;
 using Microsoft.EntityFrameworkCore;
 
-namespace DevNest.Services.Jobs
+namespace DevNest.Services.User
 {
     public class SavedJobsService : ISavedJobsService
     {

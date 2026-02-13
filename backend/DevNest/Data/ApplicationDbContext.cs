@@ -19,7 +19,27 @@ namespace DevNest.Data
 
         public DbSet<SavedJob> SavedJobs => Set<SavedJob>();
 
+        public DbSet<UserSavedEvent> UserSavedEvents => Set<UserSavedEvent>();
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
 
+            builder.Entity<UserSavedEvent>()
+                .HasIndex(x => new { x.UserId, x.EventId })
+                .IsUnique();
+
+            builder.Entity<UserSavedEvent>()
+                .HasOne(x => x.User)
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserSavedEvent>()
+                .HasOne(x => x.Event)
+                .WithMany()
+                .HasForeignKey(x => x.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

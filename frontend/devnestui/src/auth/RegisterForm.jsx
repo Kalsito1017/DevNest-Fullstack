@@ -239,7 +239,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                                 onClick={() => setShowPassword(!showPassword)}
                                 disabled={isLoading}
                             >
-                                {showPassword ? '👁️' : '👁️‍🗨️'}
+                           
                             </button>
                         </div>
                     </div>

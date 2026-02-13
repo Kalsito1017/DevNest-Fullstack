@@ -1,22 +1,27 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useMemo, useRef, useState } from "react";
+import { Link, useNavigate} from "react-router-dom";
+import {  useRef, useState } from "react";
 import "./Header.css";
 import AuthModal from "../../auth/AuthModal";
 import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
   const navigate = useNavigate();
-  const loc = useLocation();
-  const { user, isAuthLoading } = useAuth();
+
+
+  // ✅ now we also use authModal + openAuthModal + closeAuthModal from context
+  const {
+    user,
+    isAuthLoading,
+    authModal,
+    openAuthModal,
+    closeAuthModal,
+  } = useAuth();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState("login");
 
   const dropdownRef = useRef(null);
   const timeoutRef = useRef(null);
 
-  // keep your exact labels
   const locations = ["София", "Варна", "Русе", "Бургас", "Пловдив"];
 
   const handleMouseEnter = () => {
@@ -28,7 +33,6 @@ const Header = () => {
     timeoutRef.current = setTimeout(() => setDropdownOpen(false), 200);
   };
 
-  // ✅ robust slug normalize
   const normalizeSlug = (raw) => {
     const s = decodeURIComponent(String(raw || "")).trim().toLowerCase();
     if (!s) return "";
@@ -38,7 +42,6 @@ const Header = () => {
     return s;
   };
 
-  // ✅ map BG label -> slug used by LocationHome route
   const toSlug = (label) => {
     const v = String(label || "").trim().toLowerCase();
     if (v === "софия") return "sofia";
@@ -50,58 +53,25 @@ const Header = () => {
     return normalizeSlug(v);
   };
 
-  // ✅ derive current selected city slug from URL (no state/localStorage fights)
-  const selectedCitySlug = useMemo(() => {
-    const parts = (loc.pathname || "").split("/").filter(Boolean);
-
-    // /jobs/location/:city
-    if (parts[0] === "jobs" && parts[1] === "location" && parts[2]) {
-      return normalizeSlug(parts[2]);
-    }
-
-    // fallback: /jobs?location=sofia OR /jobs?remote=true
-    const sp = new URLSearchParams(loc.search || "");
-    const remote = (sp.get("remote") || "").toLowerCase();
-    if (remote === "true" || remote === "1") return "remote";
-
-    const qLoc = sp.get("location");
-    if (qLoc) {
-      const rawCity = decodeURIComponent(qLoc).split(",")[0].trim().toLowerCase();
-      // accept Sofia / sofia etc.
-      return toSlug(rawCity);
-    }
-
-    return "";
-  }, [loc.pathname, loc.search]);
-
   const handleLocationClick = (locationLabelOrRemote) => {
     setDropdownOpen(false);
-
     const slug = toSlug(locationLabelOrRemote);
-
-    // ✅ always go to the location home route (matches your LocationHome.jsx)
     navigate(`/jobs/location/${encodeURIComponent(slug)}`);
   };
 
-  const openLogin = () => {
-    setAuthMode("login");
-    setShowAuthModal(true);
-  };
-
-  const openRegister = () => {
-    setAuthMode("register");
-    setShowAuthModal(true);
-  };
-
-  const closeModal = () => setShowAuthModal(false);
+  // ✅ open modal via context
+  const openLogin = () => openAuthModal("login");
+  const openRegister = () => openAuthModal("register");
 
   const displayName = user
     ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || user.email
     : "";
 
-  const avatarLetter = (user?.firstName?.trim()?.[0] ||
+  const avatarLetter = (
+    user?.firstName?.trim()?.[0] ||
     user?.email?.trim()?.[0] ||
-    "U").toUpperCase();
+    "U"
+  ).toUpperCase();
 
   return (
     <>
@@ -124,7 +94,11 @@ const Header = () => {
                 </Link>
 
                 {dropdownOpen && (
-                  <ul className="dropdown-menu" role="menu" aria-label="Locations">
+                  <ul
+                    className="dropdown-menu"
+                    role="menu"
+                    aria-label="Locations"
+                  >
                     {locations.map((location) => (
                       <li key={location} className="dropdown-item">
                         <button
@@ -155,16 +129,19 @@ const Header = () => {
                   Компании
                 </Link>
               </li>
+
               <li className="nav-item">
                 <Link to="/blogs" className="nav-link">
                   Блог
                 </Link>
               </li>
+
               <li className="nav-item">
                 <Link to="/aiworkshops" className="nav-link">
                   AI Workshops
                 </Link>
               </li>
+
               <li className="nav-item">
                 <Link to="/aboutus" className="nav-link">
                   За DevNest
@@ -186,10 +163,14 @@ const Header = () => {
               </button>
             ) : (
               <>
-                <button className="btn-login" onClick={openLogin}>
+                <button type="button" className="btn-login" onClick={openLogin}>
                   Вход
                 </button>
-                <button className="btn-register" onClick={openRegister}>
+                <button
+                  type="button"
+                  className="btn-register"
+                  onClick={openRegister}
+                >
                   Регистрация
                 </button>
               </>
@@ -198,7 +179,12 @@ const Header = () => {
         </div>
       </header>
 
-      <AuthModal isOpen={showAuthModal} onClose={closeModal} initialMode={authMode} />
+      {/* ✅ modal driven by AuthContext */}
+      <AuthModal
+        isOpen={authModal.isOpen}
+        onClose={closeAuthModal}
+        initialMode={authModal.mode}
+      />
     </>
   );
 };

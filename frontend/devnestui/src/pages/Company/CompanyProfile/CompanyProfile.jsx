@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./CompanyProfile.css";
 import { getCompanyProfileById } from "../../../services/api/companies";
@@ -33,7 +33,7 @@ export default function CompanyProfile() {
   const [err, setErr] = useState("");
   const [active, setActive] = useState("about");
 
-  // FIX 2: lock active while smooth scroll is running (click/hash)
+  // lock active while smooth scroll is running (click/hash)
   const [lockActive, setLockActive] = useState(false);
   const lockTimerRef = useRef(null);
 
@@ -49,6 +49,29 @@ export default function CompanyProfile() {
     if (lockTimerRef.current) window.clearTimeout(lockTimerRef.current);
     lockTimerRef.current = window.setTimeout(() => setLockActive(false), ms);
   }, []);
+
+  // ---------- ALWAYS scroll to top when opening a company ----------
+  // Uses layout effect so it happens before paint (no flicker)
+ useLayoutEffect(() => {
+  const hash = (window.location.hash || "").replace("#", "");
+
+  // ако идваш с hash (#jobs), НЕ скролвай top и НЕ махай hash-а
+  if (hash) {
+    setActive(hash);      // по желание: да светне веднага в менюто
+    setLockActive(true);  // да не се бие scrollspy докато скролва
+    return;
+  }
+
+  // нормално отваряне на компания -> скрол най-горе
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
+  setActive("about");
+  setLockActive(false);
+
+  // по желание: чистим старите refs при смяна на компания
+  sectionRefs.current = {};
+}, [companyId]);
+
 
   // ---------- Load ----------
   useEffect(() => {
@@ -84,17 +107,17 @@ export default function CompanyProfile() {
     };
   }, [companyId]);
 
-  // ---------- FIX 1: Stable ScrollSpy (no IntersectionObserver) ----------
+  // ---------- Stable ScrollSpy (no IntersectionObserver) ----------
   useEffect(() => {
     if (!data) return;
 
-    const offsetTop = 110; // трябва да match-ва scroll-margin-top в CSS (при теб е 110)
+    const offsetTop = 110; // трябва да match-ва scroll-margin-top в CSS
     const ids = SECTIONS.map((s) => s.id);
 
     const computeActive = () => {
       if (lockActive) return;
 
-      // избираме "последната секция", чийто top е минал над offset-а
+      // choose the last section whose top is above offset
       let bestId = ids[0];
 
       for (const id of ids) {
@@ -108,7 +131,6 @@ export default function CompanyProfile() {
       if (bestId && bestId !== active) setActive(bestId);
     };
 
-    // initial compute
     computeActive();
 
     const onScroll = () => computeActive();
@@ -126,7 +148,7 @@ export default function CompanyProfile() {
       setLockActive(true);
       setActive(id);
 
-      // update hash (без jump)
+      // update hash without jump
       window.history.replaceState(null, "", `#${id}`);
 
       // smooth scroll
@@ -138,6 +160,7 @@ export default function CompanyProfile() {
   );
 
   // ---------- Hash on open (/company/:id#jobs) ----------
+  // NOTE: since we clear hash on companyId change, this will only run if the URL truly has a hash
   useEffect(() => {
     if (!data) return;
 
@@ -150,7 +173,7 @@ export default function CompanyProfile() {
     setLockActive(true);
     setActive(hash);
 
-    // чакаме DOM/layout да се “уталожи”
+    // wait for layout settle
     const raf1 = requestAnimationFrame(() => {
       const raf2 = requestAnimationFrame(() => {
         const el = sectionRefs.current[hash];
@@ -253,7 +276,15 @@ export default function CompanyProfile() {
             <section id="tech" ref={setSectionRef("tech")} className="cp-section">
               <h2 className="cp-h2">Технологии</h2>
               <div className="cp-chips">
-                {techPills.length ? techPills.map((t) => <span key={t} className="cp-chip">{t}</span>) : <div className="cp-muted">—</div>}
+                {techPills.length ? (
+                  techPills.map((t) => (
+                    <span key={t} className="cp-chip">
+                      {t}
+                    </span>
+                  ))
+                ) : (
+                  <div className="cp-muted">—</div>
+                )}
               </div>
             </section>
 

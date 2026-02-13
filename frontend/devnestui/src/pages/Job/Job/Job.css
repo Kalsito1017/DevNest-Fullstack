@@ -728,3 +728,36 @@
   outline: 2px solid rgba(47,108,255,0.35);
   outline-offset: 2px;
 }
+
+
+/* base pin */
+.jc-save {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #d6dbea;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+/* ✅ actual saved state */
+.jc-save.is-saved {
+  background: #2f52ff;
+  border-color: #2f52ff;
+  color: #fff;
+}
+
+/* keep keyboard accessibility, but make it clear it's focus, not saved */
+.jc-save:focus-visible {
+  outline: 3px solid rgba(47, 82, 255, 0.35);
+  outline-offset: 2px;
+}
+
+/* optional micro-interaction */
+.jc-save:active {
+  transform: scale(0.96);
+}

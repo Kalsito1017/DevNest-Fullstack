@@ -1,6 +1,6 @@
 ﻿using DevNest.DTOs.Jobs;
 
-namespace DevNest.Services.Jobs
+namespace DevNest.Services.User
 {
     public interface ISavedJobsService
     {

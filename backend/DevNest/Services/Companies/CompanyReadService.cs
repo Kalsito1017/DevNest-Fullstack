@@ -11,9 +11,7 @@ namespace DevNest.Services.Companies
 
         public CompanyReadService(ApplicationDbContext db) => this.db = db;
 
-        // ----------------------------
-        // MAIN: cards for listing page
-        // ----------------------------
+    
         public async Task<(int TotalCount, IReadOnlyList<CompanyCardDto> Items)> GetCompanyCardsAsync(
      string? search,
      string sort,
@@ -36,11 +34,10 @@ namespace DevNest.Services.Companies
                 // ако Location е единична стойност
                 companiesQ = companiesQ.Where(c => c.Location == loc);
 
-                // ако е "Sofia, Varna" – ползвай Like:
-                // companiesQ = companiesQ.Where(c => c.Location != null && EF.Functions.Like(c.Location, $"%{loc}%"));
+               
             }
 
-            // 1) първо взимаме items (без sizeBucket, защото Size е string и parse-ът не е SQL-safe)
+   
             var items = await companiesQ
                 .Select(c => new CompanyCardDto
                 {

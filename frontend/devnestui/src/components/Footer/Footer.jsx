@@ -24,7 +24,7 @@ const Footer = () => {
           <div className="footer-col">
             <div className="footer-col-title">DevNest.BG</div>
             <ul className="footer-list">
-              <li><Link to="/about">За DevNest.BG</Link></li>
+              <li><Link to="/aboutus">За DevNest.BG</Link></li>
               <li><Link to="/contacts">Контакти</Link></li>
               <li><Link to="/employers">За работодатели</Link></li>
               <li><Link to="/terms">Общи Условия</Link></li>

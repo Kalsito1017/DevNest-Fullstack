@@ -1,13 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import authService from "../services/api/authService";
 import "./Profile.css";
+
 import MyFiles from "./MyFiles";
 import SavedJobs from "./SavedJobs";
+import SavedEvents from "./SavedEvents";
 
 const Profile = () => {
+  // ⚠️ ако имаш функция за отваряне на auth modal в AuthContext, извади я тук
+  // пример: const { user, isAuthLoading, logout, openAuthModal } = useAuth();
   const { user, isAuthLoading, logout } = useAuth();
+
+  const navigate = useNavigate();
 
   const [activeSection, setActiveSection] = useState("profile");
 
@@ -63,6 +69,7 @@ const Profile = () => {
     );
   }
 
+  // ако не е логнат, пращаме към home (както ти е)
   if (!user) {
     return <Navigate to="/" replace />;
   }
@@ -144,6 +151,8 @@ const Profile = () => {
       ? "Качи CV/портфолио/мотивационно писмо, което да използваш при кандидатстване."
       : activeSection === "saved"
       ? "Всички обяви, които си запазил с 📌."
+      : activeSection === "events"
+      ? "Всички AI workshops, които си запазил с „Запази ми място“."
       : activeSection === "profile"
       ? "Редактирай информацията за твоя профил"
       : "Секцията е готова като структура. Трябва да добавим endpoint-и и таблици в DB, за да зарежда реални данни.";
@@ -345,20 +354,41 @@ const Profile = () => {
             </div>
           )}
 
-          {activeSection !== "profile" && activeSection !== "files" && activeSection !== "saved" && (
-            <section className="profile-card">
-              <div className="profile-card-title">
-                <h2>{pageTitle}</h2>
-                <div className="profile-underline" />
-              </div>
-
-              <p className="profile-card-hint">
-                Секцията е готова като структура. Трябва да добавим endpoint-и и таблици в DB, за да зарежда реални данни.
-              </p>
-
-              <div className="profile-empty">Няма данни за показване.</div>
-            </section>
+          {/* ✅ NEW: Saved Events tab */}
+          {activeSection === "events" && (
+            <div style={{ paddingTop: 4 }}>
+              <SavedEvents
+                onRequireAuth={() => {
+                  // TODO: replace with YOUR auth modal open function
+                  // example: openAuthModal();
+                  // if you don't have one yet, you can setActiveSection("profile") or show message
+                  setError("Моля, влез в профила си, за да видиш запазените събития.");
+                }}
+                onOpenWorkshop={(id, slug) => {
+                  navigate(`/workshop/${slug}`, { state: { id } });
+                }}
+              />
+            </div>
           )}
+
+          {/* ✅ keep placeholder only for sections you haven't implemented */}
+          {activeSection !== "profile" &&
+            activeSection !== "files" &&
+            activeSection !== "saved" &&
+            activeSection !== "events" && (
+              <section className="profile-card">
+                <div className="profile-card-title">
+                  <h2>{pageTitle}</h2>
+                  <div className="profile-underline" />
+                </div>
+
+                <p className="profile-card-hint">
+                  Секцията е готова като структура. Трябва да добавим endpoint-и и таблици в DB, за да зарежда реални данни.
+                </p>
+
+                <div className="profile-empty">Няма данни за показване.</div>
+              </section>
+            )}
         </main>
       </div>
     </div>

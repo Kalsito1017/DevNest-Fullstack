@@ -52,9 +52,9 @@ export default function SavedJobs() {
           className="profile-card saved-job-card"
           role="button"
           tabIndex={0}
-          onClick={() => navigate(`/jobs/${j.id}`)} // ⚠️ ако твоят route е друг - смени тук
+          onClick={() => navigate(`/company/jobads/${j.id}`)} // ⚠️ ако твоят route е друг - смени тук
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") navigate(`/jobs/${j.id}`);
+            if (e.key === "Enter" || e.key === " ") navigate(`/company/jobads/${j.id}`);
           }}
         >
           <div style={{ display: "flex", gap: 14, alignItems: "center" }}>

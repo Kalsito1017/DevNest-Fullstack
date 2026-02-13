@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Job.css";
 
+import { useSavedJobs } from "../../../context/SavedJobsContext";
+
 import hybridIcon from "../../../assets/hybrid.png";
 import homeOfficeIcon from "../../../assets/homeoffice.png";
 
 import { useAuth } from "../../../context/AuthContext";
-import { savedJobsService } from "../../../services/api/savedJobsService";
 
 const API = "http://localhost:5099/api";
 
@@ -46,7 +47,8 @@ const normalizeJobType = (v) => {
   if (low.includes("part")) return "Part-time";
   if (low.includes("contract")) return "Contract";
 
-  return s.charAt(0).toUpperCasesweCase() + s.slice(1);
+  // ✅ fix: typo in your code: toUpperCasesweCase()
+  return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
 const jobTypeOrder = (v) => {
@@ -87,6 +89,7 @@ export default function Jobs() {
   const q = useQuery();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isSaved, toggleSaved } = useSavedJobs();
 
   const category = q.get("category") || "";
 
@@ -94,9 +97,7 @@ export default function Jobs() {
   const selectedLocations = parseMulti(q.get("location"));
   const selectedExperience = parseMulti(q.get("experienceLevel"));
   const selectedJobTypes = parseMulti(q.get("jobType"));
-
-  // Salary slider uses single value (still stored as salaryRange=<string>)
-  const selectedSalary = parseMulti(q.get("salaryRange"));
+  const selectedSalary = parseMulti(q.get("salaryRange")); // single value stored
 
   const sort = q.get("sort") || "newest";
   const page = Math.max(1, Number(q.get("page") || 1));
@@ -119,9 +120,6 @@ export default function Jobs() {
     type: true,
     salary: true,
   });
-
-  // saved state in this list (jobId -> boolean)
-  const [savedMap, setSavedMap] = useState({}); // { [id]: true }
 
   const facetList = (arr) => (Array.isArray(arr) ? arr : []);
 
@@ -231,24 +229,6 @@ export default function Jobs() {
         setFacetsExp(fe);
         setFacetsJobType(ft);
         setFacetsSalary(fs);
-
-        // preload saved state (only if logged)
-        if (user && jobs?.items?.length) {
-          try {
-            // best endpoint: /api/saved-jobs/ids (if you added it)
-            const r = await fetch(`${API}/saved-jobs/ids`, { credentials: "include" });
-            if (r.ok) {
-              const ids = await r.json(); // int[]
-              const m = {};
-              (ids || []).forEach((id) => (m[id] = true));
-              setSavedMap(m);
-            }
-          } catch {
-            // ignore if endpoint not present yet
-          }
-        } else if (!user) {
-          setSavedMap({});
-        }
       } catch (e) {
         console.error(e);
         setSummary(null);
@@ -265,19 +245,7 @@ export default function Jobs() {
 
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, tech, sort, page, pageSize, q.toString(), user?.id]);
-
-  const toggleSave = async (jobId) => {
-    if (!user) return; // UI hides button anyway
-
-    try {
-      const { saved } = await savedJobsService.toggle(jobId);
-      setSavedMap((prev) => ({ ...prev, [jobId]: saved }));
-    } catch (e) {
-      console.error(e);
-      // optional: show toast/flash
-    }
-  };
+  }, [category, tech, sort, page, pageSize, q.toString()]);
 
   const totalItems = result?.totalItems ?? 0;
   const totalPages = result?.totalPages ?? 0;
@@ -299,7 +267,6 @@ export default function Jobs() {
     .map((x) => ({ ...x, value: String(x.value || "").trim() }))
     .filter((x) => x.value);
 
-  // Salary slider stops (NO useMemo - avoids hook order issues)
   const salaryStops = [
     { value: "", count: 0, min: null, max: null, pretty: "Без значение" },
     ...fixedSalaryRanges
@@ -326,12 +293,13 @@ export default function Jobs() {
   // ---------- Rendering ----------
   if (!category) return <div className="jobs-page">Missing category.</div>;
 
-  if (loading && !result)
+  if (loading && !result) {
     return (
       <div className="jobs-page">
         <div className="page-loader">Loading…</div>
       </div>
     );
+  }
 
   if (!result) return <div className="jobs-page">No results.</div>;
 
@@ -536,106 +504,102 @@ export default function Jobs() {
           </div>
 
           <div className="jobs-cards">
-           {result.items.map((job) => {
-  const isSaved = !!savedMap[job.id];
+            {(result.items || []).map((job) => {
+              const saved = isSaved(job.id);
 
-  return (
-   <article
-  key={job.id}
-  className="job-card job-card-v2"
-  role="link"
-  tabIndex={0}
-  onClick={() => navigate(`/company/jobads/${job.id}`)}
-  onKeyDown={(e) => {
-    if (e.key === "Enter" || e.key === " ") {
+              return (
+                <article
+                  key={job.id}
+                  className="job-card job-card-v2"
+                  role="link"
+                  tabIndex={0}
+                  onClick={() => navigate(`/company/jobads/${job.id}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      navigate(`/company/jobads/${job.id}`);
+                    }
+                  }}
+                >
+                  {/* LEFT: logo + company */}
+                  <div className="jc-left">
+                    {job.companyLogoUrl ? (
+                      <img className="jc-logo" src={job.companyLogoUrl} alt={job.companyName} />
+                    ) : (
+                      <div className="jc-logo-fallback">{job.companyName?.[0] ?? "?"}</div>
+                    )}
+                    <div className="jc-company">
+                      <div className="jc-company-name">{job.companyName}</div>
+                    </div>
+                  </div>
+
+                  {/* MID: title + bottom meta */}
+                  <div className="jc-mid">
+                    <div className="jc-title">{job.title}</div>
+
+                    <div className="jc-bottom">
+                      {!job.isRemote && job.location ? (
+                        <span className="jc-pill jc-pill-location">📍 {cityOnly(job.location)}</span>
+                      ) : null}
+
+                      {job.isRemote ? (
+                        <span className="jc-pill jc-pill-remote">
+                          <img src={homeOfficeIcon} alt="Remote" className="jc-pill-icon" loading="lazy" />
+                          Remote
+                        </span>
+                      ) : (
+                        <span className="jc-pill">
+                          <img src={hybridIcon} alt="Hybrid" className="jc-pill-icon" loading="lazy" />
+                          Hybrid
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* RIGHT: top actions + techs */}
+                  <div className="jc-right">
+                    <div className="jc-top">
+                      <div className="jc-date" title="Публикувана">
+                        <span className="jc-cal">🗓️</span>
+                        {new Date(job.createdAt).toLocaleDateString("bg-BG", { day: "numeric", month: "short" })}
+                      </div>
+
+                    {user ? (
+  <button
+    type="button"
+    className={`jc-save ${saved ? "is-saved" : ""}`}
+    title={saved ? "Премахни от запазени" : "Запази обявата"}
+    aria-label={saved ? "Премахни от запазени" : "Запази обявата"}
+    aria-pressed={saved}
+    onClick={(e) => {
       e.preventDefault();
-      navigate(`/company/jobads/${job.id}`);
-    }
-  }}
->
+      e.stopPropagation();
+      toggleSaved(job.id);
+    }}
+  >
+    {saved ? "📌" : "📍"}
+  </button>
+) : null}
 
-      {/* LEFT: logo + company */}
-      <div className="jc-left">
-        {job.companyLogoUrl ? (
-          <img className="jc-logo" src={job.companyLogoUrl} alt={job.companyName} />
-        ) : (
-          <div className="jc-logo-fallback">{job.companyName?.[0] ?? "?"}</div>
-        )}
-        <div className="jc-company">
-          <div className="jc-company-name">{job.companyName}</div>
-        </div>
-      </div>
+                    </div>
 
-      {/* MID: title + bottom meta */}
-      <div className="jc-mid">
-        <div className="jc-title">{job.title}</div>
+                    <div className="jc-techs">
+                      {(job.techs || []).slice(0, 9).map((t) => (
+                        <span key={t.id ?? t.slug ?? t.name} className="jc-tech" title={t.name}>
+                          {t.logoUrl ? (
+                            <img src={iconifyColorize(t.logoUrl)} alt={t.name} />
+                          ) : (
+                            <span className="jc-tech-fallback">{t.name?.[0] ?? "?"}</span>
+                          )}
+                        </span>
+                      ))}
 
-        <div className="jc-bottom">
-          {/* location pill only if NOT remote */}
-          {!job.isRemote && job.location ? (
-            <span className="jc-pill jc-pill-location">📍 {cityOnly(job.location)}</span>
-          ) : null}
-
-          {/* remote/hybrid */}
-          {job.isRemote ? (
-            <span className="jc-pill jc-pill-remote">
-              <img src={homeOfficeIcon} alt="Remote" className="jc-pill-icon" loading="lazy" />
-              Remote
-            </span>
-          ) : (
-            <span className="jc-pill">
-              <img src={hybridIcon} alt="Hybrid" className="jc-pill-icon" loading="lazy" />
-              Hybrid
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* RIGHT: top actions + techs */}
-      <div className="jc-right">
-        <div className="jc-top">
-          <div className="jc-date" title="Публикувана">
-            <span className="jc-cal">🗓️</span>
-            {new Date(job.createdAt).toLocaleDateString("bg-BG", { day: "numeric", month: "short" })}
-          </div>
-
-          {user ? (
-            <button
-              type="button"
-              className={`jc-save ${isSaved ? "is-saved" : ""}`}
-              title={isSaved ? "Премахни от запазени" : "Запази обявата"}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleSave(job.id);
-              }}
-              aria-label="Запази обявата"
-            >
-              📌
-            </button>
-          ) : null}
-        </div>
-
-        <div className="jc-techs">
-          {(job.techs || []).slice(0, 9).map((t) => (
-            <span key={t.id ?? t.slug ?? t.name} className="jc-tech" title={t.name}>
-              {t.logoUrl ? (
-                <img src={iconifyColorize(t.logoUrl)} alt={t.name} />
-              ) : (
-                <span className="jc-tech-fallback">{t.name?.[0] ?? "?"}</span>
-              )}
-            </span>
-          ))}
-
-          {(job.techs || []).length > 9 ? (
-            <span className="jc-tech-more">+{job.techs.length - 9}</span>
-          ) : null}
-        </div>
-      </div>
-    </article>
-  );
-})}
-
+                      {(job.techs || []).length > 9 ? <span className="jc-tech-more">+{job.techs.length - 9}</span> : null}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
 
           <div className="jobs-pagination">
@@ -653,10 +617,7 @@ export default function Jobs() {
               </button>
             ))}
 
-            <button
-              disabled={page >= totalPages}
-              onClick={() => setParam("page", page + 1, { resetPage: false, scrollTop: true })}
-            >
+            <button disabled={page >= totalPages} onClick={() => setParam("page", page + 1, { resetPage: false, scrollTop: true })}>
               →
             </button>
           </div>
