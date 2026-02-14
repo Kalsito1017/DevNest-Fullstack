@@ -4,14 +4,25 @@
   padding: 18px 0 54px;
 }
 
-.companies-hero {
+.companies-hero{
   max-width: 1200px;
   margin: 0 auto;
-  padding: 10px 18px;
+  padding: 48px 36px;
+
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 18px;
   align-items: start;
+
+  min-height: 360px;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
 }
 
 .companies-hero-left {
@@ -655,4 +666,6 @@
   padding: 6px 10px;
   border-radius: 999px;
 }
+
+
 

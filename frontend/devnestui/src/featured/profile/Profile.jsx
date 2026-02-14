@@ -165,8 +165,7 @@ const Profile = () => {
       ? "Запазени обяви"
       : activeSection === "applications"
       ? "Моите кандидатури"
-      : activeSection === "subscriptions"
-      ? "Моите абонаменти"
+      
       : activeSection === "events"
       ? "Моите събития"
       : "Моят профил";
@@ -224,14 +223,6 @@ const Profile = () => {
               type="button"
             >
               Запазени обяви
-            </button>
-
-            <button
-              className={`profile-menu-item ${activeSection === "subscriptions" ? "is-active" : ""}`}
-              onClick={() => goTab("subscriptions")}
-              type="button"
-            >
-              Моите абонаменти
             </button>
 
             <button

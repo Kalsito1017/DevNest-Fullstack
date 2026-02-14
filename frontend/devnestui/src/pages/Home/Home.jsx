@@ -8,7 +8,6 @@ import heroBg from '../../assets/backgroundimageforhomepagetitle.png';
 
 const Home = () => {
   const [sections, setSections] = useState([]);
-  const [companyCount, setCompanyCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -22,17 +21,17 @@ const [newsletterStatus, setNewsletterStatus] = useState('idle');
       try {
         setIsLoading(true);
 
-        const [sectionsRaw, companiesRaw] = await Promise.all([
+        const [sectionsRaw] = await Promise.all([
           getHomeSections(6),
           getCompanies({ onlyActive: true }).catch(() => []),
         ]);
 
         setSections(Array.isArray(sectionsRaw) ? sectionsRaw : []);
-        setCompanyCount(Array.isArray(companiesRaw) ? companiesRaw.length : 0);
+        
       } catch (e) {
         console.error(e);
         setSections([]);
-        setCompanyCount(0);
+        
       } finally {
         setIsLoading(false);
       }

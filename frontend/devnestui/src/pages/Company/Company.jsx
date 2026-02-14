@@ -7,7 +7,7 @@ import {
   getCompanySuggestions,
 } from "../../services/api/companies";
 import "./Company.css";
-
+import companybg from "../../assets/companybackground.png";
 function useDebounced(value, delayMs) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -311,7 +311,10 @@ export default function Company() {
 
   return (
     <div className="companies-page">
-      <div className="companies-hero">
+      <div
+  className="companies-hero"
+  style={{ backgroundImage: `url(${companybg})` }}
+>
         <div className="companies-hero-left">
           <div className="companies-title">
             <span className="companies-title-number">{String(totalCount || 0)}</span>

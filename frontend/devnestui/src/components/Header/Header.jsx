@@ -180,11 +180,14 @@ const Header = () => {
       </header>
 
       {/* ✅ modal driven by AuthContext */}
-      <AuthModal
-        isOpen={authModal.isOpen}
-        onClose={closeAuthModal}
-        initialMode={authModal.mode}
-      />
+     {authModal.isOpen && (
+  <AuthModal
+    key={authModal.mode}
+    isOpen={authModal.isOpen}
+    onClose={closeAuthModal}
+    initialMode={authModal.mode}
+  />
+)}
     </>
   );
 };
