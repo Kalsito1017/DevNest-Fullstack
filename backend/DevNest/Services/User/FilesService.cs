@@ -2,6 +2,7 @@
 using DevNest.Models;
 using Microsoft.EntityFrameworkCore;
 using DevNest.DTOs.User;
+using DevNest.Models.Files;
 
 namespace DevNest.Services.User;
 

@@ -7,7 +7,7 @@ import Blogs from "./pages/Blogs/Blogs";
 import AIWorkshops from "./pages/AIWorkshops/AIWorkshops/AIWorkshops";
 import AboutUs from "./pages/AboutUs/AboutUs";
 import "./App.css";
-import Profile from "./auth/Profile";
+import Profile from "./featured/profile/Profile";
 import Jobs from "./pages/Job/Job/Job";
 import CompanyMap from "./pages/Company/CompanyMap";
 import CompanySelectLocation from "./pages/Company/CompanySelectLocation";
@@ -16,15 +16,19 @@ import LocationHome from "./pages/Job/LocationHome";
 import JobAdDetails from "./pages/Job/JobAdDetails/JobAdDetails";
 import CompanyProfile from "./pages/Company/CompanyProfile/CompanyProfile";
 import WorkshopDetails from "./pages/AIWorkshops/WorkshopDetails/WorkshopDetails";
-import RegisterRouteTrigger from "./auth/RegisterRouteTrigger";
+import RegisterRouteTrigger from "./featured/auth/RegisterRouteTrigger";
 import { SavedJobsProvider } from "./context/SavedJobsContext";
+import ScrollToTop from "./routing/ScrollToTop";
 
 function App() {
   return (
     <SavedJobsProvider>
       <Router>
+        <ScrollToTop />
+
         <div className="app">
           <Header />
+
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />
@@ -36,20 +40,23 @@ function App() {
 
               <Route path="/company" element={<Company />} />
               <Route path="/company/map" element={<CompanyMap />} />
-              <Route path="/company/select/location/:locationSlug" element={<CompanySelectLocation />} />
+              <Route
+                path="/company/select/location/:locationSlug"
+                element={<CompanySelectLocation />}
+              />
               <Route path="/company/:companyId" element={<CompanyProfile />} />
 
               <Route path="/blogs" element={<Blogs />} />
               <Route path="/aiworkshops" element={<AIWorkshops />} />
               <Route path="/aboutus" element={<AboutUs />} />
               <Route path="/profile" element={<Profile />} />
-<Route path="/workshop/:slug" element={<WorkshopDetails />} />
-  <Route path="/register" element={<RegisterRouteTrigger />} />
+              <Route path="/workshop/:slug" element={<WorkshopDetails />} />
+              <Route path="/register" element={<RegisterRouteTrigger />} />
+
               <Route path="*" element={<div>404</div>} />
-              
             </Routes>
-            
           </main>
+
           <Footer />
         </div>
       </Router>

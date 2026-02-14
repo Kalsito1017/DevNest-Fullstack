@@ -1,6 +1,6 @@
 ﻿using DevNest.Data;
 using DevNest.DTOs.Jobs;
-using DevNest.Models;
+using DevNest.Models.Jobs;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevNest.Services.Jobs;

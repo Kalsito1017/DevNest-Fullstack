@@ -7,6 +7,7 @@ import mapBg from "../../../assets/backgroundmapimage.jpg";
 import applyIcon from "../../../assets/vecteezy_simple-icon-of-a-paper-airplane-for-delivery_4879664.svg";
 import { useAuth } from "../../../context/AuthContext";
 import { useSavedJobs } from "../../../context/SavedJobsContext";
+import JobApplyModal from "../JobApplyModal/JobApplyModal";
 
 function formatRelativeBg(date) {
   const d = new Date(date);
@@ -30,13 +31,25 @@ export default function JobAdDetails() {
   const { jobId } = useParams();
   const navigate = useNavigate();
 
-  const { user } = useAuth();
+
   const { isSaved, toggleSaved } = useSavedJobs();
 
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [err, setErr] = useState("");
   const [mapOpen, setMapOpen] = useState(false);
+  const [applyOpen, setApplyOpen] = useState(false);
+
+const { user, openAuthModal } = useAuth();
+
+const handleApplyClick = () => {
+  if (!user) {
+    
+    openAuthModal("register", () => setApplyOpen(true));
+    return;
+  }
+  setApplyOpen(true);
+};
 
   useEffect(() => {
     let mounted = true;
@@ -97,7 +110,11 @@ export default function JobAdDetails() {
         <div className="jad-container">
           <div className="jad-error">
             <div className="jad-error-title">{err}</div>
-            <button type="button" className="jad-btn jad-btn-ghost" onClick={() => navigate(-1)}>
+            <button
+              type="button"
+              className="jad-btn jad-btn-ghost"
+              onClick={() => navigate(-1)}
+            >
               Назад
             </button>
           </div>
@@ -141,7 +158,7 @@ export default function JobAdDetails() {
             <button
               type="button"
               className="jad-btn jad-btn-primary jad-btn-apply"
-              onClick={() => alert("Кандидатствай (ще го вържем по-късно)")}
+              onClick={handleApplyClick}
             >
               <img src={applyIcon} alt="" className="jad-btn-icon" />
               Кандидатствай
@@ -163,11 +180,17 @@ export default function JobAdDetails() {
                       key={c.id || c.name}
                       type="button"
                       className="jad-pill"
-                      onClick={() => (c.slug ? navigate(`/jobs?category=${encodeURIComponent(c.slug)}`) : navigate(`/jobs`))}
+                      onClick={() =>
+                        c.slug
+                          ? navigate(`/jobs?category=${encodeURIComponent(c.slug)}`)
+                          : navigate(`/jobs`)
+                      }
                       title={c.name}
                     >
                       <span className="jad-pill-name">{c.name}</span>
-                      {typeof c.count === "number" && <span className="jad-pill-count">{c.count}</span>}
+                      {typeof c.count === "number" && (
+                        <span className="jad-pill-count">{c.count}</span>
+                      )}
                     </button>
                   ))}
 
@@ -179,8 +202,15 @@ export default function JobAdDetails() {
 
               {/* Map box only if NOT remote */}
               {!data.isRemote ? (
-                <div className="jad-box jad-mapbox jad-mapbox-leaflet" style={{ backgroundImage: `url(${mapBg})` }}>
-                  <button type="button" className="jad-map-open" onClick={() => setMapOpen(true)}>
+                <div
+                  className="jad-box jad-mapbox jad-mapbox-leaflet"
+                  style={{ backgroundImage: `url(${mapBg})` }}
+                >
+                  <button
+                    type="button"
+                    className="jad-map-open"
+                    onClick={() => setMapOpen(true)}
+                  >
                     Виж обявата на картата
                   </button>
                 </div>
@@ -204,7 +234,6 @@ export default function JobAdDetails() {
               </div>
 
               <div className="jad-submeta-right">
-                {/* ✅ same idea as Jobs list: icon changes + pressed state */}
                 {user ? (
                   <button
                     type="button"
@@ -230,7 +259,11 @@ export default function JobAdDetails() {
                   </button>
                 )}
 
-                <button type="button" className="jad-action" onClick={() => alert("Report (по-късно)")}>
+                <button
+                  type="button"
+                  className="jad-action"
+                  onClick={() => alert("Report (по-късно)")}
+                >
                   Съобщи проблем
                 </button>
               </div>
@@ -246,31 +279,39 @@ export default function JobAdDetails() {
                     {t.logoUrl ? (
                       <img src={t.logoUrl} alt={t.name} />
                     ) : (
-                      <div className="jad-tech-fallback">{(t.name || "").slice(0, 2).toUpperCase()}</div>
+                      <div className="jad-tech-fallback">
+                        {(t.name || "").slice(0, 2).toUpperCase()}
+                      </div>
                     )}
                   </div>
                 ))}
 
-                {(!data.techStack || data.techStack.length === 0) && <div className="jad-tech-empty">Няма добавени технологии.</div>}
+                {(!data.techStack || data.techStack.length === 0) && (
+                  <div className="jad-tech-empty">Няма добавени технологии.</div>
+                )}
               </div>
             </div>
 
             {/* Company about */}
             <div className="jad-section">
               <div className="jad-section-title">About {company?.name || "company"}</div>
-              <div className="jad-text">{safeText(data.companyAbout) || "Няма добавено описание за компанията."}</div>
+              <div className="jad-text">
+                {safeText(data.companyAbout) || "Няма добавено описание за компанията."}
+              </div>
             </div>
 
             {/* Job description */}
             <div className="jad-section">
               <div className="jad-section-title">About the role</div>
-              <div className="jad-text">{safeText(data.description) || "Няма добавено описание за позицията."}</div>
+              <div className="jad-text">
+                {safeText(data.description) || "Няма добавено описание за позицията."}
+              </div>
 
               <div className="jad-apply-bottom">
                 <button
                   type="button"
                   className="jad-btn jad-btn-primary jad-btn-apply"
-                  onClick={() => alert("Кандидатствай (ще го вържем по-късно)")}
+                  onClick={handleApplyClick}
                 >
                   <img src={applyIcon} alt="" className="jad-btn-icon" />
                   Кандидатствай
@@ -294,7 +335,9 @@ export default function JobAdDetails() {
               </div>
 
               <div className="jad-aside-label">За компанията</div>
-              <div className="jad-aside-text">{safeText(data.companyAbout)?.slice(0, 420) || "Няма кратко описание."}</div>
+              <div className="jad-aside-text">
+                {safeText(data.companyAbout)?.slice(0, 420) || "Няма кратко описание."}
+              </div>
 
               <button
                 type="button"
@@ -304,25 +347,34 @@ export default function JobAdDetails() {
                 Повече за компанията
               </button>
 
-             <button
-  type="button"
-  className="jad-btn jad-btn-soft"
-  onClick={() => {
-    if (!company?.id) return navigate("/company");
+              <button
+                type="button"
+                className="jad-btn jad-btn-soft"
+                onClick={() => {
+                  if (!company?.id) return navigate("/company");
 
-    // ✅ reliable hash navigation (react-router v6)
-    navigate({
-      pathname: `/company/${company.id}`,
-      hash: "#jobs",
-    });
-  }}
->
-  Всички обяви на компанията
-</button>
-
+                  navigate({
+                    pathname: `/company/${company.id}`,
+                    hash: "#jobs",
+                  });
+                }}
+              >
+                Всички обяви на компанията
+              </button>
             </div>
           </aside>
         </div>
+
+        <JobApplyModal
+          open={applyOpen}
+          onClose={(success) => {
+            setApplyOpen(false);
+            if (success) navigate("/profile/applications");
+          }}
+          jobId={data.id}
+          jobTitle={data.title}
+          user={user}
+        />
       </div>
     </div>
   );

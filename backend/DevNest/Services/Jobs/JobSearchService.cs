@@ -1,5 +1,8 @@
 ﻿using DevNest.Data;
 using DevNest.DTOs.Jobs;
+using DevNest.Models.Tech;
+using DevNest.Models.Companies;
+using DevNest.Models.Jobs;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevNest.Services.Jobs;
@@ -13,9 +16,9 @@ public class JobSearchService : IJobSearchService
     // ✅ Strongly-typed row for EF translation (NO dynamic)
     private sealed class JobRow
     {
-        public required DevNest.Models.Job J { get; init; }
-        public DevNest.Models.Category? C { get; init; }
-        public required DevNest.Models.Company Co { get; init; }
+        public required Job J { get; init; }
+        public Category? C { get; init; }
+        public required Company Co { get; init; }
     }
 
     private static List<string> SplitCsv(string? raw)

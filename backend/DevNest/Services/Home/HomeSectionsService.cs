@@ -1,5 +1,6 @@
 ﻿using DevNest.Data;
 using DevNest.DTOs.Home;
+using DevNest.Models.Jobs;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevNest.Services.Home
@@ -46,7 +47,7 @@ namespace DevNest.Services.Home
             var loc = NormalizeLocation(location);
 
             // Base visible jobs query
-            IQueryable<Models.Job> visibleJobs = db.Jobs
+            IQueryable<Job> visibleJobs = db.Jobs
                 .AsNoTracking()
                 .Where(j => visibleStatuses.Contains(j.Status));
 

@@ -6,20 +6,25 @@ async function parseBody(res) {
   return res.text();
 }
 
-async function request(method, path, { signal, body } = {}) {
+async function request(method, path, { signal, body, headers } = {}) {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method,
     signal,
-    credentials: "include", // ✅ IMPORTANT
-    headers: body ? { "Content-Type": "application/json" } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
+    credentials: "include",
+    headers,
+    body,
   });
 
   if (!res.ok) {
     const parsed = await parseBody(res).catch(() => "");
-    const msg = typeof parsed === "string" ? parsed : "";
-    const err = new Error(`${method} ${path} failed: ${res.status} ${msg}`);
-    err.status = res.status; // ✅ for easy 401 handling
+    const msg =
+      typeof parsed === "string"
+        ? parsed
+        : (parsed?.message || "");
+
+    const err = new Error(`${method} ${path} failed: ${res.status} ${msg}`.trim());
+    err.status = res.status;
+    err.payload = parsed; // important for UI messages
     throw err;
   }
 
@@ -31,6 +36,21 @@ export function apiGet(path, opts) {
   return request("GET", path, opts);
 }
 
+// JSON POST (unchanged behavior)
 export function apiPost(path, body, opts) {
-  return request("POST", path, { ...(opts || {}), body });
+  return request("POST", path, {
+    ...(opts || {}),
+    headers: { "Content-Type": "application/json", ...(opts?.headers || {}) },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+}
+
+// multipart/form-data POST
+export function apiPostForm(path, formData, opts) {
+  // DO NOT set Content-Type here (browser sets boundary)
+  return request("POST", path, {
+    ...(opts || {}),
+    headers: { ...(opts?.headers || {}) },
+    body: formData,
+  });
 }

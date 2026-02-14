@@ -1,7 +1,7 @@
 import { Link, useNavigate} from "react-router-dom";
 import {  useRef, useState } from "react";
 import "./Header.css";
-import AuthModal from "../../auth/AuthModal";
+import AuthModal from "../../featured/auth/AuthModal";
 import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {

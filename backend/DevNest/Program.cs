@@ -3,6 +3,7 @@ using DevNest.Services.Categories;
 using DevNest.Services.Companies;
 using DevNest.Services.Events;
 using DevNest.Services.Home;
+using DevNest.Services.JobApplications;
 using DevNest.Services.Jobs;
 using DevNest.Services.Techs;
 using DevNest.Services.User;
@@ -48,6 +49,7 @@ namespace DevNest
             builder.Services.AddScoped<IJobAdsService, JobAdsService>();
             builder.Services.AddScoped<ICompanyProfileService, CompanyProfileService>();
             builder.Services.AddScoped<ISavedEventsService, SavedEventsService>();
+            builder.Services.AddScoped<IJobApplicationsService, JobApplicationsService>();
 
             builder.Services.AddCors(options =>
             {
