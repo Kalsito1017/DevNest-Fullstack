@@ -60,7 +60,7 @@ public class CompanyProfileService : ICompanyProfileService
             .FirstOrDefaultAsync(ct);
     }
 
-    // Future-proof: you don't have slugs yet -> return null (or implement once you add Slug column)
+  
     public Task<CompanyProfileDto?> GetBySlugAsync(string slug, CancellationToken ct = default)
     {
         return Task.FromResult<CompanyProfileDto?>(null);

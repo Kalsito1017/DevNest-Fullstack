@@ -1,5 +1,5 @@
 FROM node:20-alpine
-WORKDIR /app
+WORKDIR /devnestui
 
 COPY package*.json ./
 RUN npm ci

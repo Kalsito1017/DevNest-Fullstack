@@ -1,4 +1,5 @@
-﻿using DevNest.Services.User;
+﻿using DevNest.DTOs.User;
+using DevNest.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -21,11 +22,12 @@ public class FilesController : ControllerBase
     public async Task<IActionResult> List(CancellationToken ct)
         => Ok(await files.ListAsync(UserId, ct));
 
-    // ✅ THIS is the missing one that causes 405
-    [HttpPost]
-    [RequestSizeLimit(25_000_000)]
-    public async Task<IActionResult> Upload([FromForm] IFormFile file, CancellationToken ct)
+    [HttpPost("upload")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Upload([FromForm] UploadFileRequest request, CancellationToken ct)
     {
+        var file = request.File;
+
         if (file == null || file.Length == 0)
             return BadRequest(new { message = "No file provided." });
 

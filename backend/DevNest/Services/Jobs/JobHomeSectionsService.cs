@@ -29,7 +29,7 @@ public class JobHomeSectionsService : IJobHomeSectionsService
             .AsNoTracking()
             .Where(j => j.Status == "Active")
             .Include(j => j.Company)
-            .Include(j => j.JobTechs); // ✅ only need TechId from JobTechs
+            .Include(j => j.JobTechs); 
 
         var categoryMap = await db.Categories
             .AsNoTracking()
@@ -59,7 +59,7 @@ public class JobHomeSectionsService : IJobHomeSectionsService
                     CategoryName = categoryMap.ContainsKey(j.CategoryId) ? categoryMap[j.CategoryId].Name : null,
                     CategorySlug = categoryMap.ContainsKey(j.CategoryId) ? categoryMap[j.CategoryId].Slug : null,
 
-                    // ✅ Tech icons via JOIN (because JobTech.Tech is string)
+                   
                     Techs = j.JobTechs == null
                         ? new List<TechIconDto>()
                         : (

@@ -13,7 +13,7 @@ public class JobSearchService : IJobSearchService
 
     public JobSearchService(ApplicationDbContext db) => this.db = db;
 
-    // ✅ Strongly-typed row for EF translation (NO dynamic)
+
     private sealed class JobRow
     {
         public required Job J { get; init; }
@@ -29,7 +29,6 @@ public class JobSearchService : IJobSearchService
             .Distinct()
             .ToList();
 
-    // ✅ shared builder: same filtering rules for both Search and Facets
     private async Task<IQueryable<JobRow>> BuildBaseQueryAsync(JobSearchQuery query, CancellationToken ct)
     {
         var term = query.Q?.Trim();
@@ -76,7 +75,7 @@ public class JobSearchService : IJobSearchService
                 (x.J.Description ?? "").Contains(t) ||
                 (x.Co.Name ?? "").Contains(t) ||
 
-                // ✅ match by any tech name/slug attached to the job
+         
                 (
                     from jt in db.JobTechs.AsNoTracking()
                     join tech in db.Techs.AsNoTracking() on jt.TechId equals tech.Id
@@ -89,16 +88,10 @@ public class JobSearchService : IJobSearchService
             );
         }
 
-
-        // Category filter by slug
         if (!string.IsNullOrWhiteSpace(categorySlug))
             baseQuery = baseQuery.Where(x => x.C != null && x.C.Slug == categorySlug);
 
-        // ----------------------------
-        // ✅ Location + Remote logic
-        // - If Remote=true AND locations selected => UNION (OR)
-        // - Otherwise behave normally (AND)
-        // ----------------------------
+    
         var remoteSelected = query.Remote.HasValue && query.Remote.Value == true;
         var hasLocations = locations.Count > 0;
 
@@ -118,19 +111,16 @@ public class JobSearchService : IJobSearchService
                 baseQuery = baseQuery.Where(x => x.J.IsRemote == query.Remote.Value);
         }
 
-        // ExperienceLevel filter (multi)
         if (exps.Count > 0)
             baseQuery = baseQuery.Where(x => x.J.ExperienceLevel != null && exps.Contains(x.J.ExperienceLevel));
 
-        // JobType filter (multi)
+     
         if (jobTypes.Count > 0)
             baseQuery = baseQuery.Where(x => x.J.JobType != null && jobTypes.Contains(x.J.JobType));
 
-        // SalaryRange filter (multi)
         if (salaryRanges.Count > 0)
             baseQuery = baseQuery.Where(x => x.J.SalaryRange != null && salaryRanges.Contains(x.J.SalaryRange));
 
-        // Tech filter by TechId
         if (techId.HasValue)
         {
             var id = techId.Value;
@@ -144,21 +134,20 @@ public class JobSearchService : IJobSearchService
 
     public async Task<PagedResult<JobCardDto>> SearchAsync(JobSearchQuery query, CancellationToken ct = default)
     {
-        // Guardrails
+   
         var page = query.Page < 1 ? 1 : query.Page;
         var pageSize = query.PageSize is < 5 or > 50 ? 20 : query.PageSize;
         var sort = (query.Sort ?? "newest").Trim().ToLowerInvariant();
 
         var baseQuery = await BuildBaseQueryAsync(query, ct);
 
-        // Sorting
+
         baseQuery = sort switch
         {
             "deadline" => baseQuery.OrderBy(x => x.J.Deadline),
             _ => baseQuery.OrderByDescending(x => x.J.PublishedAt ?? x.J.CreatedAt),
         };
 
-        // Total items BEFORE paging
         var totalItems = await baseQuery.CountAsync(ct);
         var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
@@ -169,7 +158,6 @@ public class JobSearchService : IJobSearchService
             .Select(x => new { x.J, x.C, x.Co })
             .ToListAsync(ct);
 
-        // Load techs for these jobs in ONE query
         var jobIds = raw.Select(r => r.J.Id).ToArray();
 
         var techsByJob = jobIds.Length == 0

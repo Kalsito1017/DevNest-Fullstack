@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>9aec5f43-bc34-458a-b9a7-dbde3b38725d</UserSecretsId>
+	  <EnableNETAnalyzers>true</EnableNETAnalyzers>
+	  <AnalysisLevel>latest</AnalysisLevel>
+	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -14,12 +17,13 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.3" />
+		<PackageReference Include="StackExchange.Redis" Version="2.11.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />
-
 
 	</ItemGroup>
 

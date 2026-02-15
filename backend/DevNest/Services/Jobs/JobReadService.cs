@@ -20,7 +20,7 @@ public class JobReadService : IJobReadService
             .AsNoTracking()
             .Where(j => j.Status == "Active")
             .Include(j => j.Company)
-            .Include(j => j.JobTechs) // ✅ we only need TechId from JobTechs
+            .Include(j => j.JobTechs) 
             .OrderByDescending(j => j.CreatedAt)
             .Select(j => new JobCardDto
             {

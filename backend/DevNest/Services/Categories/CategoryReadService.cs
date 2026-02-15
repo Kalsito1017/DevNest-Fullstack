@@ -18,26 +18,25 @@ namespace DevNest.Services.Categories
                 .Select(c => new CategoryListDto
                 {
                     Id = c.Id,
-                    Name = c.Name,
-                    Slug = c.Slug,
+                    Name = c.Name ?? "",
+                    Slug = c.Slug ?? "",
                     Description = c.Description,
                     IconUrl = c.IconUrl
                 })
                 .ToListAsync(ct);
         }
-
         public async Task<CategoryDetailsDto?> GetBySlugAsync(string slug, CancellationToken ct = default)
         {
             slug = (slug ?? string.Empty).Trim().ToLower();
 
             return await db.Categories
                 .AsNoTracking()
-                .Where(c => c.Slug.ToLower() == slug)
+               .Where(c => c.Slug != null && c.Slug.ToLower() == slug)
                 .Select(c => new CategoryDetailsDto
                 {
                     Id = c.Id,
                     Name = c.Name,
-                    Slug = c.Slug,
+                    Slug = c.Slug ?? "",
                     Description = c.Description,
                     IconUrl = c.IconUrl
                 })
@@ -74,8 +73,8 @@ namespace DevNest.Services.Categories
             return new CategorySummaryDto
             {
                 CategoryId = category.Id,
-                CategoryName = category.Name,
-                CategorySlug = category.Slug,
+                CategoryName = category.Name ?? "",
+                CategorySlug = category.Slug ?? "",
                 IconUrl = category.IconUrl,
                 TotalJobs = totalJobs,
                 NewJobs = newJobs

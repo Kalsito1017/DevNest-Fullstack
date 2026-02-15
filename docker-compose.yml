@@ -4,21 +4,11 @@ services:
     container_name: devnest-db
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "YourStrong(!)Password123"
+      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
     ports:
       - "1433:1433"
     volumes:
-      - devnest_mssql:/var/opt/mssql
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $$MSSQL_SA_PASSWORD -Q 'SELECT 1' -C || exit 1",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 15
-      start_period: 20s
+      - devnest_sql_data:/var/opt/mssql
 
   api:
     build:
@@ -26,26 +16,33 @@ services:
       dockerfile: Dockerfile
     container_name: devnest-api
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
-      ASPNETCORE_URLS: "http://+:8080"
-      ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=DevNestDb;User Id=sa;Password=YourStrong(!)Password123;TrustServerCertificate=True;Encrypt=True;"
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+
+      # IMPORTANT: use service name "db", NOT localhost
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=DevNestDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+
+      Jwt__Key: "gsn42g89nUNDUSNG-9iu83h&^48U$*u84u94indsugnDIHGUDSHfdsgDGSEvnvmGDJUSN$UN8u"
+      Jwt__Issuer: "DevNest"
+      Jwt__Audience: "DevNest"
+
+      Cors__Origins__0: "http://localhost:5173"
     ports:
       - "5099:8080"
 
-  web:
+  frontend:
     build:
       context: ./frontend/devnestui
       dockerfile: Dockerfile
-    container_name: devnest-web
+    container_name: devnest-frontend
     depends_on:
       - api
     environment:
-      VITE_API_BASE_URL: "http://localhost:5099"
+      VITE_API_URL: "http://localhost:5099"
     ports:
       - "5173:5173"
 
 volumes:
-  devnest_mssql:
+  devnest_sql_data:

@@ -45,25 +45,28 @@ namespace DevNest
             builder.Services.AddScoped<IHomeSectionsService, HomeSectionsService>();
             builder.Services.AddScoped<IFilesService, FilesService>();
             builder.Services.AddScoped<ISavedJobsService, SavedJobsService>();
-            builder.Services.AddScoped<IJobStatsService, JobStatsService>();
             builder.Services.AddScoped<IJobAdsService, JobAdsService>();
             builder.Services.AddScoped<ICompanyProfileService, CompanyProfileService>();
             builder.Services.AddScoped<ISavedEventsService, SavedEventsService>();
             builder.Services.AddScoped<IJobApplicationsService, JobApplicationsService>();
+
+            var corsOrigins = builder.Configuration
+    .GetSection("Cors:Origins")
+    .Get<string[]>() ?? new[] { "http://localhost:5173" };
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("DevCors", policy =>
                 {
                     policy
-                        .WithOrigins("http://localhost:5173")
+                        .WithOrigins(corsOrigins)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
                 });
             });
 
-          
+
             builder.Services
                 .AddIdentityCore<ApplicationUser>(options =>
                 {

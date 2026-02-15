@@ -21,7 +21,7 @@ public class JobAdsService : IJobAdsService
             .AsNoTracking()
             .Where(j => visibleStatuses.Contains(j.Status))
             .Include(j => j.Company)
-            .Include(j => j.JobTechs)     // ✅ само това, без ThenInclude
+            .Include(j => j.JobTechs)     
             .Include(j => j.Category)
             .FirstOrDefaultAsync(j => j.Id == id, ct);
 
@@ -34,7 +34,7 @@ public class JobAdsService : IJobAdsService
             {
                 Id = job.Category.Id,
                 Name = job.Category.Name,
-                Slug = job.Category.Slug,
+                Slug = job.Category.Slug ?? "",
                 Count = null
             });
         }
@@ -52,7 +52,7 @@ public class JobAdsService : IJobAdsService
     .GroupBy(t => Norm(t.Name))
     .ToDictionary(g => g.Key, g => g.First());
 
-        // ✅ jt.Tech е string -> правим уникален списък по текст
+
         var techStack = techNames
       .Select(name =>
       {
@@ -68,7 +68,7 @@ public class JobAdsService : IJobAdsService
               };
           }
 
-          // fallback: unknown tech name (still show initials)
+         
           return new TechIconDto
           {
               Id = 0,
@@ -87,7 +87,7 @@ public class JobAdsService : IJobAdsService
             Title = job.Title,
             Slug = "",
 
-            Location = job.Location,
+            Location = job.Location ?? "",
             IsRemote = job.IsRemote,
             JobType = job.JobType,
             ExperienceLevel = job.ExperienceLevel,

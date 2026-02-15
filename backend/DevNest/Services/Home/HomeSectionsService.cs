@@ -54,7 +54,8 @@ namespace DevNest.Services.Home
             // ✅ Apply filter ONLY by location (Remote is also location)
             if (!string.IsNullOrWhiteSpace(loc))
             {
-                visibleJobs = visibleJobs.Where(j => j.Location != null && j.Location.Trim() == loc);
+                visibleJobs = visibleJobs.Where(j =>
+                    j.Location != null && j.Location.Trim() == loc);
             }
 
             // Categories shown on home
@@ -63,38 +64,40 @@ namespace DevNest.Services.Home
                 .Select(c => new { c.Id, c.Name, c.Slug, c.IconUrl })
                 .ToListAsync(ct);
 
-            // Job counts per category (filtered)
+            // ✅ Job counts per category (filtered)
+            // NOTE: assumes Job.CategoryId is NON-nullable int (based on your CS0472 tooltip)
             var jobsCountByCategory = await visibleJobs
-                .Where(j => j.CategoryId != null)
-                .GroupBy(j => j.CategoryId!)
+                .GroupBy(j => j.CategoryId)
                 .Select(g => new { CategoryId = g.Key, Count = g.Count() })
                 .ToListAsync(ct);
 
             var categoryCountMap = jobsCountByCategory
                 .ToDictionary(x => x.CategoryId, x => x.Count);
 
-            // Tech counts per category (filtered) (exclude language techs "lang-")
-            var techCountsQuery = db.JobTechs
-                .AsNoTracking()
-                .Where(jt => jt.Job.CategoryId != null)
-                .Where(jt => jt.TechId != null)
-                .Where(jt => visibleStatuses.Contains(jt.Job.Status))
-                .Where(jt => !jt.TechRef.Slug.StartsWith("lang-"));
+            // ✅ Tech counts per category (filtered) (exclude language techs "lang-")
+            // NOTE: TechRef removed, so we join Techs via TechId and filter by Tech.Slug
+            var techCountsQuery =
+                from jt in db.JobTechs.AsNoTracking()
+                join t in db.Techs.AsNoTracking() on jt.TechId equals t.Id
+                where jt.TechId != null
+                      && visibleStatuses.Contains(jt.Job.Status)
+                      && !t.Slug.StartsWith("lang-")
+                select new { jt, t };
 
             // ✅ Same location filter for tech query
             if (!string.IsNullOrWhiteSpace(loc))
             {
-                techCountsQuery = techCountsQuery
-                    .Where(jt => jt.Job.Location != null && jt.Job.Location.Trim() == loc);
+                techCountsQuery = techCountsQuery.Where(x =>
+                    x.jt.Job.Location != null && x.jt.Job.Location.Trim() == loc);
             }
 
             var techCounts = await techCountsQuery
-                .GroupBy(jt => new { CategoryId = jt.Job.CategoryId!, TechId = jt.TechId!.Value })
+                .GroupBy(x => new { CategoryId = x.jt.Job.CategoryId, TechId = x.t.Id })
                 .Select(g => new
                 {
                     g.Key.CategoryId,
                     g.Key.TechId,
-                    JobsCount = g.Select(x => x.JobId).Distinct().Count()
+                    JobsCount = g.Select(x => x.jt.JobId).Distinct().Count()
                 })
                 .ToListAsync(ct);
 
@@ -131,17 +134,17 @@ namespace DevNest.Services.Home
                 );
 
             var result = categories
-                .Select(c => new HomeSectionDto
-                {
-                    CategoryId = c.Id,
-                    CategoryName = c.Name,
-                    CategorySlug = c.Slug,
-                    IconUrl = c.IconUrl,
-                    JobsCount = categoryCountMap.TryGetValue(c.Id, out var cnt) ? cnt : 0,
-                    Techs = techByCategory.TryGetValue(c.Id, out var pills) ? pills : new List<HomeTechDto>()
-                })
-                .OrderByDescending(x => x.JobsCount)
-                .ToList();
+           .Select(c => new HomeSectionDto
+           {
+               CategoryId = c.Id,
+               CategoryName = c.Name ?? "",          // if Name is nullable in DB
+               CategorySlug = c.Slug ?? "",          // ✅ fixes CS8601
+               IconUrl = c.IconUrl,                 // keep nullable if DTO allows it
+               JobsCount = categoryCountMap.TryGetValue(c.Id, out var cnt) ? cnt : 0,
+               Techs = techByCategory.TryGetValue(c.Id, out var pills) ? pills : new List<HomeTechDto>()
+           })
+           .OrderByDescending(x => x.JobsCount)
+           .ToList();
 
             return result;
         }
