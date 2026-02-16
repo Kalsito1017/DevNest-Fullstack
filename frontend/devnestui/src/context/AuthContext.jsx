@@ -7,13 +7,13 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
-  // ✅ Auth modal global state
+
   const [authModal, setAuthModal] = useState({
     isOpen: false,
     mode: "login", // "login" | "register" | "forgot"
   });
 
-  // ✅ optional: run something after login/register success
+
   const [postAuthAction, setPostAuthAction] = useState(null);
 
   const closeAuthModal = useCallback(() => {
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await fn();
     } catch {
-      // умишлено мълчим - UI си показва грешки където трябва
+      // show error toast?
     }
   }, [postAuthAction]);
 
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
       const me = await authService.login({ email, password });
       setUser(me);
 
-      // ✅ close modal + run after-auth action
+      
       closeAuthModal();
       await runPostAuthAction();
 
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
       const me = await authService.register({ firstName, lastName, email, password });
       setUser(me);
 
-      // ✅ close modal + run after-auth action
+     
       closeAuthModal();
       await runPostAuthAction();
 
@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
       logout,
       refreshMe,
 
-      // ✅ modal API
+ 
       authModal,
       openAuthModal,
       closeAuthModal,

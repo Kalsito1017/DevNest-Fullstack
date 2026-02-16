@@ -245,16 +245,6 @@
   gap: 8px;
 }
 
-.pill{
-  background: #fff;
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #2b3a67;
-  border: 1px solid rgba(0,0,0,.08);
-}
-
 .pill-remote{
   background: #e9fff0;
   color: #1f7a3a;
@@ -647,16 +637,6 @@
   padding: 8px 10px;
   border-radius: 12px;
   font-size: 14px;
-}
-.jc-save{
-  border: 1px solid rgba(15,23,42,0.12);
-  background: rgba(255,255,255,0.65);
-  border-radius: 12px;
-  padding: 8px 10px;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-  opacity: 0.7;
 }
 .jc-save.is-saved{
   opacity: 1;

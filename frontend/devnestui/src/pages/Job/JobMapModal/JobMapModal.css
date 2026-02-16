@@ -9,8 +9,8 @@
 }
 
 .jmm-modal {
-  width: min(1200px, 96vw);
-  height: min(680px, 86vh);
+ max-height: calc(100vh - 36px);
+  height: min(680px, calc(100vh - 36px));
   background: #fff;
   border-radius: 14px;
   overflow: hidden;
@@ -41,7 +41,8 @@
   justify-content: center;
 
   cursor: pointer;
-  z-index: 10001;
+  z-index: -2;
+    transition: transform 120ms ease, background 120ms ease;
 }
 
 .jmm-close:hover {
