@@ -62,7 +62,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
   };
 
   return (
-    <div className="modal-overlay" onMouseDown={handleOverlayMouseDown}>
+    <div className="auth-overlay" onMouseDown={handleOverlayMouseDown}>
       <div
         className="auth-modal"
         onMouseDown={(e) => e.stopPropagation()}

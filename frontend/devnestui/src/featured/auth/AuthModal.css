@@ -1,7 +1,6 @@
-/* src/components/auth/AuthModal.css */
 
 /* Modal Overlay */
-.modal-overlay {
+.auth-overlay {
     position: fixed;
     top: 0;
     left: 0;
