@@ -1,0 +1,74 @@
+/* src/pages/Terms.css */
+.terms-page {
+  background: #ffffff;
+  min-height: 100vh;
+  padding: 36px 0 64px;
+  color: #6f7d8e;
+}
+
+.terms-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+.terms-hero {
+  margin-bottom: 18px;
+  padding: 18px 18px 0;
+}
+
+.terms-title {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.terms-subtitle {
+  margin: 8px 0 0;
+  color: #6f7d8e;
+  font-weight: 600;
+}
+
+.terms-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  line-height: 1.65;
+}
+
+.terms-card h2 {
+  margin: 18px 0 10px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.terms-card p {
+  margin: 10px 0;
+   color: #6f7d8e;
+}
+
+.terms-card ul {
+  margin: 10px 0 0 18px;
+  padding: 0;
+}
+
+.terms-card li {
+  margin: 10px 0;
+  color: #6f7d8e;
+}
+
+.terms-sep {
+  margin: 18px 0;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.terms-footnote {
+  margin: 0;
+   color: #6f7d8e;
+  font-size: 13px;
+}

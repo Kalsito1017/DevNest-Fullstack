@@ -1,18 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Footer.css";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-
-  // TODO: смени с твоя asset (пример: import logo from "../../assets/devnest-logo.svg";)
   const logoText = "DevNest.BG";
+
+  const location = useLocation();
+
+  const scrollOrNavigate = (path) => {
+    // ако вече сме на този route -> скрол до горе
+    if (location.pathname === path) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    // ако не сме на този route -> Link ще навигира, а глобалният ScrollToTop ще скролне
+  };
 
   return (
     <footer className="footer">
       <div className="footer-inner">
         {/* Left brand block */}
         <div className="footer-brand">
-          <Link to="/" className="footer-logo" aria-label="DevNest Home">
+          <Link
+            to="/"
+            className="footer-logo"
+            aria-label="DevNest Home"
+            onClick={() => scrollOrNavigate("/")}
+          >
             <span className="footer-logo-mark">{logoText}</span>
           </Link>
 
@@ -32,53 +45,53 @@ const Footer = () => {
               <li><Link to="/cookies">Политика за използване на бисквитки</Link></li>
             </ul>
 
-            <div className="footer-muted">
-              Последно изменение на Общи Условия от 08.05.2024г.
-            </div>
+           
           </div>
 
           <div className="footer-col">
             <div className="footer-col-title">DevNest.BG Events</div>
             <ul className="footer-list">
-              <li><Link to="/groups">Потребителски групи</Link></li>
-              <li><Link to="/events">ИТ Събития</Link></li>
-              <li><Link to="/partners">Партньори</Link></li>
-              <li><Link to="/podcast">Подкаст</Link></li>
+              
+              <li><Link to="/aiworkshops">ИТ Събития</Link></li>
+
+              <li>
+  <a
+    href="https://dev.bg/podcast/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Подкаст
+  </a>
+</li>
             </ul>
           </div>
 
           <div className="footer-col">
             <div className="footer-col-title">DevNest.BG Jobs</div>
             <ul className="footer-list">
-              <li><Link to="/jobs">ИТ Обяви за работа</Link></li>
               <li>
-                {/* външен линк */}
-                <a
-                  href="https://www.jobboardfinder.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Referenced on Jobboardfinder
-                </a>
+                <Link to="/" onClick={() => scrollOrNavigate("/")}>
+                  ИТ Обяви за работа
+                </Link>
               </li>
             </ul>
 
             <div className="footer-col-title footer-col-title-spacer">Последвайте ни</div>
 
             <div className="footer-social">
-              <a className="social-btn" href="#" aria-label="Facebook" title="Facebook">
+              <a className="social-btn" href="https://www.facebook.com/devbulgaria/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
                 <FacebookIcon />
               </a>
-              <a className="social-btn" href="#" aria-label="LinkedIn" title="LinkedIn">
+              <a className="social-btn" href="https://www.linkedin.com/company/dev.bg/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
                 <LinkedInIcon />
               </a>
-              <a className="social-btn" href="#" aria-label="TikTok" title="TikTok">
+              <a className="social-btn" href="https://www.tiktok.com/@dev.bg" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
                 <TikTokIcon />
               </a>
-              <a className="social-btn" href="#" aria-label="Instagram" title="Instagram">
+              <a className="social-btn" href="https://www.instagram.com/dev.bulgaria/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
                 <InstagramIcon />
               </a>
-              <a className="social-btn" href="#" aria-label="YouTube" title="YouTube">
+              <a className="social-btn" href="https://www.youtube.com/channel/UCN1N_wS6ObF4ZMzFv-bWUhW" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube">
                 <YouTubeIcon />
               </a>
             </div>

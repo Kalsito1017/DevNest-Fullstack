@@ -19,6 +19,9 @@ import WorkshopDetails from "./pages/AIWorkshops/WorkshopDetails/WorkshopDetails
 import RegisterRouteTrigger from "./featured/auth/RegisterRouteTrigger";
 import { SavedJobsProvider } from "./context/SavedJobsContext";
 import ScrollToTop from "./routing/ScrollToTop";
+import Terms from "./pages/terms/Terms";
+import Cookies from "./pages/Coockies/Cookies";
+import Contacts from "./pages/Contacts/Contacts";
 
 function App() {
   return (
@@ -52,7 +55,9 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/workshop/:slug" element={<WorkshopDetails />} />
               <Route path="/register" element={<RegisterRouteTrigger />} />
-
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/cookies" element={<Cookies />} />
+              <Route path="/contacts" element={<Contacts />} />
               <Route path="*" element={<div>404</div>} />
             </Routes>
           </main>

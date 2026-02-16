@@ -1,0 +1,52 @@
+.cookies-page {
+  background: #ffffff;
+  min-height: 100vh;
+  padding: 60px 0;
+}
+
+.cookies-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+  color: #1f1f1f;
+}
+
+.cookies-container h1 {
+  font-size: 38px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.cookies-date {
+  font-style: italic;
+  margin-bottom: 30px;
+}
+
+.cookies-container h2 {
+  margin-top: 40px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.cookie-table-wrapper {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.cookie-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.cookie-table th,
+.cookie-table td {
+  border: 2px solid #000;
+  padding: 10px;
+  text-align: left;
+}
+
+.cookie-table th {
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.05);
+}

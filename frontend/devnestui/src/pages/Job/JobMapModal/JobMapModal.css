@@ -8,9 +8,12 @@
   padding: 18px;
 }
 
+/* modal */
 .jmm-modal {
- max-height: calc(100vh - 36px);
+  width: min(1200px, calc(100vw - 36px));
+  max-height: calc(100vh - 36px);
   height: min(680px, calc(100vh - 36px));
+
   background: #fff;
   border-radius: 14px;
   overflow: hidden;
@@ -18,6 +21,7 @@
   box-shadow: 0 20px 70px rgba(0,0,0,0.35);
 }
 
+/* close button */
 .jmm-close {
   position: absolute;
   top: 14px;
@@ -41,8 +45,11 @@
   justify-content: center;
 
   cursor: pointer;
-  z-index: -2;
-    transition: transform 120ms ease, background 120ms ease;
+
+  /* ✅ must be ABOVE the map */
+  z-index: 10;
+
+  transition: transform 120ms ease, background 120ms ease;
 }
 
 .jmm-close:hover {
@@ -50,12 +57,12 @@
   transform: scale(1.05);
 }
 
-
 .jmm-mapwrap {
   width: 100%;
   height: 100%;
 }
 
+/* If you render a map container div inside, it must fill too */
 .jmm-map {
   width: 100%;
   height: 100%;

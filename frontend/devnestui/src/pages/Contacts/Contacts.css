@@ -1,0 +1,102 @@
+/* src/pages/Contacts.css */
+.contacts-page {
+  background: #ffffff;
+  min-height: 100vh;
+  padding: 48px 0 64px;
+color: #6f7d8e;
+}
+
+.contacts-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+.contacts-hero h1 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.contacts-subtitle {
+  margin: 10px 0 0;
+  color: #6f7d8e;
+  font-weight: 600;
+}
+
+.contacts-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+}
+
+.contact-card {
+  grid-column: span 6;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 18px 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.contact-card-wide {
+  grid-column: span 12;
+}
+
+.contact-card h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.contact-card h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.contact-desc {
+  margin: 10px 0 12px;
+  color: #6f7d8e;
+  line-height: 1.55;
+}
+
+.contact-lines {
+  display: grid;
+  gap: 6px;
+}
+
+.contact-name {
+  font-weight: 800;
+}
+
+.contact-link {
+ color: #6f7d8e;
+  text-decoration: none;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+}
+
+.contact-divider {
+  margin: 14px 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.contact-map-hint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #6f7d8e;
+}
+
+@media (max-width: 860px) {
+  .contact-card {
+    grid-column: span 12;
+  }
+}
