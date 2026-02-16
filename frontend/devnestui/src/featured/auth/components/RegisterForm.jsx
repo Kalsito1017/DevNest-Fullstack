@@ -113,6 +113,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
   lastName: formData.lastName,
   email: formData.email,
   password: formData.password,
+  confirmPassword: formData.confirmPassword,
 });
 
 

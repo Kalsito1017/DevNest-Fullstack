@@ -573,3 +573,398 @@
 .jad-save:active {
   transform: scale(0.96);
 }
+
+
+/* TOP CARD -> DEV.BG-like banner */
+.jad-top {
+  background: #dfeeff;            /* по-близо до DEV.BG синьото */
+  border-radius: 14px;
+  padding: 22px 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;             /* ключово: центрира бутона */
+  gap: 22px;
+  box-shadow: none;                /* DEV.BG е по-плоско */
+  min-height: 120px;               /* по-ниско от твоето */
+}
+
+/* Left column layout: logo block + content */
+.jad-top-left {
+  display: grid;
+  grid-template-columns: 84px 1fr; /* лого блок + текст */
+  gap: 18px;
+  align-items: start;
+}
+
+/* Company chip -> stack logo + company name */
+.jad-company-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0;                /* махаме излишното надолу */
+}
+
+.jad-company-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: none;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.jad-company-logo img {
+  padding: 10px;
+  object-fit: contain;
+}
+
+.jad-company-name {
+  font-weight: 600;                /* по-леко като DEV.BG */
+  color: rgba(0,0,0,0.55);
+  font-size: 12px;
+  text-align: center;
+  max-width: 90px;
+  line-height: 1.2;
+}
+
+/* Title like DEV.BG: по-изчистено */
+.jad-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f1c33;
+  line-height: 1.15;
+  margin: 0 0 10px 0;
+}
+
+/* Meta row */
+.jad-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: rgba(0,0,0,0.65);
+  font-weight: 600;
+}
+
+.jad-pin {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #2f6cff;
+}
+
+/* DEV.BG-like badge */
+.jad-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.06);
+  color: rgba(0,0,0,0.70);
+}
+
+.jad-badge.is-hybrid {
+  background: #dff3e6;
+  border-color: rgba(0,0,0,0.05);
+  color: #1d6b3a;
+}
+
+.jad-badge.is-remote {
+  background: #e9f2ff;
+  border-color: rgba(0,0,0,0.05);
+  color: #1f4bd8;
+}
+
+/* Apply button -> голям pill вдясно */
+.jad-top-right {
+  display: flex;
+  align-items: center;
+}
+
+.jad-btn-primary.jad-btn-apply {
+  border-radius: 14px;
+  padding: 16px 24px;
+  min-width: 230px;      /* като на DEV.BG */
+  height: 56px;
+  font-size: 16px;
+  box-shadow: none;
+}
+
+/* Icon inside apply -> по-малко, да не прави бутонът “надути” */
+.jad-btn-icon {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+}
+
+/* Responsive: на малък екран бутонът да слезе отдолу */
+@media (max-width: 720px) {
+  .jad-top {
+    align-items: stretch;
+  }
+
+  .jad-top-left {
+    grid-template-columns: 72px 1fr;
+  }
+
+  .jad-btn-primary.jad-btn-apply {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+
+.jad-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.jad-badge-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+
+
+/* Meta row layout */
+.jad-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Town */
+.jad-town {
+  font-weight: 700;
+  color: rgba(0,0,0,0.75);
+}
+
+/* Badge wrapper (for hover tooltip) */
+.jad-badge-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Hybrid badge: translucent green pill */
+.jad-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  user-select: none;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.jad-badge-hybrid {
+  background: rgba(191, 244, 209, 0.65); /* translucent green */
+  color: #0f6b3a;
+}
+
+/* Icon in badge */
+.jad-badge-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+/* Tooltip bubble */
+.jad-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 320px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+  color: rgba(0,0,0,0.70);
+  font-size: 13px;
+  line-height: 1.35;
+
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 140ms ease, transform 140ms ease;
+  z-index: 20;
+}
+
+/* little arrow */
+.jad-tip::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 18px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  transform: rotate(45deg);
+  box-shadow: -6px -6px 18px rgba(0,0,0,0.06);
+}
+
+/* Show tooltip on hover/focus */
+.jad-badge-wrap:hover .jad-tip,
+.jad-badge-wrap:focus-within .jad-tip {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+
+/* One combined pill */
+.jad-locpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(191, 244, 209, 0.55); /* translucent green like screenshot */
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.jad-pin-lg {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #2f6cff;
+}
+
+.jad-town {
+  font-weight: 800;
+  color: rgba(0,0,0,0.78);
+}
+
+/* Vertical separator */
+.jad-loc-sep {
+  width: 1px;
+  height: 18px;
+  background: rgba(0,0,0,0.18);
+}
+
+/* Hybrid part */
+.jad-hybrid-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  color: #0f6b3a;
+  cursor: default;
+}
+
+.jad-hybrid-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+/* Tooltip (reuse same idea, but anchored to Hybrid inside pill) */
+.jad-hybrid-wrap .jad-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 320px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+  color: rgba(0,0,0,0.70);
+  font-size: 13px;
+  line-height: 1.35;
+
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 140ms ease, transform 140ms ease;
+  z-index: 20;
+}
+
+.jad-hybrid-wrap .jad-tip::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 18px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  transform: rotate(45deg);
+  box-shadow: -6px -6px 18px rgba(0,0,0,0.06);
+}
+
+.jad-hybrid-wrap:hover .jad-tip {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.jad-btn-apply {
+  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+  will-change: transform;
+}
+
+.jad-btn-apply:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+}
+
+.jad-btn-apply:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 35, 0.45);
+  opacity: 0;
+  transition: opacity 180ms ease;
+  display: grid;
+  place-items: center;
+  z-index: 999;
+}
+
+/* dialog */
+.modal-dialog {
+  background: #fff;
+  border-radius: 16px;
+  width: min(720px, calc(100% - 24px));
+  transform: translateY(10px) scale(0.98);
+  opacity: 0;
+  transition: transform 180ms ease, opacity 180ms ease;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.22);
+}
+
+/* open state */
+.modal-overlay.is-open {
+  opacity: 1;
+}
+
+.modal-overlay.is-open .modal-dialog {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-dialog {
+    transition: none;
+  }
+}

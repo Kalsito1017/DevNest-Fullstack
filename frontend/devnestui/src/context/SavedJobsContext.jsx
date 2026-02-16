@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { savedJobsService } from "../services/api/savedJobsService";
+import { useAuth } from "./AuthContext";
 
 export const SavedJobsContext = createContext(null);
 
@@ -15,6 +16,7 @@ export function SavedJobsProvider({ children }) {
     }
   });
 
+  const { user, isAuthLoading } = useAuth();
   const [isHydrating, setIsHydrating] = useState(true);
   const hydratedOnceRef = useRef(false);
 
@@ -29,42 +31,46 @@ export function SavedJobsProvider({ children }) {
 
   // hydrate once from backend (authoritative)
   useEffect(() => {
-    let mounted = true;
+  let mounted = true;
 
-    async function hydrate() {
-      setIsHydrating(true);
-      try {
-        let ids = null;
+  async function hydrate() {
+    // чакаме auth да се изясни
+    if (isAuthLoading) return;
 
-        // Prefer /saved-jobs/ids if exists
-        try {
-          const got = await savedJobsService.ids();
-          if (Array.isArray(got)) ids = got;
-        } catch {
-          // ids endpoint may not exist
-        }
-
-        // Fallback to list() -> ids
-        if (!ids) {
-          const list = await savedJobsService.list();
-          ids = Array.isArray(list) ? list.map((x) => x.id).filter(Boolean) : [];
-        }
-
-        if (!mounted) return;
-        setSavedIds(ids);
+    // ако няма user -> чистим server-saved и НЕ правим заявки
+    if (!user) {
+      if (mounted) {
+        setSavedIds([]);
+        setIsHydrating(false);
         hydratedOnceRef.current = true;
-      } catch {
-        hydratedOnceRef.current = true; // keep local cache
-      } finally {
-        if (mounted) setIsHydrating(false);
       }
+      return;
     }
 
-    hydrate();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    setIsHydrating(true);
+    try {
+      // ✅ махаме ids() докато нямаш реален endpoint (при теб дава 405)
+      const list = await savedJobsService.list();
+      const ids = Array.isArray(list) ? list.map((x) => Number(x.id)).filter(Boolean) : [];
+
+      if (!mounted) return;
+      setSavedIds(ids);
+      hydratedOnceRef.current = true;
+    } catch (e) {
+      // ако е 401 -> logout scenario -> чистим
+      const status = e?.response?.status;
+      if (mounted && status === 401) setSavedIds([]);
+      hydratedOnceRef.current = true;
+    } finally {
+      if (mounted) setIsHydrating(false);
+    }
+  }
+
+  hydrate();
+  return () => {
+    mounted = false;
+  };
+}, [user, isAuthLoading]);
 
   const isSaved = useCallback((jobId) => savedIds.includes(Number(jobId)), [savedIds]);
 

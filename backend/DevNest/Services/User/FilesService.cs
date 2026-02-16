@@ -1,8 +1,7 @@
 ﻿using DevNest.Data;
-using DevNest.Models;
-using Microsoft.EntityFrameworkCore;
 using DevNest.DTOs.User;
 using DevNest.Models.Files;
+using Microsoft.EntityFrameworkCore;
 
 namespace DevNest.Services.User;
 
@@ -25,7 +24,7 @@ public class FilesService : IFilesService
     public async Task<IReadOnlyList<UserFileDto>> ListAsync(string userId, CancellationToken ct = default)
     {
         return await db.UserFiles.AsNoTracking()
-            .Where(f => f.UserId == userId)
+            .Where(f => f.UserId == userId && !f.IsDeleted)
             .OrderByDescending(f => f.CreatedAt)
             .Select(f => new UserFileDto
             {
@@ -65,7 +64,9 @@ public class FilesService : IFilesService
             OriginalName = file.FileName,
             StoredName = storedName,
             ContentType = string.IsNullOrWhiteSpace(file.ContentType) ? "application/octet-stream" : file.ContentType,
-            SizeBytes = file.Length
+            SizeBytes = file.Length,
+            IsDeleted = false,
+            DeletedAt = null
         };
 
         db.UserFiles.Add(entity);
@@ -81,9 +82,13 @@ public class FilesService : IFilesService
         };
     }
 
-    public async Task<(byte[] Bytes, string ContentType, string FileName)> DownloadAsync(string userId, int id, CancellationToken ct = default)
+    public async Task<(byte[] Bytes, string ContentType, string FileName)> DownloadAsync(
+        string userId, int id, CancellationToken ct = default)
     {
-        var f = await db.UserFiles.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId, ct);
+        var f = await db.UserFiles
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId, ct);
+
         if (f == null) throw new KeyNotFoundException("File not found.");
 
         var path = Path.Combine(env.ContentRootPath, "uploads", userId, f.StoredName);
@@ -93,15 +98,20 @@ public class FilesService : IFilesService
         return (bytes, f.ContentType, f.OriginalName);
     }
 
+   
     public async Task DeleteAsync(string userId, int id, CancellationToken ct = default)
     {
-        var f = await db.UserFiles.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId, ct);
+        var f = await db.UserFiles
+            .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId, ct);
+
         if (f == null) throw new KeyNotFoundException("File not found.");
 
-        var path = Path.Combine(env.ContentRootPath, "uploads", userId, f.StoredName);
-        if (File.Exists(path)) File.Delete(path);
+        if (f.IsDeleted) return; // idempotent
 
-        db.UserFiles.Remove(f);
+        f.IsDeleted = true;
+        f.DeletedAt = DateTime.UtcNow;
+
+
         await db.SaveChangesAsync(ct);
     }
 }

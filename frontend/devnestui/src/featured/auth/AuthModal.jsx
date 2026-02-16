@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import "./AuthModal.css";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
@@ -7,12 +7,13 @@ import ForgotPassword from "./components/ForgotPassword";
 const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
   const [currentMode, setCurrentMode] = useState(() => initialMode);
 
-
-
   if (!isOpen) return null;
 
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) onClose();
+  const handleOverlayMouseDown = (e) => {
+    // Close only if clicking directly on backdrop
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
   };
 
   const renderContent = () => {
@@ -25,6 +26,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
             onSwitchToForgotPassword={() => setCurrentMode("forgot")}
           />
         );
+
       case "register":
         return (
           <RegisterForm
@@ -32,6 +34,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
             onSwitchToLogin={() => setCurrentMode("login")}
           />
         );
+
       case "forgot":
         return (
           <ForgotPassword
@@ -39,6 +42,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
             onSwitchToLogin={() => setCurrentMode("login")}
           />
         );
+
       default:
         return null;
     }
@@ -58,8 +62,11 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onMouseDown={handleOverlayMouseDown}>
+      <div
+        className="auth-modal"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <h2>{getTitle()}</h2>
           <button
@@ -71,7 +78,10 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
             ×
           </button>
         </div>
-        <div className="modal-content">{renderContent()}</div>
+
+        <div className="modal-content">
+          {renderContent()}
+        </div>
       </div>
     </div>
   );

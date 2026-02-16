@@ -24,9 +24,9 @@ export const filesService = {
 
   upload: async (file) => {
     const fd = new FormData();
-    fd.append("file", file);
+    fd.append("File", file);
 
-    const res = await apiClient.post("/files", fd, {
+    const res = await apiClient.post("/files/upload", fd, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 

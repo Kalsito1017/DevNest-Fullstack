@@ -11,6 +11,7 @@ services:
       - devnest_sql_data:/var/opt/mssql
 
   api:
+    restart: unless-stopped
     build:
       context: ./backend/DevNest
       dockerfile: Dockerfile
@@ -43,6 +44,9 @@ services:
       VITE_API_URL: "http://localhost:5099"
     ports:
       - "5173:5173"
+    volumes:
+      - ./frontend/devnestui:/devnestui
+      - /devnestui/node_modules
 
 volumes:
   devnest_sql_data:

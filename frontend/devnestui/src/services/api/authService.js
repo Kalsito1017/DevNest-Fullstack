@@ -22,10 +22,16 @@ const authService = {
     return await authService.me();
   },
 
-  register: async ({ firstName, lastName, email, password }) => {
-    await apiClient.post("/auth/register", { firstName, lastName, email, password });
-    return await authService.me();
-  },
+ register: async ({ firstName, lastName, email, password, confirmPassword }) => {
+  await apiClient.post("/auth/register", {
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+  });
+  return await authService.me();
+},
 
   logout: async () => {
     await apiClient.post("/auth/logout");

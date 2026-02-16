@@ -7,8 +7,6 @@ import { useAuth } from "../../context/AuthContext";
 const Header = () => {
   const navigate = useNavigate();
 
-
-  // ✅ now we also use authModal + openAuthModal + closeAuthModal from context
   const {
     user,
     isAuthLoading,
@@ -149,7 +147,6 @@ const Header = () => {
               </li>
             </ul>
           </nav>
-
           <div className="auth-section">
             {isAuthLoading ? null : user ? (
               <button
@@ -178,8 +175,6 @@ const Header = () => {
           </div>
         </div>
       </header>
-
-      {/* ✅ modal driven by AuthContext */}
      {authModal.isOpen && (
   <AuthModal
     key={authModal.mode}
@@ -191,5 +186,4 @@ const Header = () => {
     </>
   );
 };
-
 export default Header;

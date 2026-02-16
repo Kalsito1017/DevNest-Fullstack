@@ -46,10 +46,25 @@ public class FilesController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        await files.DeleteAsync(UserId, id, ct);
-        return NoContent();
+        try
+        {
+            await files.DeleteAsync(UserId, id, ct);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound(new { message = "File not found." });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+        catch (InvalidOperationException ex)
+        {
+            // напр. “File is in use” / constraint
+            return Conflict(new { message = ex.Message });
+        }
     }
-
     [HttpGet("{id:int}/download")]
     public async Task<IActionResult> Download(int id, CancellationToken ct)
     {

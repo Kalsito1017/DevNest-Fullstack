@@ -3,16 +3,32 @@ import "./JobApplyModal.css";
 import { applyToJob } from "../../../services/api/applications";
 import { filesService } from "../../../services/api/filesService";
 import { useNavigate } from "react-router-dom";
+
 const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10MB
 const MAX_TOTAL_FILES = 5;
-const ALLOWED_EXT = new Set([".jpg", ".jpeg", ".png", ".pdf", ".doc", ".docx", ".ppt", ".pptx"]);
+const ALLOWED_EXT = new Set([
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".pdf",
+  ".doc",
+  ".docx",
+  ".ppt",
+  ".pptx",
+]);
+
+// ✅ Motivation letter validation to match backend (20..4000)
+const MIN_LETTER = 20;
+const MAX_LETTER = 4000;
+const letterLen = (s) => (s || "").trim().length;
 
 const getExt = (name = "") => {
   const i = name.lastIndexOf(".");
   return i >= 0 ? name.slice(i).toLowerCase() : "";
 };
 
-const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim());
+const isValidEmail = (v) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim());
 
 export default function JobApplyModal({ open, onClose, jobId, jobTitle, user }) {
   const [firstName, setFirstName] = useState("");
@@ -28,7 +44,9 @@ export default function JobApplyModal({ open, onClose, jobId, jobTitle, user }) 
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [success, setSuccess] = useState(false);
-const navigate = useNavigate();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (!open) return;
 
@@ -66,11 +84,14 @@ const navigate = useNavigate();
     if (!f || !l || !em) return false;
     if (!isValidEmail(em)) return false;
 
+    const ll = letterLen(letter);
+    if (ll < MIN_LETTER || ll > MAX_LETTER) return false;
+
     if (totalFiles < 1) return false;
     if (totalFiles > MAX_TOTAL_FILES) return false;
 
     return true;
-  }, [busy, firstName, lastName, email, totalFiles]);
+  }, [busy, firstName, lastName, email, letter, totalFiles]);
 
   if (!open) return null;
 
@@ -78,7 +99,9 @@ const navigate = useNavigate();
 
   const toggleExisting = (id) => {
     setSelectedExistingIds((prev) => {
-      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      const next = prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id];
 
       const nextTotal = next.length + newFiles.length;
       if (nextTotal > MAX_TOTAL_FILES) {
@@ -109,7 +132,7 @@ const navigate = useNavigate();
       return;
     }
 
-    const totalAfter = picked.length + selectedExistingIds.length;
+    const totalAfter = picked.length + selectedExistingIds.length + newFiles.length;
     if (totalAfter > MAX_TOTAL_FILES) {
       setErr(`Може да прикачите максимум ${MAX_TOTAL_FILES} файла общо.`);
       e.target.value = "";
@@ -117,7 +140,7 @@ const navigate = useNavigate();
     }
 
     setErr("");
-    setNewFiles(picked);
+    setNewFiles((prev) => [...prev, ...picked]);
   };
 
   const removeNewFile = (idx) => {
@@ -143,6 +166,16 @@ const navigate = useNavigate();
       return;
     }
 
+    const ll = letterLen(letter);
+    if (ll < MIN_LETTER) {
+      setErr(`Мотивационното писмо трябва да е поне ${MIN_LETTER} символа.`);
+      return;
+    }
+    if (ll > MAX_LETTER) {
+      setErr(`Мотивационното писмо може да е максимум ${MAX_LETTER} символа.`);
+      return;
+    }
+
     if (total < 1) {
       setErr(
         "Не сте избрали или прикачили нито един файл. Изберете поне един файл от качените или качете нов."
@@ -163,20 +196,30 @@ const navigate = useNavigate();
       fd.append("firstName", f);
       fd.append("lastName", l);
       fd.append("email", em);
-      fd.append("motivationLetter", letter || "");
+      fd.append("motivationLetter", (letter || "").trim());
 
-      selectedExistingIds.forEach((id) => fd.append("existingUserFileIds", String(id)));
+      selectedExistingIds.forEach((id) =>
+        fd.append("existingUserFileIds", String(id))
+      );
       newFiles.forEach((file) => fd.append("newFiles", file));
 
       await applyToJob(fd);
 
       setSuccess(true);
     } catch (error) {
-      const msg =
-        error?.payload?.message ||
-        (typeof error?.payload === "string" ? error.payload : "") ||
-        error?.message ||
-        "Неуспешно кандидатстване. Опитай пак.";
+      const payload = error?.payload;
+
+      const motivationErr =
+        payload?.errors?.MotivationLetter?.[0] ||
+        payload?.errors?.motivationLetter?.[0];
+
+      const msg = motivationErr
+        ? "Мотивационното писмо трябва да е между 20 и 4000 символа."
+        : payload?.message ||
+          (typeof payload === "string" ? payload : "") ||
+          error?.message ||
+          "Неуспешно кандидатстване. Опитай пак.";
+
       setErr(msg);
     } finally {
       setBusy(false);
@@ -184,9 +227,19 @@ const navigate = useNavigate();
   };
 
   return (
-    <div className="jam-backdrop" role="dialog" aria-modal="true" onMouseDown={() => close(false)}>
+    <div
+      className="jam-backdrop"
+      role="dialog"
+      aria-modal="true"
+      onMouseDown={() => close(false)}
+    >
       <div className="jam-modal" onMouseDown={(e) => e.stopPropagation()}>
-        <button className="jam-close" type="button" onClick={() => close(false)} aria-label="Затвори">
+        <button
+          className="jam-close"
+          type="button"
+          onClick={() => close(false)}
+          aria-label="Затвори"
+        >
           ×
         </button>
 
@@ -198,19 +251,21 @@ const navigate = useNavigate();
         {success ? (
           <div className="jam-success">
             <div className="jam-success-icon">✓</div>
-            <div className="jam-success-text">Кандидатурата е изпратена успешно.</div>
+            <div className="jam-success-text">
+              Кандидатурата е изпратена успешно.
+            </div>
 
             <div className="jam-actions">
               <button
-  className="jam-btn jam-btn-primary"
-  type="button"
-  onClick={() => {
-    close(true); // затваря модала
-    navigate("/profile?tab=applications");
-  }}
->
-  Към “Моите кандидатури”
-</button>
+                className="jam-btn jam-btn-primary"
+                type="button"
+                onClick={() => {
+                  close(true);
+                  navigate("/profile?tab=applications");
+                }}
+              >
+                Към “Моите кандидатури”
+              </button>
               <button className="jam-btn" type="button" onClick={() => close(false)}>
                 Затвори
               </button>
@@ -248,12 +303,16 @@ const navigate = useNavigate();
             </div>
 
             <div className="jam-field">
-              <label>Съобщение / мотивационно писмо до компанията</label>
+              <label>Съобщение / мотивационно писмо до компанията *</label>
               <textarea
                 value={letter}
                 onChange={(e) => setLetter(e.target.value)}
                 placeholder="Започни да пишеш тук..."
+                maxLength={MAX_LETTER}
               />
+              <div className="jam-muted">
+                {letterLen(letter)} / {MAX_LETTER} (мин. {MIN_LETTER})
+              </div>
             </div>
 
             <div className="jam-split">
@@ -274,7 +333,9 @@ const navigate = useNavigate();
                   <div className="jam-drop-sub">
                     Разрешени формати: jpg, jpeg, png, pdf, doc, docx, ppt, pptx
                   </div>
-                  <div className="jam-drop-sub">{totalFiles} от {MAX_TOTAL_FILES}</div>
+                  <div className="jam-drop-sub">
+                    {totalFiles} от {MAX_TOTAL_FILES}
+                  </div>
                 </label>
 
                 {newFiles.length > 0 && (

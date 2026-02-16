@@ -8,6 +8,8 @@ import applyIcon from "../../../assets/vecteezy_simple-icon-of-a-paper-airplane-
 import { useAuth } from "../../../context/AuthContext";
 import { useSavedJobs } from "../../../context/SavedJobsContext";
 import JobApplyModal from "../JobApplyModal/JobApplyModal";
+import ReportModal from "../ReportModal/ReportModal";
+import hybridIcon from "../../../assets/hybrid.png";
 
 function formatRelativeBg(date) {
   const d = new Date(date);
@@ -31,7 +33,7 @@ export default function JobAdDetails() {
   const { jobId } = useParams();
   const navigate = useNavigate();
 
-
+  const { user, openAuthModal } = useAuth();
   const { isSaved, toggleSaved } = useSavedJobs();
 
   const [data, setData] = useState(null);
@@ -39,17 +41,27 @@ export default function JobAdDetails() {
   const [err, setErr] = useState("");
   const [mapOpen, setMapOpen] = useState(false);
   const [applyOpen, setApplyOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
-const { user, openAuthModal } = useAuth();
+  const handleApplyClick = () => {
+    if (!user) {
+      openAuthModal("register", () => setApplyOpen(true));
+      return;
+    }
+    setApplyOpen(true);
+  };
 
-const handleApplyClick = () => {
-  if (!user) {
-    
-    openAuthModal("register", () => setApplyOpen(true));
-    return;
-  }
-  setApplyOpen(true);
-};
+  const handleSaveClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      openAuthModal("login");
+      return;
+    }
+
+    if (data?.id) toggleSaved(data.id);
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -147,9 +159,25 @@ const handleApplyClick = () => {
             <div className="jad-title">{data.title}</div>
 
             <div className="jad-meta">
-              <div className="jad-meta-item">
-                <span className="jad-pin" />
-                <span>{data.isRemote ? "Remote" : safeText(data.location)}</span>
+              <div className="jad-locpill">
+                <span className="jad-pin-lg" />
+                <span className="jad-town">{safeText(data.location) || "—"}</span>
+
+                {!data.isRemote && (
+                  <>
+                    <span className="jad-loc-sep" />
+
+                    <span className="jad-hybrid-wrap">
+                      <img src={hybridIcon} alt="" className="jad-hybrid-icon" />
+                      <span className="jad-hybrid-text">Hybrid</span>
+
+                      <span className="jad-tip">
+                        Комбиниран модел на работа, позволяващ на служителите
+                        съчетание между работа в офиса и работа от разстояние.
+                      </span>
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -172,7 +200,9 @@ const handleApplyClick = () => {
             {/* Categories + Map */}
             <div className={`jad-row ${data.isRemote ? "jad-row-single" : ""}`}>
               <div className="jad-box">
-                <div className="jad-box-title">Обявата е публикувана в следните категории</div>
+                <div className="jad-box-title">
+                  Обявата е публикувана в следните категории
+                </div>
 
                 <div className="jad-pills">
                   {(data.categories || []).map((c) => (
@@ -200,7 +230,6 @@ const handleApplyClick = () => {
                 </div>
               </div>
 
-              {/* Map box only if NOT remote */}
               {!data.isRemote ? (
                 <div
                   className="jad-box jad-mapbox jad-mapbox-leaflet"
@@ -217,7 +246,6 @@ const handleApplyClick = () => {
               ) : null}
             </div>
 
-            {/* Modal */}
             <JobMapModal
               open={mapOpen}
               onClose={() => setMapOpen(false)}
@@ -234,35 +262,21 @@ const handleApplyClick = () => {
               </div>
 
               <div className="jad-submeta-right">
-                {user ? (
-                  <button
-                    type="button"
-                    className={`jad-save ${saved ? "is-saved" : ""}`}
-                    title={saved ? "Премахни от запазени" : "Запази обявата"}
-                    aria-label={saved ? "Премахни от запазени" : "Запази обявата"}
-                    aria-pressed={saved}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleSaved(data.id);
-                    }}
-                  >
-                    {saved ? "📌" : "📍"}
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="jad-save"
-                    onClick={() => navigate("/login")}
-                    title="Влез, за да запазваш обяви"
-                  >
-                    📍
-                  </button>
-                )}
+                <button
+                  type="button"
+                  className={`jad-save ${saved ? "is-saved" : ""}`}
+                  title={saved ? "Премахни от запазени" : "Запази обявата"}
+                  aria-label={saved ? "Премахни от запазени" : "Запази обявата"}
+                  aria-pressed={saved}
+                  onClick={handleSaveClick}
+                >
+                  {saved ? "📌" : "📍"}
+                </button>
 
                 <button
                   type="button"
                   className="jad-action"
-                  onClick={() => alert("Report (по-късно)")}
+                  onClick={() => setReportOpen(true)}
                 >
                   Съобщи проблем
                 </button>
@@ -275,7 +289,11 @@ const handleApplyClick = () => {
 
               <div className="jad-tech-icons">
                 {(data.techStack || []).map((t, idx) => (
-                  <div key={`${t.name || "tech"}-${idx}`} className="jad-tech" title={t.name}>
+                  <div
+                    key={`${t.name || "tech"}-${idx}`}
+                    className="jad-tech"
+                    title={t.name}
+                  >
                     {t.logoUrl ? (
                       <img src={t.logoUrl} alt={t.name} />
                     ) : (
@@ -342,7 +360,9 @@ const handleApplyClick = () => {
               <button
                 type="button"
                 className="jad-btn jad-btn-soft"
-                onClick={() => (company?.id ? navigate(`/company/${company.id}`) : navigate("/company"))}
+                onClick={() =>
+                  company?.id ? navigate(`/company/${company.id}`) : navigate("/company")
+                }
               >
                 Повече за компанията
               </button>
@@ -352,11 +372,7 @@ const handleApplyClick = () => {
                 className="jad-btn jad-btn-soft"
                 onClick={() => {
                   if (!company?.id) return navigate("/company");
-
-                  navigate({
-                    pathname: `/company/${company.id}`,
-                    hash: "#jobs",
-                  });
+                  navigate({ pathname: `/company/${company.id}`, hash: "#jobs" });
                 }}
               >
                 Всички обяви на компанията
@@ -375,6 +391,15 @@ const handleApplyClick = () => {
           jobTitle={data.title}
           user={user}
         />
+
+        {reportOpen && (
+          <ReportModal
+            onClose={() => setReportOpen(false)}
+            jobId={data.id}
+            jobTitle={data.title}
+            companyName={company?.name}
+          />
+        )}
       </div>
     </div>
   );
