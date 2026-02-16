@@ -1,153 +1,112 @@
-// src/components/auth/RegisterForm.jsx
-import { useState, useEffect } from 'react';
-import authService from '../../../services/api/authService';
+import { useEffect, useRef, useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 
-const RegisterForm = ({ onClose, onSwitchToLogin }) => {
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-    });
+const RegisterForm = ({ onSwitchToLogin }) => {
+  const { register } = useAuth();
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [agreeTerms, setAgreeTerms] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [successPopup, setSuccessPopup] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-    // Simple math question for bot prevention
-    const [mathQuestion, setMathQuestion] = useState({ question: '', answer: 0 });
-    const [mathAnswer, setMathAnswer] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successPopup, setSuccessPopup] = useState(false);
 
-    // Generate math question on mount
-    useEffect(() => {
-        generateMathQuestion();
-    }, []);
+  const [mathQuestion, setMathQuestion] = useState({ question: "", answer: 0 });
+  const [mathAnswer, setMathAnswer] = useState("");
 
-    const generateMathQuestion = () => {
-        const num1 = Math.floor(Math.random() * 20) + 5;
-        const num2 = Math.floor(Math.random() * 10) + 1;
-        const operations = ['+', '-'];
-        const operation = operations[Math.floor(Math.random() * operations.length)];
+  const timeoutRef = useRef(null);
 
-        let question = '';
-        let answer = 0;
+  useEffect(() => {
+    generateMathQuestion();
+    return () => clearTimeout(timeoutRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-        if (operation === '+') {
-            question = `${num1} + ${num2}`;
-            answer = num1 + num2;
-        } else {
-            question = `${num1} - ${num2}`;
-            answer = num1 - num2;
-        }
+  const generateMathQuestion = () => {
+    const num1 = Math.floor(Math.random() * 20) + 5;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    const operation = Math.random() < 0.5 ? "+" : "-";
 
-        setMathQuestion({ question, answer });
-        setMathAnswer('');
-    };
+    const question = `${num1} ${operation} ${num2}`;
+    const answer = operation === "+" ? num1 + num2 : num1 - num2;
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+    setMathQuestion({ question, answer });
+    setMathAnswer("");
+  };
 
-    const validateForm = () => {
-        const errors = [];
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-        if (formData.firstName.length < 2) {
-            errors.push('Името трябва да бъде поне 2 символа');
-        }
+  const validateForm = () => {
+    const errors = [];
 
-        if (formData.lastName.length < 2) {
-            errors.push('Фамилията трябва да бъде поне 2 символа');
-        }
+    if (formData.firstName.trim().length < 2) errors.push("Името трябва да бъде поне 2 символа");
+    if (formData.lastName.trim().length < 2) errors.push("Фамилията трябва да бъде поне 2 символа");
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            errors.push('Моля, въведете валиден имейл адрес');
-        }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email.trim())) errors.push("Моля, въведете валиден имейл адрес");
 
-        if (formData.password.length < 6) {
-            errors.push('Паролата трябва да бъде поне 6 символа');
-        }
+    if (formData.password.length < 6) errors.push("Паролата трябва да бъде поне 6 символа");
+    if (formData.password !== formData.confirmPassword) errors.push("Паролите не съвпадат");
 
-        if (formData.password !== formData.confirmPassword) {
-            errors.push('Паролите не съвпадат');
-        }
+    if (!agreeTerms) errors.push("Трябва да се съгласите с условията");
 
-        if (!agreeTerms) {
-            errors.push('Трябва да се съгласите с условията');
-        }
+    const ans = Number(mathAnswer);
+    if (!Number.isFinite(ans) || ans !== mathQuestion.answer) {
+      errors.push("Грешен отговор на въпроса за сигурност");
+    }
 
-        if (parseInt(mathAnswer) !== mathQuestion.answer) {
-            errors.push('Грешен отговор на въпроса за сигурност');
-        }
+    return errors;
+  };
 
-        return errors;
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+    setIsLoading(true);
+    setError("");
 
-        setIsLoading(true);
-        setError('');
+    const errors = validateForm();
+    if (errors.length > 0) {
+      setError(errors.join(", "));
+      setIsLoading(false);
+      return;
+    }
 
-        // Client-side validation
-        const errors = validateForm();
-        if (errors.length > 0) {
-            setError(errors.join(', '));
-            setIsLoading(false);
-            return;
-        }
+    try {
+      await register({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+      });
 
-        try {
-            // Call the auth service
-          const response = await authService.register({
-  firstName: formData.firstName,
-  lastName: formData.lastName,
-  email: formData.email,
-  password: formData.password,
-  confirmPassword: formData.confirmPassword,
-});
+      setSuccessPopup(true);
 
+      // optional: auto close popup quickly (modal itself will close via AuthContext.register())
+      timeoutRef.current = setTimeout(() => setSuccessPopup(false), 1200);
+    } catch (err) {
+      let errorMessage = "Грешка при регистрация. Моля, опитайте отново.";
+      if (err?.response?.data?.message) errorMessage = err.response.data.message;
+      else if (err?.response?.data?.errors) errorMessage = err.response.data.errors.join(", ");
 
-            console.log('Registration successful:', response);
-
-            // Show success popup
-            setSuccessPopup(true);
-
-            // Auto-close and redirect after 3 seconds
-            setTimeout(() => {
-                setSuccessPopup(false);
-                onClose();
-                window.location.reload();
-            }, 3000);
-
-        } catch (err) {
-            console.error('Registration error:', err);
-
-            let errorMessage = 'Грешка при регистрация. Моля, опитайте отново.';
-
-            if (err.response?.data?.message) {
-                errorMessage = err.response.data.message;
-            } else if (err.response?.data?.errors) {
-                errorMessage = err.response.data.errors.join(', ');
-            }
-
-            setError(errorMessage);
-
-            // Generate new math question on error
-            generateMathQuestion();
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      setError(errorMessage);
+      generateMathQuestion();
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
     // Success Popup Component
     const SuccessPopup = () => {

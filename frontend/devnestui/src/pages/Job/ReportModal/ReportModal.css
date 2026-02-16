@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;        /* да е над всичко */
+  z-index: 9999;       
 }
 
 .report-modal{
@@ -89,3 +89,10 @@
 .report-error-global{
   margin: 10px 0 0;
 }
+
+.report-modal{
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+}
+
+.report-field.small { max-width: 140px; }
