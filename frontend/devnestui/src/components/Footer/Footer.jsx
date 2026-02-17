@@ -41,7 +41,7 @@ const Footer = () => {
               <li><Link to="/contacts">Контакти</Link></li>
               <li><Link to="/employers">За работодатели</Link></li>
               <li><Link to="/terms">Общи Условия</Link></li>
-              <li><Link to="/privacy">Уведомление за поверителност</Link></li>
+           
               <li><Link to="/cookies">Политика за използване на бисквитки</Link></li>
             </ul>
 

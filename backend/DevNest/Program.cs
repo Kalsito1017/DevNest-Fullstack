@@ -32,6 +32,7 @@ namespace DevNest
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
+            // Services
             builder.Services.AddScoped<IJobSearchService, JobSearchService>();
             builder.Services.AddScoped<IJobReadService, JobReadService>();
             builder.Services.AddScoped<IJobHomeSectionsService, JobHomeSectionsService>();
@@ -50,6 +51,7 @@ namespace DevNest
             builder.Services.AddScoped<IJobApplicationsService, JobApplicationsService>();
             builder.Services.AddHttpClient<BrevoEmailService>();
 
+            // CORS
             var corsOrigins = builder.Configuration
                 .GetSection("Cors:Origins")
                 .Get<string[]>() ?? new[] { "http://localhost:5173" };
@@ -66,17 +68,22 @@ namespace DevNest
                 });
             });
 
+            // ✅ Single Identity registration (your ApplicationUser)
             builder.Services
-                .AddIdentityCore<ApplicationUser>(options =>
+                .AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {
                     options.Password.RequireDigit = true;
                     options.Password.RequiredLength = 6;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequireNonAlphanumeric = false;
+
                     options.User.RequireUniqueEmail = true;
                 })
-                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddSignInManager<SignInManager<ApplicationUser>>();
+                .AddDefaultTokenProviders();
 
+            // Auth (JWT from cookie)
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -101,6 +108,7 @@ namespace DevNest
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
+
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
                     ),
@@ -121,13 +129,13 @@ namespace DevNest
             }
 
             app.UseCors("DevCors");
-
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
+          
 
             app.MapGet("/", () => "DevNest API - try /swagger");
             app.MapGet("/health", () => new { status = "healthy", time = DateTime.UtcNow });
@@ -160,15 +168,12 @@ namespace DevNest
                     using var scope = services.CreateScope();
                     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                    // If SQL isn't ready yet, CanConnect can throw; that's fine, we'll retry.
-                    // If it can connect, migrate normally.
-                    var canConnect = await db.Database.CanConnectAsync();
+                    _ = await db.Database.CanConnectAsync();
                     await db.Database.MigrateAsync();
                     return;
                 }
                 catch (SqlException ex) when (ex.Number == 1801)
                 {
-                    // Database already exists (race during startup) -> just migrate again
                     using var scope = services.CreateScope();
                     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                     await db.Database.MigrateAsync();
@@ -176,13 +181,11 @@ namespace DevNest
                 }
                 catch (Exception) when (attempt < maxAttempts)
                 {
-                    // SQL Server container not ready yet / transient startup failure
                     var delayMs = Math.Min(2000 * attempt, 15000);
                     await Task.Delay(delayMs);
                 }
             }
 
-            // Final attempt: let the exception bubble with full details
             using (var scope = services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

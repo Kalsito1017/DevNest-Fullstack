@@ -13,7 +13,13 @@ public class BrevoEmailService
         _cfg = cfg;
     }
 
-    public async Task SendAsync(string toEmail, string toName, string subject, string htmlBody)
+    public async Task SendAsync(
+        string toEmail,
+        string toName,
+        string subject,
+        string htmlBody,
+        string? replyToEmail = null,
+        string? replyToName = null)
     {
         var apiKey = _cfg["Brevo:ApiKey"];
         if (string.IsNullOrWhiteSpace(apiKey))
@@ -22,23 +28,33 @@ public class BrevoEmailService
         var senderEmail = _cfg["Brevo:SenderEmail"] ?? "no-reply@devnest.bg";
         var senderName = _cfg["Brevo:SenderName"] ?? "DevNest";
 
-        // Brevo Transactional endpoint
         var url = "https://api.brevo.com/v3/smtp/email";
 
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         req.Headers.Add("api-key", apiKey);
 
-        var payload = new
+        var payload = new Dictionary<string, object?>
         {
-            sender = new { email = senderEmail, name = senderName },
-            to = new[] { new { email = toEmail, name = toName } },
-            subject = subject,
-            htmlContent = htmlBody
+            ["sender"] = new { email = senderEmail, name = senderName },
+            ["to"] = new[] { new { email = toEmail, name = toName } },
+            ["subject"] = subject,
+            ["htmlContent"] = htmlBody
         };
 
-        var json = JsonSerializer.Serialize(payload);
-        req.Content = new StringContent(json, Encoding.UTF8, "application/json");
+        if (!string.IsNullOrWhiteSpace(replyToEmail))
+        {
+            payload["replyTo"] = new
+            {
+                email = replyToEmail,
+                name = replyToName ?? replyToEmail
+            };
+        }
+
+        req.Content = new StringContent(
+            JsonSerializer.Serialize(payload),
+            Encoding.UTF8,
+            "application/json");
 
         using var res = await _http.SendAsync(req);
         var resBody = await res.Content.ReadAsStringAsync();
