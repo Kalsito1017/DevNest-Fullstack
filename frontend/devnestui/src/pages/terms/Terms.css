@@ -48,7 +48,7 @@
 
 .terms-card p {
   margin: 10px 0;
-   color: #6f7d8e;
+  color: #6f7d8e;
 }
 
 .terms-card ul {
@@ -64,11 +64,11 @@
 .terms-sep {
   margin: 18px 0;
   border: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .terms-footnote {
   margin: 0;
-   color: #6f7d8e;
+  color: #6f7d8e;
   font-size: 13px;
 }

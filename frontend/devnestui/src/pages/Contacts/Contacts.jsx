@@ -18,7 +18,7 @@ export default function Contacts() {
             desc="За запитвания, свързани с публикуване на IT обяви или създаване на кариерен профил на компания, може да се свържете с"
             name="Симона Петрова"
             email="support@devnest.bg"
-            phone="+359 876 037 220"
+            phone="+359 876 78 78 90"
           />
 
           <ContactCard
@@ -26,7 +26,7 @@ export default function Contacts() {
             desc="За запитвания, свързани със събития, може да се свържете с"
             name="Мария Иванова"
             email="zornitsa@devnest.bg"
-            phone="+359 878 46 46 53"
+            phone="+359 878 12 34 56"
           />
 
           <ContactCard
@@ -34,7 +34,7 @@ export default function Contacts() {
             desc="За запитвания, свързани с партньорства, реклама на сайта и спонсорство на потребителските ни групи, може да се свържете с"
             name="Димитър Георгиев"
             email="dim@devnest.bg"
-            phone="+359 878 46 46 73"
+            phone="+359 878 53 21 09"
           />
 
           <div className="contact-card contact-card-wide">

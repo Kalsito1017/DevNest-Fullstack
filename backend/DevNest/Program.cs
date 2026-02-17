@@ -48,6 +48,7 @@ namespace DevNest
             builder.Services.AddScoped<ICompanyProfileService, CompanyProfileService>();
             builder.Services.AddScoped<ISavedEventsService, SavedEventsService>();
             builder.Services.AddScoped<IJobApplicationsService, JobApplicationsService>();
+            builder.Services.AddHttpClient<BrevoEmailService>();
 
             var corsOrigins = builder.Configuration
                 .GetSection("Cors:Origins")
