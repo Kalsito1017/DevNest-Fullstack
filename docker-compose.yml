@@ -4,7 +4,7 @@ services:
     container_name: devnest-db
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      MSSQL_SA_PASSWORD: ${MSSQL_SERVERPASSWORD}
     ports:
       - "1433:1433"
     volumes:
@@ -19,17 +19,21 @@ services:
     depends_on:
       - db
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://0.0.0.0:8080
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
 
       # IMPORTANT: use service name "db", NOT localhost
-      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=DevNestDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
 
-      Jwt__Key: "gsn42g89nUNDUSNG-9iu83h&^48U$*u84u94indsugnDIHGUDSHfdsgDGSEvnvmGDJUSN$UN8u"
-      Jwt__Issuer: "DevNest"
-      Jwt__Audience: "DevNest"
+      Jwt__Key: ${Jwt__Key}
+      Jwt__Issuer: ${Jwt__Issuer}
+      Jwt__Audience: ${Jwt__Audience}
+      Brevo__ApiKey: ${Brevo__ApiKey}
+      Brevo__SenderEmail: ${Brevo__SenderEmail}
+      Brevo__SenderName: ${Brevo__SenderName}
+      Frontend__BaseUrl: ${Frontend__BaseUrl}
 
-      Cors__Origins__0: "http://localhost:5173"
+      Cors__Origins__0: ${Cors__Origins__0}
     ports:
       - "5099:8080"
 
@@ -41,7 +45,7 @@ services:
     depends_on:
       - api
     environment:
-      VITE_API_URL: "http://localhost:5099"
+      VITE_API_URL: ${VITE_API_URL}
     ports:
       - "5173:5173"
     volumes:
