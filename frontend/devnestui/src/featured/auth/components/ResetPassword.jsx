@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import authService from "../../../services/passwordReset";
+import authService from "../../../services/api/authService";
 import "./ResetPassword.css";
 
 function genPassword(len = 14) {
@@ -25,7 +25,6 @@ export default function ResetPassword() {
   const [err, setErr] = useState("");
 
   useEffect(() => {
-    // винаги да предлага random 12+ по default
     setPwd(genPassword(14));
   }, []);
 
@@ -48,9 +47,8 @@ export default function ResetPassword() {
 
     setIsLoading(true);
     try {
-      await authService.resetPassword(email, token, pwd);
+      await authService.resetPassword({ email, token, newPassword: pwd });
       setMsg("Паролата е сменена успешно. Можете да влезете в профила си.");
-      // по желание: navigate("/") след 1-2 секунди
     } catch (e) {
       const apiMsg =
         e?.response?.data?.message ||

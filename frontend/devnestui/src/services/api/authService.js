@@ -2,8 +2,8 @@ import axios from "axios";
 import { API_CONFIG } from "./api";
 
 const apiClient = axios.create({
-  baseURL: `${API_CONFIG.BASE_URL}${API_CONFIG.API_PREFIX}`, // напр. http://localhost:5099/api
-  withCredentials: true,
+  baseURL: `${API_CONFIG.BASE_URL}${API_CONFIG.API_PREFIX}`,
+  withCredentials: true, // important for cookie auth
   timeout: 10000,
   headers: {
     Accept: "application/json",
@@ -12,36 +12,61 @@ const apiClient = axios.create({
 });
 
 const authService = {
+  // -----------------------
+  // Auth
+  // -----------------------
+
   me: async () => {
     const res = await apiClient.get("/auth/me");
-    return res.data; // { id, email, firstName, lastName, roles }
+    return res.data;
   },
 
   login: async ({ email, password }) => {
     await apiClient.post("/auth/login", { email, password });
-    return await authService.me();
+    return authService.me(); // cookie is set by backend
   },
 
- register: async ({ firstName, lastName, email, password, confirmPassword }) => {
-  await apiClient.post("/auth/register", {
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-  });
-  return await authService.me();
-},
+  register: async ({ firstName, lastName, email, password, confirmPassword }) => {
+    await apiClient.post("/auth/register", {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+    });
+    return authService.me();
+  },
 
   logout: async () => {
     await apiClient.post("/auth/logout");
   },
-   changePassword: async ({ currentPassword, newPassword }) => {
+
+  // -----------------------
+  // Password flows
+  // -----------------------
+
+  changePassword: async ({ currentPassword, newPassword }) => {
     const res = await apiClient.post("/auth/change-password", {
       currentPassword,
       newPassword,
     });
-    return res.data; // { message: "Password changed." } (or whatever you return)
+    return res.data;
+  },
+
+  forgotPassword: async (email) => {
+    const res = await apiClient.post("/auth/forgot-password", {
+      email,
+    });
+    return res.data; // { ok: true }
+  },
+
+  resetPassword: async ({ email, token, newPassword }) => {
+    const res = await apiClient.post("/auth/reset-password", {
+      email,
+      token,
+      newPassword,
+    });
+    return res.data; // { ok: true }
   },
 };
 

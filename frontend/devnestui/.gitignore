@@ -1,4 +1,9 @@
+# -----------------------------
+
 # Logs
+
+# -----------------------------
+
 logs
 *.log
 npm-debug.log*
@@ -7,18 +12,126 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# -----------------------------
+
+# Dependencies
+
+# -----------------------------
+
+node_modules/
+
+# -----------------------------
+
+# Build output
+
+# -----------------------------
+
+dist/
+dist-ssr/
+build/
+out/
+coverage/
+
+# -----------------------------
+
+# Environment files (DO NOT COMMIT SECRETS)
+
+# -----------------------------
+
+.env
+.env.*
+!.env.example
+
+# -----------------------------
+
+# Local configuration
+
+# -----------------------------
+
 *.local
 
-# Editor directories and files
+# -----------------------------
+
+# Cache / tooling
+
+# -----------------------------
+
+.cache/
+.vite/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# -----------------------------
+
+# Testing
+
+# -----------------------------
+
+coverage/
+jest-cache/
+
+# -----------------------------
+
+# OS generated files
+
+# -----------------------------
+
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+
+# Editor / IDE
+
+# -----------------------------
+
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.swp
+*.swo
+
+# -----------------------------
+
+# Package manager locks (keep ONE if needed)
+
+# -----------------------------
+
+# If you use npm → keep package-lock.json (recommended)
+
+# If you use yarn → keep yarn.lock
+
+# If you use pnpm → keep pnpm-lock.yaml
+
+# Comment out the ones you DO want to track.
+
+# package-lock.json
+
+# yarn.lock
+
+# pnpm-lock.yaml
+
+# -----------------------------
+
+# Docker (frontend-specific)
+
+# -----------------------------
+
+docker-compose.override.yml
+*.dockerfile.local
+
+# -----------------------------
+
+# Misc
+
+# -----------------------------
+
+*.tgz
+*.bak
+*.tmp

@@ -91,7 +91,7 @@ const Footer = () => {
               <a className="social-btn" href="https://www.instagram.com/dev.bulgaria/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
                 <InstagramIcon />
               </a>
-              <a className="social-btn" href="https://www.youtube.com/channel/UCN1N_wS6ObF4ZMzFv-bWUhW" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube">
+              <a className="social-btn" href="https://www.youtube.com/@dev-bg" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube">
                 <YouTubeIcon />
               </a>
             </div>

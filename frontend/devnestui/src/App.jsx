@@ -23,6 +23,7 @@ import Terms from "./pages/Terms/Terms";
 import Cookies from "./pages/Coockies/Cookies";
 import Contacts from "./pages/Contacts/Contacts";
 import Employers from "./pages/Employers/Employers";
+import ResetPassword from "./featured/auth/components/ResetPassword";
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
               <Route path="/cookies" element={<Cookies />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/employers" element={<Employers />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="*" element={<div>404</div>} />
             </Routes>
           </main>

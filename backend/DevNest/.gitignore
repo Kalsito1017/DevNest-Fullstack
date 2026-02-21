@@ -1,0 +1,49 @@
+# ==============================
+# Build folders
+# ==============================
+bin/
+obj/
+
+# ==============================
+# User-specific files
+# ==============================
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ==============================
+# Rider / VS / VSCode
+# ==============================
+.vs/
+.idea/
+.vscode/
+
+# ==============================
+# Logs
+# ==============================
+*.log
+
+# ==============================
+# App settings (DO NOT COMMIT SECRETS)
+# ==============================
+appsettings.json
+appsettings.Development.json
+
+# Optional: if you want to keep a safe template
+!appsettings.Template.json
+
+# ==============================
+# ASP.NET Core secrets
+# ==============================
+secrets.json
+
+# ==============================
+# Docker overrides (optional)
+# ==============================
+docker-compose.override.yml
+
+# ==============================
+# EF migrations snapshot temp files (optional)
+# ==============================
+*.Designer.cs

@@ -1,6 +1,5 @@
-// src/components/auth/ForgotPassword.jsx
 import { useState } from "react";
-import passwordReset from "../../../services/api/passwordReset"; // adjust path to your project
+import authService from "../../../services/api/authService";
 
 const ForgotPassword = ({ onClose, onSwitchToLogin }) => {
   const [email, setEmail] = useState("");
@@ -19,13 +18,9 @@ const ForgotPassword = ({ onClose, onSwitchToLogin }) => {
     setError("");
 
     try {
-      // axios wrapper already uses your config baseURL
-      await passwordReset.forgotPassword(trimmed);
-
-      // Even if email doesn't exist, API should return 200 (anti-enumeration)
+      await authService.forgotPassword(trimmed);
       setIsSubmitted(true);
     } catch (err) {
-      // axios error shape: err.response?.data?.message / err.response?.data?.errors
       const data = err?.response?.data;
       const message =
         data?.message ||
