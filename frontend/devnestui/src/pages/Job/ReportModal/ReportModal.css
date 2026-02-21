@@ -96,3 +96,118 @@
 }
 
 .report-field.small { max-width: 140px; }
+
+
+/* Modern toast */
+.report-toast{
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 28, 51, 0.92);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  animation: reportToastIn .18s ease-out;
+  z-index: 2;
+}
+
+@keyframes reportToastIn{
+  from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Spinner on button */
+.report-spinner{
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: rgba(255,255,255,1);
+  display: inline-block;
+  margin-left: 10px;
+  animation: reportSpin .85s linear infinite;
+}
+
+@keyframes reportSpin{
+  to { transform: rotate(360deg); }
+}
+
+/* Success panel */
+.report-success{
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+  animation: reportFadeUp .2s ease-out;
+}
+
+@keyframes reportFadeUp{
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.report-success-badge{
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: #eef6ff;
+  display: grid;
+  place-items: center;
+  color: #2d4cff;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.report-success-title{
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f1c33;
+}
+
+.report-success-text{
+  color: #4b5563;
+  line-height: 1.4;
+}
+
+.report-success-meta{
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f6f7fb;
+  color: #374151;
+  font-size: 14px;
+}
+
+.report-success-actions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.report-secondary{
+  border: 1px solid rgba(15, 28, 51, 0.12);
+  background: #fff;
+  color: #0f1c33;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .06s ease, box-shadow .12s ease;
+}
+
+.report-secondary:hover{
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+}
+
+.report-secondary:active{
+  transform: translateY(1px);
+}
+
+/* Make modal position relative so toast can sit inside */
+.report-modal{
+  position: relative;
+}

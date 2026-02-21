@@ -9,6 +9,7 @@ using DevNest.Services.Techs;
 using DevNest.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -50,6 +51,17 @@ namespace DevNest
             builder.Services.AddScoped<ISavedEventsService, SavedEventsService>();
             builder.Services.AddScoped<IJobApplicationsService, JobApplicationsService>();
             builder.Services.AddHttpClient<BrevoEmailService>();
+
+
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("reports", o =>
+                {
+                    o.PermitLimit = 5;
+                    o.Window = TimeSpan.FromMinutes(1);
+                    o.QueueLimit = 0;
+                });
+            });
 
             // CORS
             var corsOrigins = builder.Configuration

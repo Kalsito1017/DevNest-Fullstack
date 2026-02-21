@@ -44,6 +44,9 @@ services:
       Brevo__SenderEmail: ${Brevo__SenderEmail}
       Brevo__SenderName: ${Brevo__SenderName}
 
+      Report__InboxEmail: ${Report__InboxEmail}
+      Report__InboxName: ${Report__InboxName}
+
       Frontend__BaseUrl: ${Frontend__BaseUrl}
       Cors__Origins__0: ${Cors__Origins__0}
     ports:
