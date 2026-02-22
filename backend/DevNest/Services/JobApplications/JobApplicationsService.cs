@@ -2,7 +2,9 @@
 using DevNest.DTOs.JobApplications;
 using DevNest.Models.JobApplications;
 using DevNest.Services.User;
+using DevNest.EmailTemplates;
 using Microsoft.EntityFrameworkCore;
+using DevNest.Services.Email;
 
 namespace DevNest.Services.JobApplications;
 
@@ -10,11 +12,13 @@ public class JobApplicationsService : IJobApplicationsService
 {
     private readonly ApplicationDbContext db;
     private readonly IFilesService files;
+    private readonly BrevoEmailService email; // <-- add
 
-    public JobApplicationsService(ApplicationDbContext db, IFilesService files)
+    public JobApplicationsService(ApplicationDbContext db, IFilesService files, BrevoEmailService email)
     {
         this.db = db;
         this.files = files;
+        this.email = email;
     }
 
     public async Task<ApplyJobResponseDto> ApplyAsync(string userId, ApplyJobRequestDto dto, CancellationToken ct = default)
@@ -25,9 +29,19 @@ public class JobApplicationsService : IJobApplicationsService
         if (string.IsNullOrWhiteSpace(dto.LastName)) throw new InvalidOperationException("Last name is required.");
         if (string.IsNullOrWhiteSpace(dto.Email)) throw new InvalidOperationException("Email is required.");
 
-        // Job exists
-        var jobExists = await db.Jobs.AsNoTracking().AnyAsync(j => j.Id == dto.JobId, ct);
-        if (!jobExists) throw new InvalidOperationException("Job not found.");
+        // Job exists + also fetch details for email (single query)
+        var jobInfo = await db.Jobs
+            .AsNoTracking()
+            .Where(j => j.Id == dto.JobId)
+            .Select(j => new
+            {
+                j.Id,
+                j.Title,
+                CompanyName = j.Company.Name
+            })
+            .FirstOrDefaultAsync(ct);
+
+        if (jobInfo is null) throw new InvalidOperationException("Job not found.");
 
         // Prevent double apply
         var alreadyApplied = await db.JobApplications
@@ -80,14 +94,13 @@ public class JobApplicationsService : IJobApplicationsService
             }
         }
 
-    
+        // Upload new files
         if (dto.NewFiles is { Count: > 0 })
         {
             foreach (var file in dto.NewFiles)
             {
                 if (file is null || file.Length <= 0) continue;
 
-         
                 var created = await files.UploadAsync(userId, file, ct);
 
                 app.Files.Add(new JobApplicationFile
@@ -100,14 +113,34 @@ public class JobApplicationsService : IJobApplicationsService
         db.JobApplications.Add(app);
         await db.SaveChangesAsync(ct);
 
+        // Send confirmation email to applicant (do not fail the application if email fails)
+        try
+        {
+            var (subject, html) = ApplicationEmails.ThanksForApplying(
+                applicantFirstName: app.Applicant.FirstName,
+                jobTitle: jobInfo.Title,
+                companyName: jobInfo.CompanyName
+            );
+
+            await email.SendAsync(
+                toEmail: app.Applicant.Email,
+                toName: $"{app.Applicant.FirstName} {app.Applicant.LastName}".Trim(),
+                subject: subject,
+                htmlBody: html,
+                replyToEmail: null,
+                replyToName: null
+            );
+        }
+        catch
+        {
+            // Optional: log warning (recommended), but don't throw.
+        }
+
         return new ApplyJobResponseDto { ApplicationId = app.Id };
     }
 
     public async Task<IReadOnlyList<MyJobApplicationListItemDto>> GetMineAsync(string userId, CancellationToken ct = default)
     {
-        // If you define "active" with ExpiresAt:
-        // IsJobActive = a.Job.IsActive && (a.Job.ExpiresAt == null || a.Job.ExpiresAt > DateTime.UtcNow)
-
         var items = await db.JobApplications
             .AsNoTracking()
             .Where(a => a.UserId == userId)

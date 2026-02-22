@@ -1,4 +1,5 @@
 ﻿using DevNest.DTOs.Auth;
+using DevNest.Services.Email;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Encodings.Web;
 

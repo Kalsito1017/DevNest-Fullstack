@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using DevNest.Services.EmailTemplates;
+using DevNest.Services.Email;
 
 namespace DevNest.Controllers;
 

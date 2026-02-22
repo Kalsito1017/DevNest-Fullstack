@@ -1,6 +1,7 @@
 ﻿using DevNest.Data;
 using DevNest.Services.Categories;
 using DevNest.Services.Companies;
+using DevNest.Services.Email;
 using DevNest.Services.Events;
 using DevNest.Services.Home;
 using DevNest.Services.JobApplications;
