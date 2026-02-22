@@ -22,7 +22,6 @@ export async function getCompanies({
   return apiGet(`/companies?${params.toString()}`);
 }
 
-
 /**
  * GET /api/companies/size-stats
  */
@@ -47,7 +46,11 @@ export async function getCompaniesForMap({ onlyActive = true } = {}) {
 /**
  * GET /api/companies/suggest?q=...&take=8&onlyActive=true
  */
-export async function getCompanySuggestions({ q = "", take = 8, onlyActive = true } = {}) {
+export async function getCompanySuggestions({
+  q = "",
+  take = 8,
+  onlyActive = true,
+} = {}) {
   const qs = new URLSearchParams();
   const term = (q || "").trim();
 
@@ -56,8 +59,6 @@ export async function getCompanySuggestions({ q = "", take = 8, onlyActive = tru
   qs.set("onlyActive", String(onlyActive));
 
   return apiGet(`/companies/suggest?${qs.toString()}`);
-
-  
 }
 
 export async function getCompanyProfileById(id) {

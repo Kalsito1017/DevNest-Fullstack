@@ -26,7 +26,13 @@ const authService = {
     return authService.me(); // cookie is set by backend
   },
 
-  register: async ({ firstName, lastName, email, password, confirmPassword }) => {
+  register: async ({
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+  }) => {
     await apiClient.post("/auth/register", {
       firstName,
       lastName,

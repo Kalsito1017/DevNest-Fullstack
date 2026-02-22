@@ -17,12 +17,11 @@ async function request(method, path, { signal, body, headers } = {}) {
 
   if (!res.ok) {
     const parsed = await parseBody(res).catch(() => "");
-    const msg =
-      typeof parsed === "string"
-        ? parsed
-        : (parsed?.message || "");
+    const msg = typeof parsed === "string" ? parsed : parsed?.message || "";
 
-    const err = new Error(`${method} ${path} failed: ${res.status} ${msg}`.trim());
+    const err = new Error(
+      `${method} ${path} failed: ${res.status} ${msg}`.trim(),
+    );
     err.status = res.status;
     err.payload = parsed; // important for UI messages
     throw err;
