@@ -6,6 +6,7 @@ using DevNest.Services.Events;
 using DevNest.Services.Home;
 using DevNest.Services.JobApplications;
 using DevNest.Services.Jobs;
+using DevNest.Services.Newsletter;
 using DevNest.Services.Techs;
 using DevNest.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -52,6 +53,7 @@ namespace DevNest
             builder.Services.AddScoped<ISavedEventsService, SavedEventsService>();
             builder.Services.AddScoped<IJobApplicationsService, JobApplicationsService>();
             builder.Services.AddHttpClient<BrevoEmailService>();
+            builder.Services.AddScoped<INewsletterService, NewsletterService>();
 
 
             builder.Services.AddRateLimiter(options =>

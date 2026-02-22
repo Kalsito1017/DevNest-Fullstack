@@ -4,7 +4,7 @@ import './Home.css';
 import { getHomeSections } from '../../services/api/home';
 import { getCompanies } from '../../services/api/companies';
 import heroBg from '../../assets/backgroundimageforhomepagetitle.png';
-
+import { subscribeNewsletter } from "../../services/api/newsletter";
 
 const Home = () => {
   const [sections, setSections] = useState([]);
@@ -41,25 +41,30 @@ const [newsletterStatus, setNewsletterStatus] = useState('idle');
   }, []);
 
 
-const handleNewsletterSubmit = (e) => {
+const handleNewsletterSubmit = async (e) => {
   e.preventDefault();
 
   const email = newsletterEmail.trim();
   if (!email) return;
 
-  // optional: require consent
+  // If you want consent required, uncomment:
   // if (!newsletterAccepted) return;
 
-  // later: call API here
-  // await subscribeNewsletter({ email })
+  try {
+    setNewsletterStatus("loading");
+    await subscribeNewsletter(email);
 
-  setNewsletterStatus('success');
-  setNewsletterEmail('');
-  setNewsletterAccepted(false);
+    setNewsletterStatus("success");
+    setNewsletterEmail("");
+    setNewsletterAccepted(false);
 
-  window.setTimeout(() => {
-    setNewsletterStatus('idle');
-  }, 2500);
+    window.setTimeout(() => setNewsletterStatus("idle"), 2500);
+  } catch (err) {
+    console.error("Newsletter subscribe failed:", err);
+    setNewsletterStatus("error");
+
+    window.setTimeout(() => setNewsletterStatus("idle"), 3000);
+  }
 };
 
 
@@ -262,7 +267,7 @@ const handleNewsletterSubmit = (e) => {
               Получавай актуална информация за предстоящи събития и новини от IT сферата
             </p>
 
-           <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
+         <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
   <input
     className="newsletter-input"
     type="email"
@@ -270,20 +275,29 @@ const handleNewsletterSubmit = (e) => {
     value={newsletterEmail}
     onChange={(e) => setNewsletterEmail(e.target.value)}
     required
+    disabled={newsletterStatus === "loading"}
   />
 
-
-{newsletterStatus === 'success' ? (
-  <div className="newsletter-success" role="status" aria-live="polite">
-    УСПЕШНО АБОНИРАНЕ
-  </div>
-) : (
-  <button className="newsletter-btn" type="submit">
-    АБОНИРАЙ МЕ
-  </button>
-)}
+  {newsletterStatus === "success" ? (
+    <div className="newsletter-success" role="status" aria-live="polite">
+      УСПЕШНО АБОНИРАНЕ
+    </div>
+  ) : (
+    <button
+      className="newsletter-btn"
+      type="submit"
+      disabled={newsletterStatus === "loading"}
+    >
+      {newsletterStatus === "loading" ? "Изпращане..." : "АБОНИРАЙ МЕ"}
+    </button>
+  )}
 </form>
 
+{newsletterStatus === "error" ? (
+  <div className="newsletter-error" role="alert">
+    Грешка при абониране. Опитай пак.
+  </div>
+) : null}
 
             <label className="newsletter-consent">
               <input

@@ -940,3 +940,10 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(4px); }
 }
+
+
+.newsletter-error{
+  margin-top: 10px;
+  font-size: 14px;
+  color: #b00020;
+}
