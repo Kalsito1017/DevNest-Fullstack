@@ -97,7 +97,10 @@ export default function CompanyMap() {
         const base = CITY_COORDS[city];
         if (!base) return null;
 
-        const [lat, lng] = jitterLatLng(base, Number(c.id || 0) + city.length * 17);
+        const [lat, lng] = jitterLatLng(
+          base,
+          Number(c.id || 0) + city.length * 17,
+        );
         return { ...c, city, lat, lng };
       })
       .filter(Boolean);
@@ -108,11 +111,17 @@ export default function CompanyMap() {
       <div className="map-head">
         <div>
           <div className="map-title">Компании на картата</div>
-          <div className="map-sub">Маркер за всяка компания (по град/remote)</div>
+          <div className="map-sub">
+            Маркер за всяка компания (по град/remote)
+          </div>
         </div>
 
         <div className="map-actions">
-          <button className="map-btn" type="button" onClick={() => navigate("/company")}>
+          <button
+            className="map-btn"
+            type="button"
+            onClick={() => navigate("/company")}
+          >
             ← Назад към компаниите
           </button>
 
@@ -140,44 +149,45 @@ export default function CompanyMap() {
             className="leaflet-map"
           >
             <TileLayer
-              attribution='&copy; OpenStreetMap'
+              attribution="&copy; OpenStreetMap"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-       {markers.map((m) => (
-  <CircleMarker
-   eventHandlers={{
-    mouseover: (e) => e.target.setStyle({ radius: 7, fillOpacity: 1 }),
-    mouseout: (e) => e.target.setStyle({ radius: 5, fillOpacity: 0.85 }),
-  }}
-    key={m.id}
-    center={[m.lat, m.lng]}
-    radius={5}
-    pathOptions={{
-      color: "#2d4cff",
-      fillColor: "#2d4cff",
-      fillOpacity: 0.85,
-      weight: 1,
-    }}
-  >
-    <Popup>
-      <div className="popup">
-        <div className="popup-title">{m.name}</div>
-        <div className="popup-meta">
-          {m.city} • {m.jobsCount || 0} активни обяви
-        </div>
-        <button
-          className="popup-btn"
-          type="button"
-          onClick={() => navigate(`/company/${m.id}`)}
-        >
-          Отвори компания
-        </button>
-      </div>
-    </Popup>
-  </CircleMarker>
-))}
-
+            {markers.map((m) => (
+              <CircleMarker
+                eventHandlers={{
+                  mouseover: (e) =>
+                    e.target.setStyle({ radius: 7, fillOpacity: 1 }),
+                  mouseout: (e) =>
+                    e.target.setStyle({ radius: 5, fillOpacity: 0.85 }),
+                }}
+                key={m.id}
+                center={[m.lat, m.lng]}
+                radius={5}
+                pathOptions={{
+                  color: "#2d4cff",
+                  fillColor: "#2d4cff",
+                  fillOpacity: 0.85,
+                  weight: 1,
+                }}
+              >
+                <Popup>
+                  <div className="popup">
+                    <div className="popup-title">{m.name}</div>
+                    <div className="popup-meta">
+                      {m.city} • {m.jobsCount || 0} активни обяви
+                    </div>
+                    <button
+                      className="popup-btn"
+                      type="button"
+                      onClick={() => navigate(`/company/${m.id}`)}
+                    >
+                      Отвори компания
+                    </button>
+                  </div>
+                </Popup>
+              </CircleMarker>
+            ))}
           </MapContainer>
         )}
       </div>

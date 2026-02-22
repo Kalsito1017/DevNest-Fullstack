@@ -282,10 +282,11 @@
   }
 }
 
-
 .saved-job-card {
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
 }
 .saved-job-card:hover {
   transform: translateY(-1px);

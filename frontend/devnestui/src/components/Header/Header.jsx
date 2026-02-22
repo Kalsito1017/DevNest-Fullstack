@@ -1,5 +1,5 @@
-import { Link, useNavigate} from "react-router-dom";
-import {  useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
 import "./Header.css";
 import AuthModal from "../../featured/auth/AuthModal";
 import { useAuth } from "../../context/AuthContext";
@@ -7,13 +7,8 @@ import { useAuth } from "../../context/AuthContext";
 const Header = () => {
   const navigate = useNavigate();
 
-  const {
-    user,
-    isAuthLoading,
-    authModal,
-    openAuthModal,
-    closeAuthModal,
-  } = useAuth();
+  const { user, isAuthLoading, authModal, openAuthModal, closeAuthModal } =
+    useAuth();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -32,16 +27,23 @@ const Header = () => {
   };
 
   const normalizeSlug = (raw) => {
-    const s = decodeURIComponent(String(raw || "")).trim().toLowerCase();
+    const s = decodeURIComponent(String(raw || ""))
+      .trim()
+      .toLowerCase();
     if (!s) return "";
     if (s.startsWith("location") && s.length > "location".length) {
-      return s.replace(/^location/i, "").trim().toLowerCase();
+      return s
+        .replace(/^location/i, "")
+        .trim()
+        .toLowerCase();
     }
     return s;
   };
 
   const toSlug = (label) => {
-    const v = String(label || "").trim().toLowerCase();
+    const v = String(label || "")
+      .trim()
+      .toLowerCase();
     if (v === "софия") return "sofia";
     if (v === "варна") return "varna";
     if (v === "пловдив") return "plovdiv";
@@ -175,14 +177,14 @@ const Header = () => {
           </div>
         </div>
       </header>
-     {authModal.isOpen && (
-  <AuthModal
-    key={authModal.mode}
-    isOpen={authModal.isOpen}
-    onClose={closeAuthModal}
-    initialMode={authModal.mode}
-  />
-)}
+      {authModal.isOpen && (
+        <AuthModal
+          key={authModal.mode}
+          isOpen={authModal.isOpen}
+          onClose={closeAuthModal}
+          initialMode={authModal.mode}
+        />
+      )}
     </>
   );
 };

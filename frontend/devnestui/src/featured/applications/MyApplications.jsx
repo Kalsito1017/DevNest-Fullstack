@@ -22,7 +22,10 @@ export default function MyApplications() {
         setItems(Array.isArray(res) ? res : []);
       } catch (e) {
         if (!mounted) return;
-        const msg = e?.payload?.message || e?.message || "Не успяхме да заредим кандидатурите.";
+        const msg =
+          e?.payload?.message ||
+          e?.message ||
+          "Не успяхме да заредим кандидатурите.";
         setErr(msg);
       } finally {
         if (mounted) setIsLoading(false);
@@ -44,7 +47,11 @@ export default function MyApplications() {
   }
 
   if (!items.length) {
-    return <div className="myapps-wrap myapps-empty">Все още нямате подадени кандидатури.</div>;
+    return (
+      <div className="myapps-wrap myapps-empty">
+        Все още нямате подадени кандидатури.
+      </div>
+    );
   }
 
   const fmtDate = (v) => {
@@ -64,12 +71,19 @@ export default function MyApplications() {
         </div>
 
         {items.map((x) => (
-          <div key={x.applicationId ?? `${x.jobId}-${x.appliedAt}`} className="myapps-row">
+          <div
+            key={x.applicationId ?? `${x.jobId}-${x.appliedAt}`}
+            className="myapps-row"
+          >
             <div className="myapps-date">{fmtDate(x.appliedAt)}</div>
 
             <div className="myapps-cell">
               {x.isJobActive ? (
-                <button className="myapps-link" type="button" onClick={() => navigate(`/company/jobads/${x.jobId}`)}>
+                <button
+                  className="myapps-link"
+                  type="button"
+                  onClick={() => navigate(`/company/jobads/${x.jobId}`)}
+                >
                   {x.jobTitle}
                 </button>
               ) : (
@@ -78,7 +92,11 @@ export default function MyApplications() {
             </div>
 
             <div className="myapps-cell">
-              <button className="myapps-link" type="button" onClick={() => navigate(`/company/${x.companyId}`)}>
+              <button
+                className="myapps-link"
+                type="button"
+                onClick={() => navigate(`/company/${x.companyId}`)}
+              >
                 {x.companyName}
               </button>
             </div>

@@ -117,7 +117,10 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
   text-decoration: none;
-  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  transition:
+    transform 0.12s ease,
+    background 0.12s ease,
+    border-color 0.12s ease;
 }
 
 .social-btn:hover {
@@ -134,7 +137,7 @@
 
 /* Bottom bar */
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer-bottom-inner {

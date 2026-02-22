@@ -19,12 +19,17 @@ const parseMulti = (val) =>
 const cityOnly = (loc) => (loc ? String(loc).split(",")[0].trim() : "");
 
 function normalizeSlug(raw) {
-  const s = decodeURIComponent(String(raw || "")).trim().toLowerCase();
+  const s = decodeURIComponent(String(raw || ""))
+    .trim()
+    .toLowerCase();
   if (!s) return "";
 
   // Handle accidental "locationsofia"
   if (s.startsWith("location") && s.length > "location".length) {
-    return s.replace(/^location/i, "").trim().toLowerCase();
+    return s
+      .replace(/^location/i, "")
+      .trim()
+      .toLowerCase();
   }
   return s;
 }
@@ -90,7 +95,7 @@ export default function CompanySelectLocation() {
   useEffect(() => {
     if (!selectedLocationRaw) return;
 
-    let alive = true;
+    const ac = new AbortController();
 
     const load = async () => {
       setLoading(true);
@@ -99,16 +104,12 @@ export default function CompanySelectLocation() {
       try {
         const qs = new URLSearchParams();
         qs.set("sort", sort);
-
-        // ✅ If selectedLocationRaw is slug ("sofia") send slug.
-        // ✅ If it's raw ("Sofia, Bulgaria") send raw.
         qs.set("location", selectedLocationRaw);
-
-        // ✅ always show only active (no toggle)
         qs.set("onlyActive", "true");
 
-        const res = await fetch(`${API}/companies?${qs.toString()}`);
-        if (!alive) return;
+        const res = await fetch(`${API}/companies?${qs.toString()}`, {
+          signal: ac.signal,
+        });
 
         if (!res.ok) {
           setErr("Грешка при зареждане на компании.");
@@ -117,30 +118,24 @@ export default function CompanySelectLocation() {
         }
 
         const data = await res.json();
-        if (!alive) return;
-
         const list = Array.isArray(data)
           ? data
           : Array.isArray(data?.items)
-          ? data.items
-          : [];
+            ? data.items
+            : [];
 
         setCompanies(list);
-      } catch {
-        if (!alive) return;
+      } catch (e) {
+        if (e?.name === "AbortError") return; // normal
         setErr("Грешка при зареждане на компании.");
         setCompanies([]);
       } finally {
-        if (!alive) return;
         setLoading(false);
       }
     };
 
     load();
-
-    return () => {
-      alive = false;
-    };
+    return () => ac.abort();
   }, [selectedLocationRaw, sort]);
 
   if (!selectedLocationRaw) {
@@ -155,7 +150,9 @@ export default function CompanySelectLocation() {
     <div className="companies-page">
       <section className="companies-hero">
         <div className="companies-hero-text">
-          <h1 className="companies-title">Компании в {selectedLocationTitle}</h1>
+          <h1 className="companies-title">
+            Компании в {selectedLocationTitle}
+          </h1>
           <p className="companies-sub">
             Разгледай компании по локация и намери най-подходящия работодател.
           </p>
@@ -201,14 +198,20 @@ export default function CompanySelectLocation() {
                 {c.logoUrl ? (
                   <img className="company-logo" src={c.logoUrl} alt={c.name} />
                 ) : (
-                  <div className="company-logo-fallback">{c.name?.[0] ?? "?"}</div>
+                  <div className="company-logo-fallback">
+                    {c.name?.[0] ?? "?"}
+                  </div>
                 )}
                 <div className="company-name">{c.name}</div>
               </div>
 
               <div className="company-meta">
-                {c.location ? <span className="pill">{cityOnly(c.location)}</span> : null}
-                {c.size ? <span className="pill">{c.size} Брой IT служители</span> : null}
+                {c.location ? (
+                  <span className="pill">{cityOnly(c.location)}</span>
+                ) : null}
+                {c.size ? (
+                  <span className="pill">{c.size} Брой IT служители</span>
+                ) : null}
               </div>
             </Link>
           ))}

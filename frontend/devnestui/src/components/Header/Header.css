@@ -20,7 +20,7 @@
   font-weight: bold;
   color: #333;
   text-decoration: none;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   flex-shrink: 0;
 }
 
@@ -174,7 +174,9 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
   color: #000;
   font-weight: 600;
   font-size: 14px;
@@ -204,7 +206,7 @@
 
 /* Arrow pointer */
 .dropdown-menu::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -10px;
   left: 18px;
@@ -216,7 +218,7 @@
 }
 
 .dropdown-menu::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -12px;
   left: 17px;

@@ -50,14 +50,19 @@ const RegisterForm = ({ onSwitchToLogin }) => {
   const validateForm = () => {
     const errors = [];
 
-    if (formData.firstName.trim().length < 2) errors.push("Името трябва да бъде поне 2 символа");
-    if (formData.lastName.trim().length < 2) errors.push("Фамилията трябва да бъде поне 2 символа");
+    if (formData.firstName.trim().length < 2)
+      errors.push("Името трябва да бъде поне 2 символа");
+    if (formData.lastName.trim().length < 2)
+      errors.push("Фамилията трябва да бъде поне 2 символа");
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email.trim())) errors.push("Моля, въведете валиден имейл адрес");
+    if (!emailRegex.test(formData.email.trim()))
+      errors.push("Моля, въведете валиден имейл адрес");
 
-    if (formData.password.length < 6) errors.push("Паролата трябва да бъде поне 6 символа");
-    if (formData.password !== formData.confirmPassword) errors.push("Паролите не съвпадат");
+    if (formData.password.length < 6)
+      errors.push("Паролата трябва да бъде поне 6 символа");
+    if (formData.password !== formData.confirmPassword)
+      errors.push("Паролите не съвпадат");
 
     if (!agreeTerms) errors.push("Трябва да се съгласите с условията");
 
@@ -98,8 +103,10 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       timeoutRef.current = setTimeout(() => setSuccessPopup(false), 1200);
     } catch (err) {
       let errorMessage = "Грешка при регистрация. Моля, опитайте отново.";
-      if (err?.response?.data?.message) errorMessage = err.response.data.message;
-      else if (err?.response?.data?.errors) errorMessage = err.response.data.errors.join(", ");
+      if (err?.response?.data?.message)
+        errorMessage = err.response.data.message;
+      else if (err?.response?.data?.errors)
+        errorMessage = err.response.data.errors.join(", ");
 
       setError(errorMessage);
       generateMathQuestion();
@@ -108,205 +115,201 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     }
   };
 
-    // Success Popup Component
-    const SuccessPopup = () => {
-        if (!successPopup) return null;
-
-        return (
-            <div className="success-popup-overlay">
-                <div className="success-popup">
-                    <div className="success-icon">✅</div>
-                    <h3>Успешна регистрация!</h3>
-                    <p>Вашият профил беше създаден успешно.</p>
-                    <p className="success-subtext">Пренасочване към началната страница...</p>
-                    <div className="success-progress">
-                        <div className="progress-bar"></div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
+  // Success Popup Component
+  const SuccessPopup = () => {
+    if (!successPopup) return null;
 
     return (
-        <>
-            <SuccessPopup />
-
-            <form onSubmit={handleSubmit} className="auth-form" noValidate>
-                <div className="form-row">
-                    <div className="form-group">
-                        <label htmlFor="firstName">Име *</label>
-                        <input
-                            type="text"
-                            id="firstName"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleInputChange}
-                            placeholder="Име"
-                            required
-                            disabled={isLoading}
-                            minLength="2"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="lastName">Фамилия *</label>
-                        <input
-                            type="text"
-                            id="lastName"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleInputChange}
-                            placeholder="Фамилия"
-                            required
-                            disabled={isLoading}
-                            minLength="2"
-                        />
-                    </div>
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="email">Имейл адрес *</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="вашият@имейл.com"
-                        required
-                        disabled={isLoading}
-                    />
-                </div>
-
-                <div className="form-row">
-                    <div className="form-group">
-                        <label htmlFor="password">Парола *</label>
-                        <div className="password-input-wrapper">
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleInputChange}
-                                placeholder="Поне 6 символа"
-                                required
-                                disabled={isLoading}
-                                minLength="6"
-                            />
-                            <button
-                                type="button"
-                                className="password-toggle"
-                                onClick={() => setShowPassword(!showPassword)}
-                                disabled={isLoading}
-                            >
-                           
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="confirmPassword">Потвърди парола *</label>
-                        <div className="password-input-wrapper">
-                            <input
-                                type={showConfirmPassword ? "text" : "password"}
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleInputChange}
-                                placeholder="Повтори паролата"
-                                required
-                                disabled={isLoading}
-                            />
-                            <button
-                                type="button"
-                                className="password-toggle"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                disabled={isLoading}
-                            >
-                                {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Math question for bot prevention */}
-                <div className="form-group">
-                    <label htmlFor="mathAnswer">Въпрос за сигурност *</label>
-                    <div className="math-question">
-                        <p>Моля, отговорете: {mathQuestion.question} = ?</p>
-                        <div className="math-input-row">
-                            <input
-                                type="number"
-                                id="mathAnswer"
-                                value={mathAnswer}
-                                onChange={(e) => setMathAnswer(e.target.value)}
-                                placeholder="Отговор"
-                                required
-                                disabled={isLoading}
-                            />
-                            <button
-                                type="button"
-                                className="refresh-math-btn"
-                                onClick={generateMathQuestion}
-                                disabled={isLoading}
-                            >
-                                Нов въпрос
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="form-options">
-                    <label className="checkbox-label">
-                        <input
-                            type="checkbox"
-                            checked={agreeTerms}
-                            onChange={(e) => setAgreeTerms(e.target.checked)}
-                            disabled={isLoading}
-                            required
-                        />
-                        <span>
-                            Съгласен съм с условията за ползване и поверителност
-                        </span>
-                    </label>
-                </div>
-
-                {error && (
-                    <div className="auth-error">
-                        <span className="error-icon">⚠️</span>
-                        {error}
-                    </div>
-                )}
-
-                <button
-                    type="submit"
-                    className="auth-btn primary"
-                    disabled={isLoading}
-                >
-                    {isLoading ? (
-                        <>
-                            <span className="spinner"></span>
-                            Регистриране...
-                        </>
-                    ) : 'Създай профил'}
-                </button>
-
-                <div className="auth-footer">
-                    <p>
-                        Вече имате профил?{' '}
-                        <button
-                            type="button"
-                            className="switch-btn"
-                            onClick={onSwitchToLogin}
-                            disabled={isLoading}
-                        >
-                            Влезте в профила си
-                        </button>
-                    </p>
-                </div>
-            </form>
-        </>
+      <div className="success-popup-overlay">
+        <div className="success-popup">
+          <div className="success-icon">✅</div>
+          <h3>Успешна регистрация!</h3>
+          <p>Вашият профил беше създаден успешно.</p>
+          <p className="success-subtext">
+            Пренасочване към началната страница...
+          </p>
+          <div className="success-progress">
+            <div className="progress-bar"></div>
+          </div>
+        </div>
+      </div>
     );
+  };
+
+  return (
+    <>
+      <SuccessPopup />
+
+      <form onSubmit={handleSubmit} className="auth-form" noValidate>
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="firstName">Име *</label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange}
+              placeholder="Име"
+              required
+              disabled={isLoading}
+              minLength="2"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="lastName">Фамилия *</label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleInputChange}
+              placeholder="Фамилия"
+              required
+              disabled={isLoading}
+              minLength="2"
+            />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="email">Имейл адрес *</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder="вашият@имейл.com"
+            required
+            disabled={isLoading}
+          />
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="password">Парола *</label>
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="Поне 6 символа"
+                required
+                disabled={isLoading}
+                minLength="6"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={isLoading}
+              ></button>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Потвърди парола *</label>
+            <div className="password-input-wrapper">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                placeholder="Повтори паролата"
+                required
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                disabled={isLoading}
+              >
+                {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Math question for bot prevention */}
+        <div className="form-group">
+          <label htmlFor="mathAnswer">Въпрос за сигурност *</label>
+          <div className="math-question">
+            <p>Моля, отговорете: {mathQuestion.question} = ?</p>
+            <div className="math-input-row">
+              <input
+                type="number"
+                id="mathAnswer"
+                value={mathAnswer}
+                onChange={(e) => setMathAnswer(e.target.value)}
+                placeholder="Отговор"
+                required
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                className="refresh-math-btn"
+                onClick={generateMathQuestion}
+                disabled={isLoading}
+              >
+                Нов въпрос
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="form-options">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={agreeTerms}
+              onChange={(e) => setAgreeTerms(e.target.checked)}
+              disabled={isLoading}
+              required
+            />
+            <span>Съгласен съм с условията за ползване и поверителност</span>
+          </label>
+        </div>
+
+        {error && (
+          <div className="auth-error">
+            <span className="error-icon">⚠️</span>
+            {error}
+          </div>
+        )}
+
+        <button type="submit" className="auth-btn primary" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <span className="spinner"></span>
+              Регистриране...
+            </>
+          ) : (
+            "Създай профил"
+          )}
+        </button>
+
+        <div className="auth-footer">
+          <p>
+            Вече имате профил?{" "}
+            <button
+              type="button"
+              className="switch-btn"
+              onClick={onSwitchToLogin}
+              disabled={isLoading}
+            >
+              Влезте в профила си
+            </button>
+          </p>
+        </div>
+      </form>
+    </>
+  );
 };
 
 export default RegisterForm;

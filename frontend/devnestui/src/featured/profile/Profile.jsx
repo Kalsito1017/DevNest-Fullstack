@@ -76,7 +76,11 @@ const Profile = () => {
   }, [activeSection]);
 
   const initials = useMemo(() => {
-    const letter = (user?.firstName?.trim()?.[0] || user?.email?.trim()?.[0] || "U").toUpperCase();
+    const letter = (
+      user?.firstName?.trim()?.[0] ||
+      user?.email?.trim()?.[0] ||
+      "U"
+    ).toUpperCase();
     return letter;
   }, [user]);
 
@@ -112,9 +116,12 @@ const Profile = () => {
     const lastName = personal.lastName.trim();
     const email = personal.email.trim().toLowerCase();
 
-    if (firstName.length < 2) return setError("Името трябва да е поне 2 символа.");
-    if (lastName.length < 2) return setError("Фамилията трябва да е поне 2 символа.");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Невалиден имейл адрес.");
+    if (firstName.length < 2)
+      return setError("Името трябва да е поне 2 символа.");
+    if (lastName.length < 2)
+      return setError("Фамилията трябва да е поне 2 символа.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return setError("Невалиден имейл адрес.");
 
     setSavingPersonal(true);
     try {
@@ -122,8 +129,10 @@ const Profile = () => {
     } catch (err) {
       setError(
         err?.response?.data?.message ||
-          (Array.isArray(err?.response?.data?.errors) ? err.response.data.errors.join(", ") : null) ||
-          "Грешка при запазване."
+          (Array.isArray(err?.response?.data?.errors)
+            ? err.response.data.errors.join(", ")
+            : null) ||
+          "Грешка при запазване.",
       );
     } finally {
       setSavingPersonal(false);
@@ -139,8 +148,10 @@ const Profile = () => {
     const newPassword = pwd.newPassword;
 
     if (!currentPassword) return setError("Въведи текущата си парола.");
-    if (newPassword.length < 6) return setError("Паролата трябва да е поне 6 символа.");
-    if (newPassword !== pwd.confirmPassword) return setError("Паролите не съвпадат.");
+    if (newPassword.length < 6)
+      return setError("Паролата трябва да е поне 6 символа.");
+    if (newPassword !== pwd.confirmPassword)
+      return setError("Паролите не съвпадат.");
 
     setSavingPwd(true);
     try {
@@ -150,7 +161,9 @@ const Profile = () => {
     } catch (err) {
       const msg =
         err?.response?.data?.message ||
-        (Array.isArray(err?.response?.data?.errors) ? err.response.data.errors.join(", ") : null) ||
+        (Array.isArray(err?.response?.data?.errors)
+          ? err.response.data.errors.join(", ")
+          : null) ||
         "Грешка при смяна на парола.";
       setError(msg);
     } finally {
@@ -162,26 +175,25 @@ const Profile = () => {
     activeSection === "files"
       ? "Моите файлове"
       : activeSection === "saved"
-      ? "Запазени обяви"
-      : activeSection === "applications"
-      ? "Моите кандидатури"
-      
-      : activeSection === "events"
-      ? "Моите събития"
-      : "Моят профил";
+        ? "Запазени обяви"
+        : activeSection === "applications"
+          ? "Моите кандидатури"
+          : activeSection === "events"
+            ? "Моите събития"
+            : "Моят профил";
 
   const pageSubtitle =
     activeSection === "files"
       ? "Качи CV/портфолио/мотивационно писмо, което да използваш при кандидатстване."
       : activeSection === "saved"
-      ? "Всички обяви, които си запазил с 📌."
-      : activeSection === "applications"
-      ? "Виж всички обяви, за които си кандидатствал."
-      : activeSection === "events"
-      ? "Всички AI workshops, които си запазил с „Запази ми място“."
-      : activeSection === "profile"
-      ? "Редактирай информацията за твоя профил"
-      : "Секцията е готова като структура. Трябва да добавим endpoint-и и таблици в DB, за да зарежда реални данни.";
+        ? "Всички обяви, които си запазил с 📌."
+        : activeSection === "applications"
+          ? "Виж всички обяви, за които си кандидатствал."
+          : activeSection === "events"
+            ? "Всички AI workshops, които си запазил с „Запази ми място“."
+            : activeSection === "profile"
+              ? "Редактирай информацията за твоя профил"
+              : "Секцията е готова като структура. Трябва да добавим endpoint-и и таблици в DB, за да зарежда реални данни.";
 
   return (
     <div className="profile-page">
@@ -243,7 +255,11 @@ const Profile = () => {
               Моят профил
             </button>
 
-            <button className="profile-menu-item danger" onClick={handleLogout} type="button">
+            <button
+              className="profile-menu-item danger"
+              onClick={handleLogout}
+              type="button"
+            >
               Изход
             </button>
           </div>
@@ -256,7 +272,9 @@ const Profile = () => {
           </header>
 
           {(error || success) && (
-            <div className={`profile-flash ${error ? "is-error" : "is-success"}`}>
+            <div
+              className={`profile-flash ${error ? "is-error" : "is-success"}`}
+            >
               {error || success}
             </div>
           )}
@@ -270,16 +288,25 @@ const Profile = () => {
                 </div>
 
                 <p className="profile-card-hint">
-                  Данните, които въведете ще са данните които ще бъдат изпратени към работодателя, когато кандидатствате.
+                  Данните, които въведете ще са данните които ще бъдат изпратени
+                  към работодателя, когато кандидатствате.
                 </p>
 
-                <form onSubmit={handleSavePersonalData} className="profile-form">
+                <form
+                  onSubmit={handleSavePersonalData}
+                  className="profile-form"
+                >
                   <label className="profile-label">
                     Име
                     <input
                       className="profile-input"
                       value={personal.firstName}
-                      onChange={(e) => setPersonal((p) => ({ ...p, firstName: e.target.value }))}
+                      onChange={(e) =>
+                        setPersonal((p) => ({
+                          ...p,
+                          firstName: e.target.value,
+                        }))
+                      }
                       disabled={savingPersonal}
                     />
                   </label>
@@ -289,7 +316,9 @@ const Profile = () => {
                     <input
                       className="profile-input"
                       value={personal.lastName}
-                      onChange={(e) => setPersonal((p) => ({ ...p, lastName: e.target.value }))}
+                      onChange={(e) =>
+                        setPersonal((p) => ({ ...p, lastName: e.target.value }))
+                      }
                       disabled={savingPersonal}
                     />
                   </label>
@@ -299,13 +328,21 @@ const Profile = () => {
                     <input
                       className="profile-input"
                       value={personal.email}
-                      onChange={(e) => setPersonal((p) => ({ ...p, email: e.target.value }))}
+                      onChange={(e) =>
+                        setPersonal((p) => ({ ...p, email: e.target.value }))
+                      }
                       disabled={savingPersonal}
                     />
                   </label>
 
-                  <button className="profile-btn" type="submit" disabled={savingPersonal}>
-                    {savingPersonal ? "Запазване…" : "Запази промените в личните данни"}
+                  <button
+                    className="profile-btn"
+                    type="submit"
+                    disabled={savingPersonal}
+                  >
+                    {savingPersonal
+                      ? "Запазване…"
+                      : "Запази промените в личните данни"}
                   </button>
                 </form>
               </section>
@@ -323,7 +360,12 @@ const Profile = () => {
                       type="password"
                       className="profile-input"
                       value={pwd.currentPassword}
-                      onChange={(e) => setPwd((p) => ({ ...p, currentPassword: e.target.value }))}
+                      onChange={(e) =>
+                        setPwd((p) => ({
+                          ...p,
+                          currentPassword: e.target.value,
+                        }))
+                      }
                       disabled={savingPwd}
                       autoComplete="current-password"
                     />
@@ -335,7 +377,9 @@ const Profile = () => {
                       type="password"
                       className="profile-input"
                       value={pwd.newPassword}
-                      onChange={(e) => setPwd((p) => ({ ...p, newPassword: e.target.value }))}
+                      onChange={(e) =>
+                        setPwd((p) => ({ ...p, newPassword: e.target.value }))
+                      }
                       disabled={savingPwd}
                       autoComplete="new-password"
                     />
@@ -347,13 +391,22 @@ const Profile = () => {
                       type="password"
                       className="profile-input"
                       value={pwd.confirmPassword}
-                      onChange={(e) => setPwd((p) => ({ ...p, confirmPassword: e.target.value }))}
+                      onChange={(e) =>
+                        setPwd((p) => ({
+                          ...p,
+                          confirmPassword: e.target.value,
+                        }))
+                      }
                       disabled={savingPwd}
                       autoComplete="new-password"
                     />
                   </label>
 
-                  <button className="profile-btn" type="submit" disabled={savingPwd}>
+                  <button
+                    className="profile-btn"
+                    type="submit"
+                    disabled={savingPwd}
+                  >
                     {savingPwd ? "Запазване…" : "Промени паролата"}
                   </button>
                 </form>
@@ -383,7 +436,9 @@ const Profile = () => {
             <div style={{ paddingTop: 4 }}>
               <SavedEvents
                 onRequireAuth={() => {
-                  setError("Моля, влез в профила си, за да видиш запазените събития.");
+                  setError(
+                    "Моля, влез в профила си, за да видиш запазените събития.",
+                  );
                 }}
                 onOpenWorkshop={(id, slug) => {
                   navigate(`/workshop/${slug}`, { state: { id } });
@@ -404,7 +459,8 @@ const Profile = () => {
                 </div>
 
                 <p className="profile-card-hint">
-                  Секцията е готова като структура. Трябва да добавим endpoint-и и таблици в DB, за да зарежда реални данни.
+                  Секцията е готова като структура. Трябва да добавим endpoint-и
+                  и таблици в DB, за да зарежда реални данни.
                 </p>
 
                 <div className="profile-empty">Няма данни за показване.</div>

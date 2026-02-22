@@ -16,7 +16,9 @@ export default function SavedJobs() {
       const data = await savedJobsService.list();
       setItems(Array.isArray(data) ? data : []);
     } catch (e) {
-      setError(e?.response?.data?.message || "Не успях да заредя запазените обяви.");
+      setError(
+        e?.response?.data?.message || "Не успях да заредя запазените обяви.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +44,8 @@ export default function SavedJobs() {
 
   if (isLoading) return <div className="profile-empty">Зареждане…</div>;
   if (error) return <div className="profile-empty">{error}</div>;
-  if (items.length === 0) return <div className="profile-empty">Нямаш запазени обяви.</div>;
+  if (items.length === 0)
+    return <div className="profile-empty">Нямаш запазени обяви.</div>;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -54,7 +57,8 @@ export default function SavedJobs() {
           tabIndex={0}
           onClick={() => navigate(`/company/jobads/${j.id}`)} // ⚠️ ако твоят route е друг - смени тук
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") navigate(`/company/jobads/${j.id}`);
+            if (e.key === "Enter" || e.key === " ")
+              navigate(`/company/jobads/${j.id}`);
           }}
         >
           <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
@@ -73,11 +77,20 @@ export default function SavedJobs() {
             ) : null}
 
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontWeight: 800, fontSize: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <div
+                style={{
+                  fontWeight: 800,
+                  fontSize: 18,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
                 {j.title}
               </div>
               <div style={{ color: "#6b7280", fontSize: 13 }}>
-                {j.companyName} • {j.isRemote ? "Remote" : j.location || "—"} • {j.jobType} • {j.experienceLevel}
+                {j.companyName} • {j.isRemote ? "Remote" : j.location || "—"} •{" "}
+                {j.jobType} • {j.experienceLevel}
               </div>
             </div>
 

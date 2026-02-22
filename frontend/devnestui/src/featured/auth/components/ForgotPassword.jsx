@@ -37,11 +37,15 @@ const ForgotPassword = ({ onClose, onSwitchToLogin }) => {
 
   if (isSubmitted) {
     return (
-      <div className="forgot-password-success" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="forgot-password-success"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="success-icon">📧</div>
         <h3>Проверете имейла си</h3>
         <p>
-          Ако съществува профил с този имейл, изпратихме инструкции за възстановяване на паролата на:
+          Ако съществува профил с този имейл, изпратихме инструкции за
+          възстановяване на паролата на:
           <br />
           <strong>{email}</strong>
         </p>
@@ -54,7 +58,11 @@ const ForgotPassword = ({ onClose, onSwitchToLogin }) => {
         </div>
 
         <div className="auth-footer" style={{ marginTop: 12 }}>
-          <button type="button" className="back-to-login-btn" onClick={onSwitchToLogin}>
+          <button
+            type="button"
+            className="back-to-login-btn"
+            onClick={onSwitchToLogin}
+          >
             ← Назад към Вход
           </button>
         </div>
@@ -63,9 +71,17 @@ const ForgotPassword = ({ onClose, onSwitchToLogin }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="auth-form" noValidate onClick={(e) => e.stopPropagation()}>
+    <form
+      onSubmit={handleSubmit}
+      className="auth-form"
+      noValidate
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className="forgot-instructions">
-        <p>Въведете имейл адреса, свързан с вашия профил и ще ви изпратим линк за възстановяване на паролата.</p>
+        <p>
+          Въведете имейл адреса, свързан с вашия профил и ще ви изпратим линк за
+          възстановяване на паролата.
+        </p>
       </div>
 
       <div className="form-group">
@@ -89,7 +105,11 @@ const ForgotPassword = ({ onClose, onSwitchToLogin }) => {
         </div>
       )}
 
-      <button type="submit" className="auth-btn primary" disabled={isLoading || !email.trim()}>
+      <button
+        type="submit"
+        className="auth-btn primary"
+        disabled={isLoading || !email.trim()}
+      >
         {isLoading ? (
           <>
             <span className="spinner"></span>
@@ -101,7 +121,12 @@ const ForgotPassword = ({ onClose, onSwitchToLogin }) => {
       </button>
 
       <div className="auth-footer">
-        <button type="button" className="back-to-login-btn" onClick={onSwitchToLogin} disabled={isLoading}>
+        <button
+          type="button"
+          className="back-to-login-btn"
+          onClick={onSwitchToLogin}
+          disabled={isLoading}
+        >
           ← Назад към Вход
         </button>
       </div>

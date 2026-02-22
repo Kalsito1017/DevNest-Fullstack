@@ -63,10 +63,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
 
   return (
     <div className="auth-overlay" onMouseDown={handleOverlayMouseDown}>
-      <div
-        className="auth-modal"
-        onMouseDown={(e) => e.stopPropagation()}
-      >
+      <div className="auth-modal" onMouseDown={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{getTitle()}</h2>
           <button
@@ -79,9 +76,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
           </button>
         </div>
 
-        <div className="modal-content">
-          {renderContent()}
-        </div>
+        <div className="modal-content">{renderContent()}</div>
       </div>
     </div>
   );

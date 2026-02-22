@@ -37,32 +37,41 @@ const Footer = () => {
           <div className="footer-col">
             <div className="footer-col-title">DevNest.BG</div>
             <ul className="footer-list">
-              <li><Link to="/aboutus">За DevNest.BG</Link></li>
-              <li><Link to="/contacts">Контакти</Link></li>
-              <li><Link to="/employers">За работодатели</Link></li>
-              <li><Link to="/terms">Общи Условия</Link></li>
-           
-              <li><Link to="/cookies">Политика за използване на бисквитки</Link></li>
-            </ul>
+              <li>
+                <Link to="/aboutus">За DevNest.BG</Link>
+              </li>
+              <li>
+                <Link to="/contacts">Контакти</Link>
+              </li>
+              <li>
+                <Link to="/employers">За работодатели</Link>
+              </li>
+              <li>
+                <Link to="/terms">Общи Условия</Link>
+              </li>
 
-           
+              <li>
+                <Link to="/cookies">Политика за използване на бисквитки</Link>
+              </li>
+            </ul>
           </div>
 
           <div className="footer-col">
             <div className="footer-col-title">DevNest.BG Events</div>
             <ul className="footer-list">
-              
-              <li><Link to="/aiworkshops">ИТ Събития</Link></li>
+              <li>
+                <Link to="/aiworkshops">ИТ Събития</Link>
+              </li>
 
               <li>
-  <a
-    href="https://dev.bg/podcast/"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Подкаст
-  </a>
-</li>
+                <a
+                  href="https://dev.bg/podcast/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Подкаст
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -76,22 +85,59 @@ const Footer = () => {
               </li>
             </ul>
 
-            <div className="footer-col-title footer-col-title-spacer">Последвайте ни</div>
+            <div className="footer-col-title footer-col-title-spacer">
+              Последвайте ни
+            </div>
 
             <div className="footer-social">
-              <a className="social-btn" href="https://www.facebook.com/devbulgaria/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+              <a
+                className="social-btn"
+                href="https://www.facebook.com/devbulgaria/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                title="Facebook"
+              >
                 <FacebookIcon />
               </a>
-              <a className="social-btn" href="https://www.linkedin.com/company/dev.bg/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
+              <a
+                className="social-btn"
+                href="https://www.linkedin.com/company/dev.bg/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                title="LinkedIn"
+              >
                 <LinkedInIcon />
               </a>
-              <a className="social-btn" href="https://www.tiktok.com/@dev.bg" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
+              <a
+                className="social-btn"
+                href="https://www.tiktok.com/@dev.bg"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+                title="TikTok"
+              >
                 <TikTokIcon />
               </a>
-              <a className="social-btn" href="https://www.instagram.com/dev.bulgaria/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+              <a
+                className="social-btn"
+                href="https://www.instagram.com/dev.bulgaria/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                title="Instagram"
+              >
                 <InstagramIcon />
               </a>
-              <a className="social-btn" href="https://www.youtube.com/@dev-bg" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube">
+              <a
+                className="social-btn"
+                href="https://www.youtube.com/@dev-bg"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                title="YouTube"
+              >
                 <YouTubeIcon />
               </a>
             </div>
@@ -102,7 +148,9 @@ const Footer = () => {
       {/* Bottom bar */}
       <div className="footer-bottom">
         <div className="footer-bottom-inner">
-          <div className="footer-copy">© {currentYear} DevNest. All rights reserved.</div>
+          <div className="footer-copy">
+            © {currentYear} DevNest. All rights reserved.
+          </div>
         </div>
       </div>
     </footer>

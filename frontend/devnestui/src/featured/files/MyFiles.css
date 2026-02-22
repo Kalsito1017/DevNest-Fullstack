@@ -183,7 +183,6 @@
   cursor: not-allowed;
 }
 
-
 .uploaded-file-row {
   display: flex;
   align-items: center;
@@ -193,7 +192,7 @@
   border-radius: 14px;
   background: #fff;
   cursor: pointer;
-  border: 1px solid rgba(15,23,42,0.08);
+  border: 1px solid rgba(15, 23, 42, 0.08);
 }
 .uploaded-file-row:hover {
   box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
@@ -205,7 +204,7 @@
 .file-meta {
   margin-top: 2px;
   font-size: 12px;
-  color: rgba(15,23,42,0.55);
+  color: rgba(15, 23, 42, 0.55);
 }
 .file-delete-btn {
   border: none;
@@ -217,6 +216,6 @@
   cursor: pointer;
 }
 .file-delete-btn:hover {
-  background: rgba(239, 68, 68, 0.10);
+  background: rgba(239, 68, 68, 0.1);
   color: #b91c1c;
 }

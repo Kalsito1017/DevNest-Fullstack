@@ -11,9 +11,7 @@ export default function EventsEmptyState() {
           <span>?</span>
         </div>
 
-        <h2 className="events-empty-title">
-          Нямате предстоящи събития
-        </h2>
+        <h2 className="events-empty-title">Нямате предстоящи събития</h2>
 
         <p className="events-empty-text">
           Все още нямаш регистрация за събития. Разгледай всички предстоящи

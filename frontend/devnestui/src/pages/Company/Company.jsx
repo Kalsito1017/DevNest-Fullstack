@@ -71,14 +71,22 @@ function CompanyCard({ company, onOpen }) {
     <button className="company-card" onClick={onOpen} type="button">
       <div className="company-banner">
         {company.logoUrl ? (
-          <img className="company-banner-img" src={company.logoUrl} alt={company.name} />
+          <img
+            className="company-banner-img"
+            src={company.logoUrl}
+            alt={company.name}
+          />
         ) : (
           <div className="company-banner-fallback" />
         )}
 
         <div className="company-logo-pill">
           {company.logoUrl ? (
-            <img className="company-logo-pill-img" src={company.logoUrl} alt={company.name} />
+            <img
+              className="company-logo-pill-img"
+              src={company.logoUrl}
+              alt={company.name}
+            />
           ) : (
             <div className="company-logo-pill-fallback" />
           )}
@@ -176,7 +184,8 @@ export default function Company() {
 
   // ✅ Optional: better section label when location is active
   const sectionLabel = useMemo(() => {
-    if (locationSlug) return `Локация: ${cityFromSlug(locationSlug) || locationSlug}`;
+    if (locationSlug)
+      return `Локация: ${cityFromSlug(locationSlug) || locationSlug}`;
     return filtersLabel;
   }, [locationSlug, filtersLabel]);
 
@@ -205,7 +214,11 @@ export default function Company() {
 
       setIsSuggestLoading(true);
       try {
-        const res = await getCompanySuggestions({ q: term, take: 8, onlyActive: true });
+        const res = await getCompanySuggestions({
+          q: term,
+          take: 8,
+          onlyActive: true,
+        });
         if (cancelled) return;
 
         const list = Array.isArray(res) ? res : [];
@@ -312,12 +325,14 @@ export default function Company() {
   return (
     <div className="companies-page">
       <div
-  className="companies-hero"
-  style={{ backgroundImage: `url(${companybg})` }}
->
+        className="companies-hero"
+        style={{ backgroundImage: `url(${companybg})` }}
+      >
         <div className="companies-hero-left">
           <div className="companies-title">
-            <span className="companies-title-number">{String(totalCount || 0)}</span>
+            <span className="companies-title-number">
+              {String(totalCount || 0)}
+            </span>
             <span className="companies-title-text"> компании</span>
           </div>
 
@@ -326,17 +341,22 @@ export default function Company() {
           </div>
 
           <div className="companies-desc">
-            Подробна информация за работодателите, наемащи IT специалисти в България.
-            Търсене на следващия ви работодател по карта, локация, индустрия и др.
+            Подробна информация за работодателите, наемащи IT специалисти в
+            България. Търсене на следващия ви работодател по карта, локация,
+            индустрия и др.
           </div>
         </div>
 
         <div className="companies-hero-right">
           <div className="companies-filter-card">
-            <div className="companies-filter-title">Филтрирай компаниите по</div>
+            <div className="companies-filter-title">
+              Филтрирай компаниите по
+            </div>
 
             <div className="companies-search" ref={searchWrapRef}>
-              <label className="companies-search-label">Намери компания по име</label>
+              <label className="companies-search-label">
+                Намери компания по име
+              </label>
 
               <div className="companies-search-row">
                 <input
@@ -345,7 +365,8 @@ export default function Company() {
                   onChange={(e) => setSearch(e.target.value)}
                   onFocus={() => {
                     const term = (search || "").trim();
-                    if (term.length > 0 && suggestions.length > 0) setIsSuggestOpen(true);
+                    if (term.length > 0 && suggestions.length > 0)
+                      setIsSuggestOpen(true);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Escape") setIsSuggestOpen(false);
@@ -366,9 +387,13 @@ export default function Company() {
                 {isSuggestOpen ? (
                   <div className="companies-suggest">
                     {isSuggestLoading ? (
-                      <div className="companies-suggest-item muted">Търсене...</div>
+                      <div className="companies-suggest-item muted">
+                        Търсене...
+                      </div>
                     ) : suggestions.length === 0 ? (
-                      <div className="companies-suggest-item muted">Няма резултати</div>
+                      <div className="companies-suggest-item muted">
+                        Няма резултати
+                      </div>
                     ) : (
                       suggestions.map((s) => (
                         <button
@@ -382,11 +407,17 @@ export default function Company() {
                         >
                           <div className="companies-suggest-left">
                             {s.logoUrl ? (
-                              <img className="companies-suggest-logo" src={s.logoUrl} alt={s.name} />
+                              <img
+                                className="companies-suggest-logo"
+                                src={s.logoUrl}
+                                alt={s.name}
+                              />
                             ) : (
                               <div className="companies-suggest-logo fallback" />
                             )}
-                            <div className="companies-suggest-name">{s.name}</div>
+                            <div className="companies-suggest-name">
+                              {s.name}
+                            </div>
                           </div>
 
                           <div className="companies-suggest-right">
@@ -435,8 +466,8 @@ export default function Company() {
                 {debouncedSearch
                   ? `Търсене: ${debouncedSearch}`
                   : locationSlug
-                  ? `Локация: ${cityFromSlug(locationSlug) || locationSlug}`
-                  : filtersLabel}
+                    ? `Локация: ${cityFromSlug(locationSlug) || locationSlug}`
+                    : filtersLabel}
               </div>
 
               <button
@@ -459,8 +490,12 @@ export default function Company() {
 
       <div className="companies-section">
         <div className="size-filter-head">
-          <div className="size-filter-title">Намери компании по брой IT служители в България</div>
-          {isStatsLoading ? <div className="size-filter-loading">Зареждане...</div> : null}
+          <div className="size-filter-title">
+            Намери компании по брой IT служители в България
+          </div>
+          {isStatsLoading ? (
+            <div className="size-filter-loading">Зареждане...</div>
+          ) : null}
         </div>
 
         <div className="size-grid">
@@ -496,7 +531,8 @@ export default function Company() {
 
         <div className="companies-section-head">
           <div className="companies-section-title">
-            Компании <span className="companies-section-sub">• {sectionLabel}</span>
+            Компании{" "}
+            <span className="companies-section-sub">• {sectionLabel}</span>
           </div>
         </div>
 
@@ -511,7 +547,11 @@ export default function Company() {
         ) : (
           <div className="companies-grid">
             {items.map((c) => (
-              <CompanyCard key={c.id} company={c} onOpen={() => navigate(`/company/${c.id}`)} />
+              <CompanyCard
+                key={c.id}
+                company={c}
+                onOpen={() => navigate(`/company/${c.id}`)}
+              />
             ))}
           </div>
         )}
@@ -525,23 +565,35 @@ export default function Company() {
             <>
               <div className="loc-grid">
                 {locStats
-                  .filter((x) => ["Sofia", "Plovdiv", "Varna", "Burgas", "Ruse", "Remote"].includes(x.city))
+                  .filter((x) =>
+                    [
+                      "Sofia",
+                      "Plovdiv",
+                      "Varna",
+                      "Burgas",
+                      "Ruse",
+                      "Remote",
+                    ].includes(x.city),
+                  )
                   .map((x, idx) => (
-                    <div key={x.slug || x.city} className={idx < 2 ? "loc-card big" : "loc-card"}>
+                    <div
+                      key={x.slug || x.city}
+                      className={idx < 2 ? "loc-card big" : "loc-card"}
+                    >
                       <div className="loc-city">
                         {x.city === "Sofia"
                           ? "София"
                           : x.city === "Plovdiv"
-                          ? "Пловдив"
-                          : x.city === "Varna"
-                          ? "Варна"
-                          : x.city === "Burgas"
-                          ? "Бургас"
-                          : x.city === "Ruse"
-                          ? "Русе"
-                          : x.city === "Remote"
-                          ? "Remote"
-                          : x.city}
+                            ? "Пловдив"
+                            : x.city === "Varna"
+                              ? "Варна"
+                              : x.city === "Burgas"
+                                ? "Бургас"
+                                : x.city === "Ruse"
+                                  ? "Русе"
+                                  : x.city === "Remote"
+                                    ? "Remote"
+                                    : x.city}
                       </div>
 
                       <div className="loc-count">{x.count} IT компании</div>
@@ -550,7 +602,10 @@ export default function Company() {
                         type="button"
                         className="loc-link"
                         onClick={() => {
-                          const slug = (x.slug || x.city || "").toString().trim().toLowerCase();
+                          const slug = (x.slug || x.city || "")
+                            .toString()
+                            .trim()
+                            .toLowerCase();
                           navigate(`/company/select/location/${slug}`);
                         }}
                       >
@@ -562,7 +617,11 @@ export default function Company() {
 
               <div className="loc-map-shell">
                 <div className="loc-map-bg" />
-                <button type="button" className="loc-map-btn" onClick={() => navigate("/company/map")}>
+                <button
+                  type="button"
+                  className="loc-map-btn"
+                  onClick={() => navigate("/company/map")}
+                >
                   Виж всички компании на картата
                 </button>
               </div>

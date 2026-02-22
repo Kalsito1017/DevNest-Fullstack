@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
 import authService from "../services/api/authService";
 
 const AuthContext = createContext(null);
@@ -7,12 +14,10 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
-
   const [authModal, setAuthModal] = useState({
     isOpen: false,
     mode: "login", // "login" | "register" | "forgot"
   });
-
 
   const [postAuthAction, setPostAuthAction] = useState(null);
 
@@ -21,7 +26,9 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const openAuthModal = useCallback((mode = "login", onSuccess = null) => {
-    setPostAuthAction(() => (typeof onSuccess === "function" ? onSuccess : null));
+    setPostAuthAction(() =>
+      typeof onSuccess === "function" ? onSuccess : null,
+    );
     setAuthModal({ isOpen: true, mode });
   }, []);
 
@@ -58,27 +65,30 @@ export const AuthProvider = ({ children }) => {
       const me = await authService.login({ email, password });
       setUser(me);
 
-      
       closeAuthModal();
       await runPostAuthAction();
 
       return me;
     },
-    [closeAuthModal, runPostAuthAction]
+    [closeAuthModal, runPostAuthAction],
   );
 
   const register = useCallback(
     async ({ firstName, lastName, email, password }) => {
-      const me = await authService.register({ firstName, lastName, email, password });
+      const me = await authService.register({
+        firstName,
+        lastName,
+        email,
+        password,
+      });
       setUser(me);
 
-     
       closeAuthModal();
       await runPostAuthAction();
 
       return me;
     },
-    [closeAuthModal, runPostAuthAction]
+    [closeAuthModal, runPostAuthAction],
   );
 
   const logout = useCallback(async () => {
@@ -95,12 +105,21 @@ export const AuthProvider = ({ children }) => {
       logout,
       refreshMe,
 
- 
       authModal,
       openAuthModal,
       closeAuthModal,
     }),
-    [user, isAuthLoading, login, register, logout, refreshMe, authModal, openAuthModal, closeAuthModal]
+    [
+      user,
+      isAuthLoading,
+      login,
+      register,
+      logout,
+      refreshMe,
+      authModal,
+      openAuthModal,
+      closeAuthModal,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

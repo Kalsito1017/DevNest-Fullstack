@@ -52,7 +52,9 @@ export default function ResetPassword() {
     } catch (e) {
       const apiMsg =
         e?.response?.data?.message ||
-        (Array.isArray(e?.response?.data?.errors) ? e.response.data.errors.join(", ") : null) ||
+        (Array.isArray(e?.response?.data?.errors)
+          ? e.response.data.errors.join(", ")
+          : null) ||
         "Грешка при смяна на парола.";
       setErr(apiMsg);
     } finally {
@@ -64,7 +66,9 @@ export default function ResetPassword() {
     <main className="reset-page">
       <div className="reset-card">
         <div className="reset-brand">DevNest</div>
-        <div className="reset-hint">Въведете новата си парола по-долу или генерирайте такава.</div>
+        <div className="reset-hint">
+          Въведете новата си парола по-долу или генерирайте такава.
+        </div>
 
         <label className="reset-label">Нова парола</label>
         <div className="reset-inputRow">
@@ -74,7 +78,11 @@ export default function ResetPassword() {
             onChange={(e) => setPwd(e.target.value)}
             className="reset-input"
           />
-          <button type="button" className="reset-eye" onClick={() => setShow((s) => !s)}>
+          <button
+            type="button"
+            className="reset-eye"
+            onClick={() => setShow((s) => !s)}
+          >
             {show ? "Скрий" : "Покажи"}
           </button>
         </div>
@@ -84,10 +92,20 @@ export default function ResetPassword() {
         </div>
 
         <div className="reset-actions">
-          <button type="button" className="reset-btn" onClick={onGenerate} disabled={isLoading}>
+          <button
+            type="button"
+            className="reset-btn"
+            onClick={onGenerate}
+            disabled={isLoading}
+          >
             Генериране на парола
           </button>
-          <button type="button" className="reset-btn primary" onClick={onSubmit} disabled={isLoading}>
+          <button
+            type="button"
+            className="reset-btn primary"
+            onClick={onSubmit}
+            disabled={isLoading}
+          >
             Запазване на парола
           </button>
         </div>

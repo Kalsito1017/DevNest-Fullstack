@@ -30,7 +30,11 @@ export default function SavedEvents({ onRequireAuth, onOpenWorkshop }) {
         onRequireAuth?.();
         return;
       }
-      setError(e?.response?.data?.message || e?.message || "Не успях да заредя запазените workshops.");
+      setError(
+        e?.response?.data?.message ||
+          e?.message ||
+          "Не успях да заредя запазените workshops.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -61,13 +65,20 @@ export default function SavedEvents({ onRequireAuth, onOpenWorkshop }) {
         onRequireAuth?.();
         return;
       }
-      setError(e?.response?.data?.message || e?.message || "Не успях да премахна workshop-а.");
+      setError(
+        e?.response?.data?.message ||
+          e?.message ||
+          "Не успях да премахна workshop-а.",
+      );
     } finally {
       setBusyId(null);
     }
   };
 
-  const title = useMemo(() => `Запазени AI Workshops (${items.length})`, [items.length]);
+  const title = useMemo(
+    () => `Запазени AI Workshops (${items.length})`,
+    [items.length],
+  );
 
   if (isLoading) {
     return <div className="saved-events-state">Зареждане…</div>;
@@ -89,7 +100,8 @@ export default function SavedEvents({ onRequireAuth, onOpenWorkshop }) {
       ) : (
         <div className="saved-events-list">
           {items.map((evt) => {
-            const isFinished = evt.endDate && new Date(evt.endDate) < new Date();
+            const isFinished =
+              evt.endDate && new Date(evt.endDate) < new Date();
             const slug = slugify(evt.title);
 
             return (
@@ -100,13 +112,16 @@ export default function SavedEvents({ onRequireAuth, onOpenWorkshop }) {
                 tabIndex={0}
                 onClick={() => onOpenWorkshop?.(evt.id, slug)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") onOpenWorkshop?.(evt.id, slug);
+                  if (e.key === "Enter" || e.key === " ")
+                    onOpenWorkshop?.(evt.id, slug);
                 }}
               >
                 <div className="saved-events-main">
                   <div className="saved-events-title-row">
                     <div className="saved-events-card-title">{evt.title}</div>
-                    {isFinished && <span className="saved-events-badge">Приключил</span>}
+                    {isFinished && (
+                      <span className="saved-events-badge">Приключил</span>
+                    )}
                   </div>
 
                   <div className="saved-events-meta">
@@ -114,7 +129,9 @@ export default function SavedEvents({ onRequireAuth, onOpenWorkshop }) {
                     <span className="v">{evt.eventDate || "—"}</span>
                   </div>
 
-                  {evt.description ? <div className="saved-events-desc">{evt.description}</div> : null}
+                  {evt.description ? (
+                    <div className="saved-events-desc">{evt.description}</div>
+                  ) : null}
                 </div>
 
                 <button
