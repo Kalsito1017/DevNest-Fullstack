@@ -204,7 +204,9 @@ export default function ReportModal({ onClose, jobId }) {
         {/* Success panel */}
         {success ? (
           <div className="report-success">
-            <div className="report-success-badge" aria-hidden="true">✓</div>
+            <div className="report-success-badge" aria-hidden="true">
+              ✓
+            </div>
             <div className="report-success-title">Изпратено!</div>
             <div className="report-success-text">
               Благодарим ти. Сигналът беше изпратен към екипа ни.
@@ -249,7 +251,9 @@ export default function ReportModal({ onClose, jobId }) {
                   <option value="spam">Спам</option>
                   <option value="other">Друго</option>
                 </select>
-                {fieldErrors.reason && <div className="report-error">{fieldErrors.reason}</div>}
+                {fieldErrors.reason && (
+                  <div className="report-error">{fieldErrors.reason}</div>
+                )}
               </div>
 
               <div className="report-field">
@@ -262,10 +266,10 @@ export default function ReportModal({ onClose, jobId }) {
                   disabled={isSending}
                   placeholder="Напр. грешна заплата, грешен адрес, подвеждащо описание…"
                 />
-                <div className="report-hint">
-                  {details.trim().length}/500
-                </div>
-                {fieldErrors.details && <div className="report-error">{fieldErrors.details}</div>}
+                <div className="report-hint">{details.trim().length}/500</div>
+                {fieldErrors.details && (
+                  <div className="report-error">{fieldErrors.details}</div>
+                )}
               </div>
             </div>
 
@@ -279,11 +283,15 @@ export default function ReportModal({ onClose, jobId }) {
                   disabled={isSending}
                   inputMode="numeric"
                 />
-                {fieldErrors.captcha && <div className="report-error">{fieldErrors.captcha}</div>}
+                {fieldErrors.captcha && (
+                  <div className="report-error">{fieldErrors.captcha}</div>
+                )}
               </div>
 
               <div className="report-field">
-                <label>Въведете вашият имейл адрес, ако искате да получите отговор.</label>
+                <label>
+                  Въведете вашият имейл адрес, ако искате да получите отговор.
+                </label>
                 <input
                   type="email"
                   value={email}
@@ -291,16 +299,28 @@ export default function ReportModal({ onClose, jobId }) {
                   disabled={isSending}
                   placeholder="email@domain.com"
                 />
-                {fieldErrors.email && <div className="report-error">{fieldErrors.email}</div>}
+                {fieldErrors.email && (
+                  <div className="report-error">{fieldErrors.email}</div>
+                )}
               </div>
             </div>
 
-            {formError && <div className="report-error report-error-global">{formError}</div>}
+            {formError && (
+              <div className="report-error report-error-global">
+                {formError}
+              </div>
+            )}
 
-            <button type="submit" className="report-submit" disabled={isSending}>
+            <button
+              type="submit"
+              className="report-submit"
+              disabled={isSending}
+            >
               <img src={sendIcon} alt="" className="report-submit-icon" />
               {isSending ? "Изпращане..." : "Изпрати"}
-              {isSending && <span className="report-spinner" aria-hidden="true" />}
+              {isSending && (
+                <span className="report-spinner" aria-hidden="true" />
+              )}
             </button>
           </form>
         )}

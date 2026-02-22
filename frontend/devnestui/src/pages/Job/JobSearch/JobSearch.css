@@ -63,7 +63,10 @@
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease;
 }
 
 .jobsearch-btn:hover {
@@ -103,7 +106,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .jobsearch-cards {
@@ -122,7 +127,10 @@
   border: 1px solid #eaf0ff;
   background: linear-gradient(90deg, #ffffff 0%, #f3f7ff 100%);
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease;
 }
 
 .jobsearch-card:hover {
@@ -254,7 +262,7 @@
   gap: 6px;
   padding: 6px 10px;
   border-radius: 10px;
-  background: rgba(255,255,255,0.7);
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid #eef2f7;
 }
 
@@ -300,17 +308,16 @@
   }
 }
 
-
 .jobsearch-card {
   cursor: pointer;
 }
 
 .jobsearch-card:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 26px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
 }
 
 .jobsearch-card:focus {
-  outline: 2px solid rgba(47,108,255,0.35);
+  outline: 2px solid rgba(47, 108, 255, 0.35);
   outline-offset: 2px;
 }

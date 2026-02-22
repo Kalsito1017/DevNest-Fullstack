@@ -30,7 +30,13 @@ const getExt = (name = "") => {
 const isValidEmail = (v) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim());
 
-export default function JobApplyModal({ open, onClose, jobId, jobTitle, user }) {
+export default function JobApplyModal({
+  open,
+  onClose,
+  jobId,
+  jobTitle,
+  user,
+}) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -132,7 +138,8 @@ export default function JobApplyModal({ open, onClose, jobId, jobTitle, user }) 
       return;
     }
 
-    const totalAfter = picked.length + selectedExistingIds.length + newFiles.length;
+    const totalAfter =
+      picked.length + selectedExistingIds.length + newFiles.length;
     if (totalAfter > MAX_TOTAL_FILES) {
       setErr(`Може да прикачите максимум ${MAX_TOTAL_FILES} файла общо.`);
       e.target.value = "";
@@ -178,7 +185,7 @@ export default function JobApplyModal({ open, onClose, jobId, jobTitle, user }) 
 
     if (total < 1) {
       setErr(
-        "Не сте избрали или прикачили нито един файл. Изберете поне един файл от качените или качете нов."
+        "Не сте избрали или прикачили нито един файл. Изберете поне един файл от качените или качете нов.",
       );
       return;
     }
@@ -199,7 +206,7 @@ export default function JobApplyModal({ open, onClose, jobId, jobTitle, user }) 
       fd.append("motivationLetter", (letter || "").trim());
 
       selectedExistingIds.forEach((id) =>
-        fd.append("existingUserFileIds", String(id))
+        fd.append("existingUserFileIds", String(id)),
       );
       newFiles.forEach((file) => fd.append("newFiles", file));
 
@@ -266,7 +273,11 @@ export default function JobApplyModal({ open, onClose, jobId, jobTitle, user }) 
               >
                 Към “Моите кандидатури”
               </button>
-              <button className="jam-btn" type="button" onClick={() => close(false)}>
+              <button
+                className="jam-btn"
+                type="button"
+                onClick={() => close(false)}
+              >
                 Затвори
               </button>
             </div>
@@ -360,7 +371,9 @@ export default function JobApplyModal({ open, onClose, jobId, jobTitle, user }) 
               </div>
 
               <div className="jam-card">
-                <div className="jam-card-title">Изберете от “Моите файлове”</div>
+                <div className="jam-card-title">
+                  Изберете от “Моите файлове”
+                </div>
 
                 {myFiles.length === 0 ? (
                   <div className="jam-muted">Нямаш качени файлове.</div>
@@ -386,10 +399,19 @@ export default function JobApplyModal({ open, onClose, jobId, jobTitle, user }) 
             {err && <div className="jam-error">{err}</div>}
 
             <div className="jam-actions">
-              <button className="jam-btn jam-btn-primary" type="submit" disabled={!canSubmit}>
+              <button
+                className="jam-btn jam-btn-primary"
+                type="submit"
+                disabled={!canSubmit}
+              >
                 {busy ? "Изпращане..." : "Кандидатствай"}
               </button>
-              <button className="jam-btn" type="button" onClick={() => close(false)} disabled={busy}>
+              <button
+                className="jam-btn"
+                type="button"
+                onClick={() => close(false)}
+                disabled={busy}
+              >
                 Отказ
               </button>
             </div>

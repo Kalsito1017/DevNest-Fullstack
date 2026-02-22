@@ -495,7 +495,6 @@
   box-shadow: none;
 }
 
-
 /* =========================
    Dynamic CTA button
 ========================= */
@@ -530,7 +529,10 @@
     0 2px 0 rgba(255, 255, 255, 0.65) inset;
 
   transform: translateY(0);
-  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease;
 }
 
 .workshop-primary-btn:hover {
@@ -572,7 +574,9 @@
 }
 
 @keyframes ctaSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Saved check */
@@ -590,12 +594,20 @@
   color: #064e3b;
 }
 
-
 .workshop-primary-btn.idle {
   animation: ctaPulse 2.2s ease-in-out infinite;
 }
 
 @keyframes ctaPulse {
-  0%, 100% { box-shadow: 0 10px 22px rgba(15, 23, 42, 0.25), 0 2px 0 rgba(255,255,255,0.65) inset; }
-  50% { box-shadow: 0 16px 34px rgba(37, 99, 235, 0.28), 0 2px 0 rgba(255,255,255,0.75) inset; }
+  0%,
+  100% {
+    box-shadow:
+      0 10px 22px rgba(15, 23, 42, 0.25),
+      0 2px 0 rgba(255, 255, 255, 0.65) inset;
+  }
+  50% {
+    box-shadow:
+      0 16px 34px rgba(37, 99, 235, 0.28),
+      0 2px 0 rgba(255, 255, 255, 0.75) inset;
+  }
 }

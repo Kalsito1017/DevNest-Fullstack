@@ -105,7 +105,6 @@
   opacity: 0.85;
 }
 
-
 .aiw-speaker-name {
   font-weight: 800;
   font-size: 1rem;
@@ -193,8 +192,6 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
-
-
 /* RESPONSIVE */
 @media (max-width: 1024px) {
   .aiw-card {
@@ -245,10 +242,10 @@
 
 /* ✅ The missing layout: date bottom-left, button bottom-right */
 .aiw-bottom {
-  margin-top: auto;                 /* ✅ push to bottom */
+  margin-top: auto; /* ✅ push to bottom */
   display: flex;
-  justify-content: space-between;   /* ✅ left vs right */
-  align-items: flex-end;            /* ✅ align to bottom */
+  justify-content: space-between; /* ✅ left vs right */
+  align-items: flex-end; /* ✅ align to bottom */
   gap: 1rem;
   padding-top: 1.25rem;
 }

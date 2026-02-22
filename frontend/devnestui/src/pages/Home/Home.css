@@ -23,7 +23,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* HERO */
@@ -91,7 +93,9 @@
 }
 
 .search-wrapper:focus-within {
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.35), 0 20px 40px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.35),
+    0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
 .search-input {
@@ -125,7 +129,9 @@
 
   outline: none;
   box-shadow: none;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
 .search-button:hover {
@@ -200,8 +206,14 @@
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .section-subtitle {
@@ -231,7 +243,9 @@
   flex-direction: column;
   justify-content: space-between;
 
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .dept-card:hover {
@@ -325,7 +339,10 @@
   justify-content: space-between;
   gap: 10px;
 
-  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .dept-tech-pill:hover {
@@ -698,52 +715,73 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .dept-grid { grid-template-columns: repeat(2, 1fr); }
+  .dept-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
-  .hero-title { font-size: 2.2rem; }
+  .hero-title {
+    font-size: 2.2rem;
+  }
 
-  .search-input { height: 48px; }
-  .search-button { width: 48px; height: 48px; }
-  .search-icon { width: 24px; height: 24px; }
+  .search-input {
+    height: 48px;
+  }
+  .search-button {
+    width: 48px;
+    height: 48px;
+  }
+  .search-icon {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 @media (max-width: 720px) {
-  .newsletter-form { grid-template-columns: 1fr; }
-  .newsletter-btn { width: 100%; }
+  .newsletter-form {
+    grid-template-columns: 1fr;
+  }
+  .newsletter-btn {
+    width: 100%;
+  }
 }
 
 @media (max-width: 640px) {
-  .dept-grid { grid-template-columns: 1fr; }
+  .dept-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
-  .home-hero { padding: 60px 15px 100px; }
-  .hero-title { font-size: 1.8rem; }
+  .home-hero {
+    padding: 60px 15px 100px;
+  }
+  .hero-title {
+    font-size: 1.8rem;
+  }
 }
 
-
 /* holder: keep centered under search */
-.hero-scroll-holder{
+.hero-scroll-holder {
   display: flex;
   justify-content: center;
   margin-top: 24px;
 }
 
 /* make the button bigger and able to contain text */
-.hero-scroll-dot{
+.hero-scroll-dot {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
 
-  padding: 14px 22px;          /* <-- makes it bigger */
-  min-width: 240px;            /* <-- ensures text fits */
+  padding: 14px 22px; /* <-- makes it bigger */
+  min-width: 240px; /* <-- ensures text fits */
   min-height: 56px;
 
   border: none;
-  border-radius: 999px;        /* pill shape */
+  border-radius: 999px; /* pill shape */
   cursor: pointer;
 
   background: #2f52ff;
@@ -753,7 +791,7 @@
 }
 
 /* the text INSIDE the button */
-.hero-scroll-dot-arrow{
+.hero-scroll-dot-arrow {
   display: block;
   text-align: center;
 
@@ -761,30 +799,32 @@
   font-size: 14px;
   line-height: 1.15;
 
-  white-space: normal;         /* allow wrap */
-  max-width: 190px;            /* control wrapping */
+  white-space: normal; /* allow wrap */
+  max-width: 190px; /* control wrapping */
 }
 
 /* hover */
-.hero-scroll-dot:hover{
+.hero-scroll-dot:hover {
   filter: brightness(0.97);
   transform: translateY(-1px);
 }
 
 /* keyboard focus */
-.hero-scroll-dot:focus{
+.hero-scroll-dot:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(47, 82, 255, 0.18), 0 10px 25px rgba(47, 82, 255, 0.25);
+  box-shadow:
+    0 0 0 4px rgba(47, 82, 255, 0.18),
+    0 10px 25px rgba(47, 82, 255, 0.25);
 }
 
 /* mobile: make it full-width and readable */
-@media (max-width: 520px){
-  .hero-scroll-dot{
+@media (max-width: 520px) {
+  .hero-scroll-dot {
     width: 100%;
     min-width: 0;
     max-width: 360px;
   }
-  .hero-scroll-dot-arrow{
+  .hero-scroll-dot-arrow {
     max-width: none;
   }
 }
@@ -814,7 +854,9 @@
   color: #ffffff;
 
   box-shadow: 0 18px 40px rgba(47, 82, 255, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 /* text inside circle */
@@ -824,7 +866,7 @@
   font-size: 14px;
   line-height: 1.2;
 
-  max-width: 110px;   /* forces nice line breaks */
+  max-width: 110px; /* forces nice line breaks */
   white-space: normal;
 }
 
@@ -855,7 +897,6 @@
   }
 }
 
-
 .hero-scroll-holder {
   display: flex;
   justify-content: center;
@@ -883,7 +924,9 @@
   padding: 0;
 
   box-shadow: 0 14px 32px rgba(47, 82, 255, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 /* text */
@@ -937,12 +980,16 @@
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(4px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
 }
 
-
-.newsletter-error{
+.newsletter-error {
   margin-top: 10px;
   font-size: 14px;
   color: #b00020;

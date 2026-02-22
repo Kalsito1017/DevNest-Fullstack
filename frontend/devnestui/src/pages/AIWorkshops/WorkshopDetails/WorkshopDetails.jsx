@@ -59,13 +59,19 @@ export default function WorkshopDetails() {
 
         // 1) By ID (from state)
         if (stateId) {
-          const res = await fetch(`${API_EVENTS}/${stateId}`, { signal: controller.signal });
-          if (!res.ok) throw new Error(`API error ${res.status}: ${await res.text()}`);
+          const res = await fetch(`${API_EVENTS}/${stateId}`, {
+            signal: controller.signal,
+          });
+          if (!res.ok)
+            throw new Error(`API error ${res.status}: ${await res.text()}`);
           const data = await res.json();
 
           const canonical = slugify(data?.title || "");
           if (canonical && slug && canonical !== slug) {
-            navigate(`/workshop/${canonical}`, { replace: true, state: { id: data.id } });
+            navigate(`/workshop/${canonical}`, {
+              replace: true,
+              state: { id: data.id },
+            });
             return;
           }
 
@@ -75,7 +81,8 @@ export default function WorkshopDetails() {
 
         // 2) Resolve slug -> fetch all
         const resAll = await fetch(API_EVENTS, { signal: controller.signal });
-        if (!resAll.ok) throw new Error(`API error ${resAll.status}: ${await resAll.text()}`);
+        if (!resAll.ok)
+          throw new Error(`API error ${resAll.status}: ${await resAll.text()}`);
 
         const all = await resAll.json();
         const list = Array.isArray(all) ? all : [];
@@ -87,7 +94,9 @@ export default function WorkshopDetails() {
         }
 
         // Fetch by id for consistent DTO (speakers etc)
-        const resOne = await fetch(`${API_EVENTS}/${found.id}`, { signal: controller.signal });
+        const resOne = await fetch(`${API_EVENTS}/${found.id}`, {
+          signal: controller.signal,
+        });
         if (!resOne.ok) {
           setEvt(found); // fallback
           return;
@@ -95,7 +104,8 @@ export default function WorkshopDetails() {
 
         setEvt(await resOne.json());
       } catch (e) {
-        if (e?.name !== "AbortError") setLoadError(e?.message || "Failed to load workshop.");
+        if (e?.name !== "AbortError")
+          setLoadError(e?.message || "Failed to load workshop.");
       } finally {
         setIsLoading(false);
       }
@@ -106,16 +116,16 @@ export default function WorkshopDetails() {
   }, [API_EVENTS, slug, stateId, navigate]);
 
   const requireAuth = () => {
-  const eventId = evt?.id;
+    const eventId = evt?.id;
 
-  navigate("/register", {
-    state: {
-      // keep it serializable
-      background: { pathname: location.pathname, search: location.search },
-      intent: { type: "saveWorkshopSeat", eventId },
-    },
-  });
-};
+    navigate("/register", {
+      state: {
+        // keep it serializable
+        background: { pathname: location.pathname, search: location.search },
+        intent: { type: "saveWorkshopSeat", eventId },
+      },
+    });
+  };
 
   const handleReserve = async () => {
     if (!evt?.id) return;
@@ -144,7 +154,11 @@ export default function WorkshopDetails() {
         return;
       }
 
-      setCtaError(e?.response?.data?.message || e?.message || "Не успях да запазя workshop-а.");
+      setCtaError(
+        e?.response?.data?.message ||
+          e?.message ||
+          "Не успях да запазя workshop-а.",
+      );
       setCtaState("idle");
     }
   };
@@ -164,10 +178,18 @@ export default function WorkshopDetails() {
       <div className={rootClass}>
         <div className="workshop-details-container">
           <p className="workshop-status error">{loadError}</p>
-          <button className="workshop-back-btn" type="button" onClick={() => navigate(-1)}>
+          <button
+            className="workshop-back-btn"
+            type="button"
+            onClick={() => navigate(-1)}
+          >
             Назад
           </button>
-          <button className="workshop-back-btn secondary" type="button" onClick={() => navigate("/aiworkshops")}>
+          <button
+            className="workshop-back-btn secondary"
+            type="button"
+            onClick={() => navigate("/aiworkshops")}
+          >
             Към AI Workshops
           </button>
         </div>
@@ -180,7 +202,11 @@ export default function WorkshopDetails() {
       <div className={rootClass}>
         <div className="workshop-details-container">
           <p className="workshop-status error">Не намерихме workshop.</p>
-          <button className="workshop-back-btn" type="button" onClick={() => navigate("/aiworkshops")}>
+          <button
+            className="workshop-back-btn"
+            type="button"
+            onClick={() => navigate("/aiworkshops")}
+          >
             Към AI Workshops
           </button>
         </div>
@@ -192,7 +218,11 @@ export default function WorkshopDetails() {
     <div className={rootClass}>
       <div className="workshop-details-container">
         <div className="workshop-breadcrumbs">
-          <button className="workshop-linklike" type="button" onClick={() => navigate("/aiworkshops")}>
+          <button
+            className="workshop-linklike"
+            type="button"
+            onClick={() => navigate("/aiworkshops")}
+          >
             AI Workshops
           </button>
           <span className="workshop-sep">/</span>
@@ -208,22 +238,30 @@ export default function WorkshopDetails() {
           <div className="workshop-meta">
             <div className="workshop-meta-item">
               <span className="workshop-meta-label">Дата</span>
-              <span className="workshop-meta-value">{evt.eventDate || "—"}</span>
+              <span className="workshop-meta-value">
+                {evt.eventDate || "—"}
+              </span>
             </div>
 
             {(evt.startDate || evt.endDate) && (
               <div className="workshop-meta-item">
                 <span className="workshop-meta-label">Период</span>
                 <span className="workshop-meta-value">
-                  {evt.startDate ? new Date(evt.startDate).toLocaleDateString("bg-BG") : "—"}
+                  {evt.startDate
+                    ? new Date(evt.startDate).toLocaleDateString("bg-BG")
+                    : "—"}
                   {" — "}
-                  {evt.endDate ? new Date(evt.endDate).toLocaleDateString("bg-BG") : "—"}
+                  {evt.endDate
+                    ? new Date(evt.endDate).toLocaleDateString("bg-BG")
+                    : "—"}
                 </span>
               </div>
             )}
           </div>
 
-          {evt.description && <p className="workshop-desc">{evt.description}</p>}
+          {evt.description && (
+            <p className="workshop-desc">{evt.description}</p>
+          )}
 
           {!isFinished && (
             <div className="workshop-hero-cta">
@@ -240,7 +278,9 @@ export default function WorkshopDetails() {
                   {ctaState === "unsaved" && "Премахнато"}
                 </span>
 
-                {ctaState === "saving" && <span className="cta-spinner" aria-hidden="true" />}
+                {ctaState === "saving" && (
+                  <span className="cta-spinner" aria-hidden="true" />
+                )}
                 {(ctaState === "saved" || ctaState === "unsaved") && (
                   <span className="cta-check" aria-hidden="true">
                     ✓
@@ -249,15 +289,22 @@ export default function WorkshopDetails() {
               </button>
 
               <div className="cta-subtext">
-                {!user && ctaState === "idle" && "За да запазиш място, създай профил или влез."}
-                {user && ctaState === "idle" && "Безплатна резервация. Потвърждение по-късно."}
+                {!user &&
+                  ctaState === "idle" &&
+                  "За да запазиш място, създай профил или влез."}
+                {user &&
+                  ctaState === "idle" &&
+                  "Безплатна резервация. Потвърждение по-късно."}
                 {ctaState === "saving" && "Момент…"}
                 {ctaState === "saved" && "Готово! Виж го в „Моите събития“."}
                 {ctaState === "unsaved" && "Премахнахме го от „Моите събития“."}
               </div>
 
               {ctaError && (
-                <div className="workshop-status error" style={{ padding: "10px 0 0" }}>
+                <div
+                  className="workshop-status error"
+                  style={{ padding: "10px 0 0" }}
+                >
                   {ctaError}
                 </div>
               )}
@@ -299,10 +346,18 @@ export default function WorkshopDetails() {
         )}
 
         <div className="workshop-actions">
-          <button className="workshop-back-btn" type="button" onClick={() => navigate(-1)}>
+          <button
+            className="workshop-back-btn"
+            type="button"
+            onClick={() => navigate(-1)}
+          >
             Назад
           </button>
-          <button className="workshop-back-btn secondary" type="button" onClick={() => navigate("/aiworkshops")}>
+          <button
+            className="workshop-back-btn secondary"
+            type="button"
+            onClick={() => navigate("/aiworkshops")}
+          >
             Всички workshops
           </button>
         </div>

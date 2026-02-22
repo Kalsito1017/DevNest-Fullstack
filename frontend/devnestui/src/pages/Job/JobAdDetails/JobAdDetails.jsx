@@ -153,7 +153,9 @@ export default function JobAdDetails() {
                   <div className="jad-logo-fallback" />
                 )}
               </div>
-              <div className="jad-company-name">{company?.name || "Компания"}</div>
+              <div className="jad-company-name">
+                {company?.name || "Компания"}
+              </div>
             </div>
 
             <div className="jad-title">{data.title}</div>
@@ -161,14 +163,20 @@ export default function JobAdDetails() {
             <div className="jad-meta">
               <div className="jad-locpill">
                 <span className="jad-pin-lg" />
-                <span className="jad-town">{safeText(data.location) || "—"}</span>
+                <span className="jad-town">
+                  {safeText(data.location) || "—"}
+                </span>
 
                 {!data.isRemote && (
                   <>
                     <span className="jad-loc-sep" />
 
                     <span className="jad-hybrid-wrap">
-                      <img src={hybridIcon} alt="" className="jad-hybrid-icon" />
+                      <img
+                        src={hybridIcon}
+                        alt=""
+                        className="jad-hybrid-icon"
+                      />
                       <span className="jad-hybrid-text">Hybrid</span>
 
                       <span className="jad-tip">
@@ -212,7 +220,9 @@ export default function JobAdDetails() {
                       className="jad-pill"
                       onClick={() =>
                         c.slug
-                          ? navigate(`/jobs?category=${encodeURIComponent(c.slug)}`)
+                          ? navigate(
+                              `/jobs?category=${encodeURIComponent(c.slug)}`,
+                            )
                           : navigate(`/jobs`)
                       }
                       title={c.name}
@@ -305,16 +315,21 @@ export default function JobAdDetails() {
                 ))}
 
                 {(!data.techStack || data.techStack.length === 0) && (
-                  <div className="jad-tech-empty">Няма добавени технологии.</div>
+                  <div className="jad-tech-empty">
+                    Няма добавени технологии.
+                  </div>
                 )}
               </div>
             </div>
 
             {/* Company about */}
             <div className="jad-section">
-              <div className="jad-section-title">About {company?.name || "company"}</div>
+              <div className="jad-section-title">
+                About {company?.name || "company"}
+              </div>
               <div className="jad-text">
-                {safeText(data.companyAbout) || "Няма добавено описание за компанията."}
+                {safeText(data.companyAbout) ||
+                  "Няма добавено описание за компанията."}
               </div>
             </div>
 
@@ -322,7 +337,8 @@ export default function JobAdDetails() {
             <div className="jad-section">
               <div className="jad-section-title">About the role</div>
               <div className="jad-text">
-                {safeText(data.description) || "Няма добавено описание за позицията."}
+                {safeText(data.description) ||
+                  "Няма добавено описание за позицията."}
               </div>
 
               <div className="jad-apply-bottom">
@@ -344,24 +360,32 @@ export default function JobAdDetails() {
               <div className="jad-aside-top">
                 <div className="jad-aside-logo">
                   {company?.logoUrl ? (
-                    <img src={company.logoUrl} alt={company?.name || "Company"} />
+                    <img
+                      src={company.logoUrl}
+                      alt={company?.name || "Company"}
+                    />
                   ) : (
                     <div className="jad-logo-fallback" />
                   )}
                 </div>
-                <div className="jad-aside-name">{company?.name || "Компания"}</div>
+                <div className="jad-aside-name">
+                  {company?.name || "Компания"}
+                </div>
               </div>
 
               <div className="jad-aside-label">За компанията</div>
               <div className="jad-aside-text">
-                {safeText(data.companyAbout)?.slice(0, 420) || "Няма кратко описание."}
+                {safeText(data.companyAbout)?.slice(0, 420) ||
+                  "Няма кратко описание."}
               </div>
 
               <button
                 type="button"
                 className="jad-btn jad-btn-soft"
                 onClick={() =>
-                  company?.id ? navigate(`/company/${company.id}`) : navigate("/company")
+                  company?.id
+                    ? navigate(`/company/${company.id}`)
+                    : navigate("/company")
                 }
               >
                 Повече за компанията
@@ -372,7 +396,10 @@ export default function JobAdDetails() {
                 className="jad-btn jad-btn-soft"
                 onClick={() => {
                   if (!company?.id) return navigate("/company");
-                  navigate({ pathname: `/company/${company.id}`, hash: "#jobs" });
+                  navigate({
+                    pathname: `/company/${company.id}`,
+                    hash: "#jobs",
+                  });
                 }}
               >
                 Всички обяви на компанията

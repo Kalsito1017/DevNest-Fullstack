@@ -26,10 +26,15 @@ const cityMeta = {
 };
 
 function normalizeSlug(raw) {
-  const s = decodeURIComponent(String(raw || "")).trim().toLowerCase();
+  const s = decodeURIComponent(String(raw || ""))
+    .trim()
+    .toLowerCase();
   if (!s) return "sofia";
   if (s.startsWith("location") && s.length > "location".length) {
-    return s.replace(/^location/i, "").trim().toLowerCase();
+    return s
+      .replace(/^location/i, "")
+      .trim()
+      .toLowerCase();
   }
   return s;
 }
@@ -84,8 +89,9 @@ export default function LocationHome() {
         setIsLoading(true);
 
         // Sections are still global until backend supports location-aware sections
-       const locParam = citySlug === "remote" ? "Remote" : slugToDbCity(citySlug);
-const sectionsRaw = await getHomeSections(6, { location: locParam });
+        const locParam =
+          citySlug === "remote" ? "Remote" : slugToDbCity(citySlug);
+        const sectionsRaw = await getHomeSections(6, { location: locParam });
 
         if (!alive) return;
         setSections(Array.isArray(sectionsRaw) ? sectionsRaw : []);
@@ -123,7 +129,9 @@ const sectionsRaw = await getHomeSections(6, { location: locParam });
   }, [citySlug]);
 
   const sorted = useMemo(() => {
-    return [...(sections || [])].sort((a, b) => (b.jobsCount || 0) - (a.jobsCount || 0));
+    return [...(sections || [])].sort(
+      (a, b) => (b.jobsCount || 0) - (a.jobsCount || 0),
+    );
   }, [sections]);
 
   const scrollToGrid = () => {
@@ -158,7 +166,10 @@ const sectionsRaw = await getHomeSections(6, { location: locParam });
   return (
     <div className="home">
       {/* HERO */}
-      <section className="home-hero" style={{ backgroundImage: `url(${meta.bg})` }}>
+      <section
+        className="home-hero"
+        style={{ backgroundImage: `url(${meta.bg})` }}
+      >
         <div className="hero-content">
           <h1>
             <span className="hero-title">{totalJobs} </span>
@@ -180,7 +191,11 @@ const sectionsRaw = await getHomeSections(6, { location: locParam });
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
 
-              <button type="submit" className="search-button" aria-label="Search">
+              <button
+                type="submit"
+                className="search-button"
+                aria-label="Search"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -200,9 +215,18 @@ const sectionsRaw = await getHomeSections(6, { location: locParam });
           </form>
 
           <div className="hero-scroll-holder">
-            <button type="button" className="hero-scroll-dot" onClick={scrollToGrid} aria-label="Scroll to categories">
+            <button
+              type="button"
+              className="hero-scroll-dot"
+              onClick={scrollToGrid}
+              aria-label="Scroll to categories"
+            >
               <span className="hero-scroll-text">
-                Виж<br />обявите<br />подредени
+                Виж
+                <br />
+                обявите
+                <br />
+                подредени
               </span>
               <span className="hero-scroll-arrow" aria-hidden="true">
                 ↓
@@ -234,7 +258,12 @@ const sectionsRaw = await getHomeSections(6, { location: locParam });
                   <div className="dept-title-wrap">
                     <div className="dept-title-row">
                       {s.iconUrl ? (
-                        <img className="dept-icon" src={s.iconUrl} alt={s.categoryName} loading="lazy" />
+                        <img
+                          className="dept-icon"
+                          src={s.iconUrl}
+                          alt={s.categoryName}
+                          loading="lazy"
+                        />
                       ) : null}
 
                       <button
@@ -273,7 +302,12 @@ const sectionsRaw = await getHomeSections(6, { location: locParam });
                         >
                           <span className="dept-tech-left">
                             {t.logoUrl ? (
-                              <img src={t.logoUrl} alt={t.techName} className="dept-tech-icon" loading="lazy" />
+                              <img
+                                src={t.logoUrl}
+                                alt={t.techName}
+                                className="dept-tech-icon"
+                                loading="lazy"
+                              />
                             ) : null}
                             <span className="dept-tech-name">{t.techName}</span>
                           </span>
@@ -285,7 +319,11 @@ const sectionsRaw = await getHomeSections(6, { location: locParam });
                   </div>
                 ) : null}
 
-                <button type="button" className="dept-seeall" onClick={() => navigate(categoryUrl)}>
+                <button
+                  type="button"
+                  className="dept-seeall"
+                  onClick={() => navigate(categoryUrl)}
+                >
                   Виж всички →
                 </button>
               </div>

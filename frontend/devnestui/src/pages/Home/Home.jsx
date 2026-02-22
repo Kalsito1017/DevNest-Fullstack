@@ -1,18 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Home.css';
-import { getHomeSections } from '../../services/api/home';
-import { getCompanies } from '../../services/api/companies';
-import heroBg from '../../assets/backgroundimageforhomepagetitle.png';
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Home.css";
+import { getHomeSections } from "../../services/api/home";
+import { getCompanies } from "../../services/api/companies";
+import heroBg from "../../assets/backgroundimageforhomepagetitle.png";
 import { subscribeNewsletter } from "../../services/api/newsletter";
 
 const Home = () => {
   const [sections, setSections] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-const [newsletterAccepted, setNewsletterAccepted] = useState(false);
-const [newsletterStatus, setNewsletterStatus] = useState('idle');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterAccepted, setNewsletterAccepted] = useState(false);
+  const [newsletterStatus, setNewsletterStatus] = useState("idle");
   const navigate = useNavigate();
   const gridRef = useRef(null);
 
@@ -27,11 +27,9 @@ const [newsletterStatus, setNewsletterStatus] = useState('idle');
         ]);
 
         setSections(Array.isArray(sectionsRaw) ? sectionsRaw : []);
-        
       } catch (e) {
         console.error(e);
         setSections([]);
-        
       } finally {
         setIsLoading(false);
       }
@@ -40,45 +38,44 @@ const [newsletterStatus, setNewsletterStatus] = useState('idle');
     load();
   }, []);
 
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
 
-const handleNewsletterSubmit = async (e) => {
-  e.preventDefault();
+    const email = newsletterEmail.trim();
+    if (!email) return;
 
-  const email = newsletterEmail.trim();
-  if (!email) return;
+    // If you want consent required, uncomment:
+    // if (!newsletterAccepted) return;
 
-  // If you want consent required, uncomment:
-  // if (!newsletterAccepted) return;
+    try {
+      setNewsletterStatus("loading");
+      await subscribeNewsletter(email);
 
-  try {
-    setNewsletterStatus("loading");
-    await subscribeNewsletter(email);
+      setNewsletterStatus("success");
+      setNewsletterEmail("");
+      setNewsletterAccepted(false);
 
-    setNewsletterStatus("success");
-    setNewsletterEmail("");
-    setNewsletterAccepted(false);
+      window.setTimeout(() => setNewsletterStatus("idle"), 2500);
+    } catch (err) {
+      console.error("Newsletter subscribe failed:", err);
+      setNewsletterStatus("error");
 
-    window.setTimeout(() => setNewsletterStatus("idle"), 2500);
-  } catch (err) {
-    console.error("Newsletter subscribe failed:", err);
-    setNewsletterStatus("error");
-
-    window.setTimeout(() => setNewsletterStatus("idle"), 3000);
-  }
-};
-
-
+      window.setTimeout(() => setNewsletterStatus("idle"), 3000);
+    }
+  };
 
   const totalJobs = useMemo(() => {
     return (sections || []).reduce((sum, s) => sum + (s.jobsCount || 0), 0);
   }, [sections]);
 
   const sorted = useMemo(() => {
-    return [...(sections || [])].sort((a, b) => (b.jobsCount || 0) - (a.jobsCount || 0));
+    return [...(sections || [])].sort(
+      (a, b) => (b.jobsCount || 0) - (a.jobsCount || 0),
+    );
   }, [sections]);
 
   const scrollToGrid = () => {
-    gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleSearch = (e) => {
@@ -87,7 +84,6 @@ const handleNewsletterSubmit = async (e) => {
     if (!term) return;
 
     navigate(`/jobs/search?q=${encodeURIComponent(term)}&page=1&pageSize=20`);
-;
   };
 
   if (isLoading) {
@@ -104,10 +100,12 @@ const handleNewsletterSubmit = async (e) => {
   return (
     <div className="home">
       {/* HERO */}
-      <section className="home-hero"
-       style={{
-    backgroundImage: `url(${heroBg})`
-  }}>
+      <section
+        className="home-hero"
+        style={{
+          backgroundImage: `url(${heroBg})`,
+        }}
+      >
         <div className="hero-content">
           <h1>
             <span className="hero-title">Job Board </span>
@@ -124,7 +122,11 @@ const handleNewsletterSubmit = async (e) => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
 
-              <button type="submit" className="search-button" aria-label="Search">
+              <button
+                type="submit"
+                className="search-button"
+                aria-label="Search"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -144,21 +146,24 @@ const handleNewsletterSubmit = async (e) => {
           </form>
 
           <div className="hero-scroll-holder">
-           <button
-  type="button"
-  className="hero-scroll-dot"
-  onClick={scrollToGrid}
-  aria-label="Scroll to categories"
->
-  <span className="hero-scroll-text">
-    Виж<br />обявите<br />подредени
-  </span>
+            <button
+              type="button"
+              className="hero-scroll-dot"
+              onClick={scrollToGrid}
+              aria-label="Scroll to categories"
+            >
+              <span className="hero-scroll-text">
+                Виж
+                <br />
+                обявите
+                <br />
+                подредени
+              </span>
 
-  <span className="hero-scroll-arrow" aria-hidden="true">
-    ↓
-  </span>
-</button>
-
+              <span className="hero-scroll-arrow" aria-hidden="true">
+                ↓
+              </span>
+            </button>
           </div>
         </div>
       </section>
@@ -166,13 +171,13 @@ const handleNewsletterSubmit = async (e) => {
       {/* CATEGORIES */}
       <section className="categories-section" ref={gridRef}>
         <p className="section-subtitle">
-          Общо <b>{totalJobs}</b> обяви 
+          Общо <b>{totalJobs}</b> обяви
         </p>
 
         <div className="dept-grid">
           {sorted.map((s) => {
             const categoryUrl = `/jobs?category=${encodeURIComponent(
-              s.categorySlug
+              s.categorySlug,
             )}&page=1&pageSize=20`;
 
             return (
@@ -208,46 +213,44 @@ const handleNewsletterSubmit = async (e) => {
                   <div className="dept-techs">
                     {s.techs.map((t) => {
                       const techUrl = `/jobs?category=${encodeURIComponent(
-                        s.categorySlug
+                        s.categorySlug,
                       )}&tech=${encodeURIComponent(t.techSlug)}&page=1&pageSize=20`;
 
                       return (
-                    <button
-  key={t.techId}
-  type="button"
-  className="dept-tech-pill"
-  onClick={() => navigate(techUrl)}
-  title={`Виж ${t.techName} обяви`}
->
-  <span className="dept-tech-left">
-    {t.logoUrl ? (
-      <img
-        src={t.logoUrl}
-        alt={t.techName}
-        className="dept-tech-icon"
-        loading="lazy"
-      />
-    ) : null}
+                        <button
+                          key={t.techId}
+                          type="button"
+                          className="dept-tech-pill"
+                          onClick={() => navigate(techUrl)}
+                          title={`Виж ${t.techName} обяви`}
+                        >
+                          <span className="dept-tech-left">
+                            {t.logoUrl ? (
+                              <img
+                                src={t.logoUrl}
+                                alt={t.techName}
+                                className="dept-tech-icon"
+                                loading="lazy"
+                              />
+                            ) : null}
 
-    <span className="dept-tech-name">{t.techName}</span>
-  </span>
+                            <span className="dept-tech-name">{t.techName}</span>
+                          </span>
 
-  <span className="dept-tech-count">{t.jobsCount}</span>
-</button>
-
+                          <span className="dept-tech-count">{t.jobsCount}</span>
+                        </button>
                       );
                     })}
                   </div>
                 ) : null}
 
-               <button
-  type="button"
-  className="dept-seeall"
-  onClick={() => navigate(categoryUrl)}
->
-  Виж всички →
-</button>
-
+                <button
+                  type="button"
+                  className="dept-seeall"
+                  onClick={() => navigate(categoryUrl)}
+                >
+                  Виж всички →
+                </button>
               </div>
             );
           })}
@@ -264,40 +267,47 @@ const handleNewsletterSubmit = async (e) => {
             </h2>
 
             <p className="newsletter-subtitle">
-              Получавай актуална информация за предстоящи събития и новини от IT сферата
+              Получавай актуална информация за предстоящи събития и новини от IT
+              сферата
             </p>
 
-         <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
-  <input
-    className="newsletter-input"
-    type="email"
-    placeholder="email@domain.com"
-    value={newsletterEmail}
-    onChange={(e) => setNewsletterEmail(e.target.value)}
-    required
-    disabled={newsletterStatus === "loading"}
-  />
+            <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
+              <input
+                className="newsletter-input"
+                type="email"
+                placeholder="email@domain.com"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                required
+                disabled={newsletterStatus === "loading"}
+              />
 
-  {newsletterStatus === "success" ? (
-    <div className="newsletter-success" role="status" aria-live="polite">
-      УСПЕШНО АБОНИРАНЕ
-    </div>
-  ) : (
-    <button
-      className="newsletter-btn"
-      type="submit"
-      disabled={newsletterStatus === "loading"}
-    >
-      {newsletterStatus === "loading" ? "Изпращане..." : "АБОНИРАЙ МЕ"}
-    </button>
-  )}
-</form>
+              {newsletterStatus === "success" ? (
+                <div
+                  className="newsletter-success"
+                  role="status"
+                  aria-live="polite"
+                >
+                  УСПЕШНО АБОНИРАНЕ
+                </div>
+              ) : (
+                <button
+                  className="newsletter-btn"
+                  type="submit"
+                  disabled={newsletterStatus === "loading"}
+                >
+                  {newsletterStatus === "loading"
+                    ? "Изпращане..."
+                    : "АБОНИРАЙ МЕ"}
+                </button>
+              )}
+            </form>
 
-{newsletterStatus === "error" ? (
-  <div className="newsletter-error" role="alert">
-    Грешка при абониране. Опитай пак.
-  </div>
-) : null}
+            {newsletterStatus === "error" ? (
+              <div className="newsletter-error" role="alert">
+                Грешка при абониране. Опитай пак.
+              </div>
+            ) : null}
 
             <label className="newsletter-consent">
               <input
@@ -306,8 +316,13 @@ const handleNewsletterSubmit = async (e) => {
                 onChange={(e) => setNewsletterAccepted(e.target.checked)}
               />
               <span>
-                Запознат/а съм с{' '}
-                <a className="newsletter-link" href="/privacy" target="_blank" rel="noreferrer">
+                Запознат/а съм с{" "}
+                <a
+                  className="newsletter-link"
+                  href="/privacy"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Уведомлението за поверителност
                 </a>
               </span>

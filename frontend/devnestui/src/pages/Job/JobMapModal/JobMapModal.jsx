@@ -40,7 +40,9 @@ const cityCoords = {
 };
 
 function normalizeCity(locationText) {
-  const raw = String(locationText || "").toLowerCase().trim();
+  const raw = String(locationText || "")
+    .toLowerCase()
+    .trim();
   if (!raw) return "";
 
   // examples: "Varna, Bulgaria", "Офис Варна", "Office Varna"
@@ -86,7 +88,12 @@ export default function JobMapModal({
   return (
     <div className="jmm-overlay" onMouseDown={onClose}>
       <div className="jmm-modal" onMouseDown={(e) => e.stopPropagation()}>
-        <button className="jmm-close" type="button" onClick={onClose} aria-label="Close">
+        <button
+          className="jmm-close"
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+        >
           ×
         </button>
 
@@ -98,14 +105,12 @@ export default function JobMapModal({
             className="jmm-map"
           >
             <TileLayer
-              attribution='&copy; JawgMaps | Данни от OpenStreetMap'
+              attribution="&copy; JawgMaps | Данни от OpenStreetMap"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
             <Marker position={coords}>
-              <Popup>
-                {popupText}
-              </Popup>
+              <Popup>{popupText}</Popup>
             </Marker>
           </MapContainer>
         </div>

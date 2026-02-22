@@ -27,7 +27,9 @@
 }
 
 @keyframes jadspin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .jad-loading-text {
@@ -40,7 +42,7 @@
   background: #fff;
   border-radius: 14px;
   padding: 18px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
 
 .jad-error-title {
@@ -58,7 +60,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
 
 .jad-company-chip {
@@ -77,7 +79,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
 
 .jad-company-logo img {
@@ -143,7 +145,9 @@
 }
 
 @media (max-width: 1020px) {
-  .jad-grid { grid-template-columns: 1fr; }
+  .jad-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Boxes */
@@ -151,7 +155,7 @@
   background: #fff;
   border-radius: 14px;
   padding: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
 
 .jad-row {
@@ -162,7 +166,9 @@
 }
 
 @media (max-width: 1020px) {
-  .jad-row { grid-template-columns: 1fr; }
+  .jad-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 .jad-box-title {
@@ -190,12 +196,14 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.08s ease;
 }
 
 .jad-pill:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
 }
 
 .jad-pill-name {
@@ -239,13 +247,13 @@
   place-items: center;
   color: #2f6cff;
   font-weight: 900;
-  background: rgba(255,255,255,0.72);
+  background: rgba(255, 255, 255, 0.72);
   cursor: pointer;
   transition: background 0.12s ease;
 }
 
 .jad-map-cta:hover {
-  background: rgba(255,255,255,0.82);
+  background: rgba(255, 255, 255, 0.82);
 }
 
 /* Sub meta */
@@ -253,7 +261,7 @@
   background: #fff;
   border-radius: 14px;
   padding: 12px 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -299,7 +307,7 @@
   background: #fff;
   border-radius: 14px;
   padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   margin-bottom: 14px;
 }
 
@@ -333,7 +341,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
 }
 
 .jad-tech img {
@@ -392,13 +400,15 @@
   background: #fff;
   border-radius: 14px;
   padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   position: sticky;
   top: 18px;
 }
 
 @media (max-width: 1020px) {
-  .jad-aside-card { position: static; }
+  .jad-aside-card {
+    position: static;
+  }
 }
 
 .jad-aside-top {
@@ -451,7 +461,6 @@
   justify-content: center;
 }
 
-
 .jad-row-single {
   grid-template-columns: 1fr !important;
 }
@@ -494,7 +503,6 @@
   text-decoration: underline;
 }
 
-
 .jad-mapbox-leaflet {
   position: relative;
   padding: 0;
@@ -525,7 +533,6 @@
   z-index: 2;
 }
 
-
 .jad-btn-apply {
   display: inline-flex;
   align-items: center;
@@ -536,7 +543,7 @@
   width: 48px;
   height: 48px;
   object-fit: contain;
-  filter: brightness(0) invert(1); 
+  filter: brightness(0) invert(1);
 }
 
 .jad-action.is-saved {
@@ -556,7 +563,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+  transition:
+    transform 120ms ease,
+    background 120ms ease,
+    border-color 120ms ease;
 }
 
 .jad-save.is-saved {
@@ -574,18 +584,17 @@
   transform: scale(0.96);
 }
 
-
 /* TOP CARD -> DEV.BG-like banner */
 .jad-top {
-  background: #dfeeff;            /* по-близо до DEV.BG синьото */
+  background: #dfeeff; /* по-близо до DEV.BG синьото */
   border-radius: 14px;
   padding: 22px 26px;
   display: flex;
   justify-content: space-between;
-  align-items: center;             /* ключово: центрира бутона */
+  align-items: center; /* ключово: центрира бутона */
   gap: 22px;
-  box-shadow: none;                /* DEV.BG е по-плоско */
-  min-height: 120px;               /* по-ниско от твоето */
+  box-shadow: none; /* DEV.BG е по-плоско */
+  min-height: 120px; /* по-ниско от твоето */
 }
 
 /* Left column layout: logo block + content */
@@ -602,7 +611,7 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  margin-bottom: 0;                /* махаме излишното надолу */
+  margin-bottom: 0; /* махаме излишното надолу */
 }
 
 .jad-company-logo {
@@ -611,7 +620,7 @@
   border-radius: 14px;
   background: #fff;
   box-shadow: none;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .jad-company-logo img {
@@ -620,8 +629,8 @@
 }
 
 .jad-company-name {
-  font-weight: 600;                /* по-леко като DEV.BG */
-  color: rgba(0,0,0,0.55);
+  font-weight: 600; /* по-леко като DEV.BG */
+  color: rgba(0, 0, 0, 0.55);
   font-size: 12px;
   text-align: center;
   max-width: 90px;
@@ -643,7 +652,7 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  color: rgba(0,0,0,0.65);
+  color: rgba(0, 0, 0, 0.65);
   font-weight: 600;
 }
 
@@ -663,20 +672,20 @@
   border-radius: 999px;
   font-size: 13px;
   font-weight: 700;
-  background: rgba(255,255,255,0.75);
-  border: 1px solid rgba(0,0,0,0.06);
-  color: rgba(0,0,0,0.70);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .jad-badge.is-hybrid {
   background: #dff3e6;
-  border-color: rgba(0,0,0,0.05);
+  border-color: rgba(0, 0, 0, 0.05);
   color: #1d6b3a;
 }
 
 .jad-badge.is-remote {
   background: #e9f2ff;
-  border-color: rgba(0,0,0,0.05);
+  border-color: rgba(0, 0, 0, 0.05);
   color: #1f4bd8;
 }
 
@@ -689,7 +698,7 @@
 .jad-btn-primary.jad-btn-apply {
   border-radius: 14px;
   padding: 16px 24px;
-  min-width: 230px;      /* като на DEV.BG */
+  min-width: 230px; /* като на DEV.BG */
   height: 56px;
   font-size: 16px;
   box-shadow: none;
@@ -718,7 +727,6 @@
   }
 }
 
-
 .jad-badge {
   display: inline-flex;
   align-items: center;
@@ -735,8 +743,6 @@
   object-fit: contain;
 }
 
-
-
 /* Meta row layout */
 .jad-meta {
   display: flex;
@@ -748,7 +754,7 @@
 /* Town */
 .jad-town {
   font-weight: 700;
-  color: rgba(0,0,0,0.75);
+  color: rgba(0, 0, 0, 0.75);
 }
 
 /* Badge wrapper (for hover tooltip) */
@@ -768,7 +774,7 @@
   font-size: 14px;
   font-weight: 800;
   user-select: none;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .jad-badge-hybrid {
@@ -793,15 +799,17 @@
   background: #fff;
   border-radius: 12px;
   padding: 12px 14px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-  color: rgba(0,0,0,0.70);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.7);
   font-size: 13px;
   line-height: 1.35;
 
   opacity: 0;
   transform: translateY(-6px);
   pointer-events: none;
-  transition: opacity 140ms ease, transform 140ms ease;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
   z-index: 20;
 }
 
@@ -815,7 +823,7 @@
   height: 14px;
   background: #fff;
   transform: rotate(45deg);
-  box-shadow: -6px -6px 18px rgba(0,0,0,0.06);
+  box-shadow: -6px -6px 18px rgba(0, 0, 0, 0.06);
 }
 
 /* Show tooltip on hover/focus */
@@ -826,7 +834,6 @@
   pointer-events: auto;
 }
 
-
 /* One combined pill */
 .jad-locpill {
   display: inline-flex;
@@ -835,7 +842,7 @@
   padding: 8px 12px;
   border-radius: 999px;
   background: rgba(191, 244, 209, 0.55); /* translucent green like screenshot */
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .jad-pin-lg {
@@ -847,14 +854,14 @@
 
 .jad-town {
   font-weight: 800;
-  color: rgba(0,0,0,0.78);
+  color: rgba(0, 0, 0, 0.78);
 }
 
 /* Vertical separator */
 .jad-loc-sep {
   width: 1px;
   height: 18px;
-  background: rgba(0,0,0,0.18);
+  background: rgba(0, 0, 0, 0.18);
 }
 
 /* Hybrid part */
@@ -884,15 +891,17 @@
   background: #fff;
   border-radius: 12px;
   padding: 12px 14px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-  color: rgba(0,0,0,0.70);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.7);
   font-size: 13px;
   line-height: 1.35;
 
   opacity: 0;
   transform: translateY(-6px);
   pointer-events: none;
-  transition: opacity 140ms ease, transform 140ms ease;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
   z-index: 20;
 }
 
@@ -905,7 +914,7 @@
   height: 14px;
   background: #fff;
   transform: rotate(45deg);
-  box-shadow: -6px -6px 18px rgba(0,0,0,0.06);
+  box-shadow: -6px -6px 18px rgba(0, 0, 0, 0.06);
 }
 
 .jad-hybrid-wrap:hover .jad-tip {
@@ -915,13 +924,16 @@
 }
 
 .jad-btn-apply {
-  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease;
   will-change: transform;
 }
 
 .jad-btn-apply:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
 }
 
 .jad-btn-apply:active {
@@ -947,8 +959,10 @@
   width: min(720px, calc(100% - 24px));
   transform: translateY(10px) scale(0.98);
   opacity: 0;
-  transition: transform 180ms ease, opacity 180ms ease;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.22);
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
 }
 
 /* open state */
