@@ -1,13 +1,16 @@
-## DevNest
+# DevNest
 
 DevNest is a full-stack job platform built with React, .NET, SQL Server, and Docker.
 It provides job discovery, company profiles, search functionality, and event-based features such as email notifications.
 
 The goal of DevNest is to demonstrate clean architecture, scalable backend design, and modern frontend practices in a real-world application.
+<img width="1883" height="911" alt="image" src="https://github.com/user-attachments/assets/c52546e1-4b55-499f-a835-ac9ebaec3f3e" />
 
 
-## Tech Stack
-# Frontend
+
+
+# Tech Stack
+##  Frontend
 
 React
 
@@ -17,7 +20,7 @@ CSS Modules
 
 Axios
 
-# Backend
+## Backend
 
 ASP.NET Core Web API
 
@@ -27,7 +30,7 @@ SQL Server
 
 Event-driven email system
 
-# Infrastructure
+## Infrastructure
 
 Docker
 
