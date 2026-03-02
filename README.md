@@ -1,4 +1,4 @@
-DevNest
+## DevNest
 
 DevNest is a full-stack job platform built with React, .NET, SQL Server, and Docker.
 It provides job discovery, company profiles, search functionality, and event-based features such as email notifications.
