@@ -32,3 +32,30 @@ Event-driven email system
 Docker
 
 Docker Compose
+
+# Features
+
+Job listing and search
+
+Company profiles
+
+Categorized job browsing
+
+Homepage sections (featured, trending, etc.)
+
+Email notifications for events
+
+Image support for companies and jobs
+
+Dockerized local development
+
+# Email System
+
+DevNest uses an event-driven approach for email sending.
+When specific actions occur (e.g., user reserves a spot for an event), an event is triggered and handled by the email service.
+
+This keeps controllers clean and business logic modular.
+
+# License
+
+This project is for educational and portfolio purposes.
