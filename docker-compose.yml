@@ -62,7 +62,7 @@ services:
     depends_on:
       - api
     environment:
-      # IMPORTANT: this value is used by browser JS, so it must be host-reachable
+     
       VITE_API_URL: ${VITE_API_URL:-http://localhost:5099/api}
     ports:
       - "5173:5173"
@@ -72,3 +72,4 @@ services:
 
 volumes:
   devnest_sql_data:
+
