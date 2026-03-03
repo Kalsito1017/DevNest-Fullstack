@@ -2,7 +2,7 @@
 using DevNest.Services.Newsletter;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DevNest.Controllers
+namespace DevNest.Controllers.Marketing
 {
     [ApiController]
     [Route("api/newsletter")]
