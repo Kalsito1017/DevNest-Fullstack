@@ -7,11 +7,9 @@ The goal of DevNest is to demonstrate clean architecture, scalable backend desig
 
 <img width="1883" height="911" alt="image" src="https://github.com/user-attachments/assets/c52546e1-4b55-499f-a835-ac9ebaec3f3e" />
 
-
-
-
 # Tech Stack
-##  Frontend
+
+## Frontend
 
 React
 
