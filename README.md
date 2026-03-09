@@ -5,7 +5,6 @@ It provides job discovery, company profiles, search functionality, and event-bas
 
 The goal of DevNest is to demonstrate clean architecture, scalable backend design, and modern frontend practices in a real-world application.
 
-<img width="1883" height="911" alt="image" src="https://github.com/user-attachments/assets/c52546e1-4b55-499f-a835-ac9ebaec3f3e" />
 
 # Tech Stack
 
@@ -61,3 +60,4 @@ This keeps controllers clean and business logic modular.
 # License
 
 This project is for educational and portfolio purposes.
+
